@@ -12,22 +12,27 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import environ # Import `environ` to read `.env` file
+from dotenv import load_dotenv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
+# Load environment variables from `.env` file
+load_dotenv()
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-t4^!k6&)ck*#lbew#o6ys!6*if90qw-1&$!i5$-gb=j1+c6yjp'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+print(f"Loaded SECRET_KEY: {SECRET_KEY}")
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*'] # Wild card for development
 
 # Application definition
 
