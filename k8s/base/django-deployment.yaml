@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: django-container
-        image: localhost:5001/django-app:latest
+        image: tytan22/django-app:latest
         imagePullPolicy: Always   # Added
         ports:
         - containerPort: 8000

@@ -12,24 +12,17 @@ cd yourproject
 Copy the example below into a new file named .env in the project’s root directory (same folder as generate_secrets.sh).
 Replace any placeholder values (***) with your actual credentials or desired settings.
 
+### Example .env
 ```
-# Example .env
-
-# Django-related
-DJANGO_SECRET_KEY=***
+DJANGO_SECRET_KEY="***"
 DJANGO_DEBUG=True
-DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
-
-# Postgres-related
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,10.1.0.43,*
 POSTGRES_DB=***
 POSTGRES_USER=***
 POSTGRES_PASSWORD=***
 POSTGRES_HOST=db
+DATABASE_URL="postgresql://***:***@db:5432/***"
 POSTGRES_PORT=5432
-
-# Optional: If using a single connection string
-# DATABASE_URL=postgresql://<user>:<pass>@<host>:<port>/<dbname>
-
 ```
 
 ## Generate Your secrets.yaml
@@ -53,7 +46,7 @@ kubectl delete -f k8s/ --recursive
 kubectl apply -f k8s/ --recursive
 ```
 The secrets from your newly created secrets.yaml are now in the cluster.
-The deployment.yaml and service.yaml define how your Django application is deployed and exposed.
+The django-deployment.yaml and django-service.yaml define how your Django application is deployed and exposed.
 
 ## Confirm Everything Is Running
 Check pods and services:
@@ -68,7 +61,7 @@ kubectl describe pod <pod-name>
 kubectl logs <pod-name>
 ```
 
-## Access Your Django App
+## Access Your Django App ****
 NodePort service: Visit http://localhost:<nodePort> 
 Confirm the NodePort via:
 ```bash

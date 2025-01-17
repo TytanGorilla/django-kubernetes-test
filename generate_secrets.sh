@@ -6,6 +6,29 @@
 ENV_FILE=".env"          # The path to your .env file
 SECRETS_FILE="k8s/secrets/secrets.yaml"
 
+# Define required keys
+REQUIRED_KEYS=(
+  "DJANGO_SECRET_KEY"
+  "DJANGO_DEBUG"
+  "DJANGO_ALLOWED_HOSTS"
+  "POSTGRES_DB"
+  "POSTGRES_USER"
+  "POSTGRES_PASSWORD"
+  "POSTGRES_HOST"
+  "POSTGRES_PORT"
+  "DATABASE_URL"
+)
+
+# Validate that all required keys are present in the .env file
+echo "Validating .env file..."
+for key in "${REQUIRED_KEYS[@]}"; do
+  if ! grep -q "^$key=" "$ENV_FILE"; then
+    echo "Error: Missing required key '$key' in $ENV_FILE."
+    exit 1
+  fi
+done
+echo ".env file validation passed."
+
 # Start the secrets.yaml file with the necessary header
 cat <<EOF > $SECRETS_FILE
 apiVersion: v1
@@ -27,7 +50,7 @@ while IFS= read -r line || [[ -n "$line" ]]; do
   value=$(echo "$line" | cut -d '=' -f 2-)
 
   # Debug: Print the key and value being processed
-  echo "Processing key: $key, value: $value"
+  echo "Processing key: $key"
 
   # Strip leading and trailing quotes
   value=$(echo "$value" | sed -e 's/^"//' -e 's/"$//')
