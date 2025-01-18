@@ -36,13 +36,13 @@ This will generate a secure secret key, save it into the newly created .env file
 Make sure the generate_secrets.sh file is executable:
 
 ```bash
-chmod +x generate_secrets.sh
+chmod +x generate_secrets_configs.sh
 ```
 
 Run the script to create a new secrets.yaml:
 
 ```bash
-./generate_secrets.sh
+./generate_secrets_configs.sh
 ```
 This reads the .env file, Base64-encodes each variable, and produces a Kubernetes Secret manifest named secrets.yaml. Found in the k8s/secrets directory.
 

@@ -28,3 +28,6 @@ Thumbs.db
 *.o
 *.so
 *.out
+
+# Ignore secret manifest files
+k8s/secrets/secrets.yaml
