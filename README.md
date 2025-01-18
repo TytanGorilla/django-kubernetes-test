@@ -14,7 +14,7 @@ Replace any placeholder values (***) with your actual credentials or desired set
 
 ### Example .env
 ```
-DJANGO_SECRET_KEY="***"
+DJANGO_SECRET_KEY="GENERATED_SECRET_KEY"
 DJANGO_DEBUG=True
 DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,10.1.0.43,*
 POSTGRES_DB=***
@@ -24,6 +24,13 @@ POSTGRES_HOST=db
 DATABASE_URL="postgresql://***:***@db:5432/***"
 POSTGRES_PORT=5432
 ```
+### Generating a Django Secret Key
+To generate a Django secret key for your project, run the following command:
+
+```bash
+python generate_django_secret_key.py
+```
+This will generate a secure secret key, save it into the newly created .env file as the value of DJANGO_SECRET_KEY. Ensure that this value is within "quotes".
 
 ## Generate Your secrets.yaml
 Make sure the generate_secrets.sh file is executable:
