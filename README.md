@@ -6,55 +6,40 @@ Create a new folder on your machine and clone the repository into it.
 git clone https://github.com/TytanGorilla/django-kubernetes-test.git
 ```
 
-# OR
+## ONLINE DEVELOPMENT (GITHUB CODESPACES) - RECOMMENDED
+While inspecting the repository, click the green code button and select "Open with Codespaces."
 
-## ONLINE DEVELOPMENT (GITHUB CODESPACES) - RECOMMENDED 
-While inspecting the repository, click the green code button and select "Open with Codespaces"
-
-### Check current environment for python version
+### Check Python Version
 ```bash
 python --version
 # or
 python3 --version
 ```
-#### If not installed, install python3
+#### If not installed, install Python3
 ```bash
 sudo apt install python3
 ```
-Considerations: Desipite the application being contained within a docker container, the application is still dependent on the host machine's python version. If you are comfortable with global python installation, proceed. If not, consider using a virtual environment.
+> **Note**: While the application is containerized, the host machine’s Python version is still required for certain scripts and configurations. Consider using a virtual environment if you are not comfortable with global Python installations.
 
-## Check installed tools
-### Docker
+### Check Docker Installation
 ```bash
 docker --version
 ```
-#### If not installed, install docker
+#### If not installed, install Docker
 ```bash
 sudo apt install docker.io
 ```
 
-### Kubernetes
-```bash
-kubectl version --client
-```
-
-#### If not installed, install kubectl
-```bash
-sudo snap install kubectl --classic
-```
-
-
-## Create a .env File
-Create a .env file in the project's root directory.
+### Create a .env File
+Create a `.env` file in the project’s root directory.
 ```bash
 touch .env
 ```
+Copy the example below into the `.env` file. Replace any placeholder values (***) with your actual credentials or desired settings.
 
-Copy the example below into a new file named `.env` in the project’s root directory (same folder as `generate_secrets.sh`). Replace any placeholder values (***) with your actual credentials or desired settings. 
+For `DATABASE_URL`, use the format: `postgresql://username:password@host:port/database_name`.
 
-For the `DATABASE_URL`, the value should be in the format `postgresql://username:password@host:port/database_name`. Whatever the values for `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_HOST` are, they should be the same as the values in the `.env` file. Use them in the `DATABASE_URL`.
-
-### Example .env
+#### Example .env
 ```
 DJANGO_SECRET_KEY="GENERATED_SECRET_KEY"
 DJANGO_DEBUG=True
@@ -67,174 +52,80 @@ DATABASE_URL="postgresql://***:***@db:5432/***"
 POSTGRES_PORT=5432
 STORAGE_PATH=autofilled
 ```
-### Generating a Django Secret Key
-To generate a Django secret key for your project, run the following command:
 
+### Generate a Django Secret Key
+To generate a secure secret key, run:
 ```bash
 python generate_django_secret_key.py
 ```
-This will generate a secure secret key, SAVE it into the newly created .env file as the value of DJANGO_SECRET_KEY. Ensure that this value is within "quotes".
+Save the key in the `.env` file as the value of `DJANGO_SECRET_KEY`.
 
-## Generate Your secrets.yaml
-Make sure the generate_secrets.sh file is executable:
-
+### Generate Your `secrets.yaml`
+Make the script executable:
 ```bash
 chmod +x generate_secrets_configs.sh
 ```
-
-Run the script to create a new secrets.yaml:
-
+Run the script to create a new `secrets.yaml` file:
 ```bash
 ./generate_secrets_configs.sh
 ```
-This reads the .env file, Base64-encodes each variable, and produces a Kubernetes Secret manifest named secrets.yaml. Found in the k8s/secrets directory.
+This reads the `.env` file, Base64-encodes variables, and produces a Kubernetes Secret manifest named `secrets.yaml` in the `k8s/secrets` directory.
 
-## Ensure that the local Kubernetes cluster is running
-```bash
-minikube start
-```
-Look for the message "🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default"
-
-## Check minikube status
-```bash
-minikube status
-```
-
-### Check the status of the local Kubernetes cluster
-```bash
-kubectl cluster-info
-```
-
-### Check configuration
-```bash
-kubectl config view
-```
-Ensure the 'current-context: minikube' is present.
-If developing locally, the current-context could be docker-desktop or minikube.
-
-## Apply the Secrets and Other Manifests to Kubernetes
-
+### Apply Manifests to Kubernetes
+Apply the secrets and other manifests:
 ```bash
 kubectl apply -f k8s/ --recursive
 ```
-The secrets from your newly created secrets.yaml are now in the cluster.
-The django-deployment.yaml and django-service.yaml define how your Django application is deployed and exposed.
+This deploys the application to Kubernetes.
 
-## Confirm Everything Is Running after waiting 30 seconds
-Check pods:
+### Verify Deployment
+After 30 seconds, check that the pods are running:
 ```bash
 kubectl get pods
 ```
-
-Check for the following logs:
+Expected Output:
 ```bash
 NAME                         READY   STATUS    RESTARTS   AGE
 django-app-9c5675d7d-q58wt   1/1     Running   0          94s
 postgres-6ff4d97f74-4zjw9    1/1     Running   0          94s
 ```
-
 Check services:
 ```bash
 kubectl get svc
 ```
-Check for the following logs:
+Expected Output:
 ```bash
 NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
-db               ClusterIP   None           <none>        5432/TCP         3m28s
-django-service   NodePort    10.110.145.2   <none>        8000:30007/TCP   3m28s
-kubernetes       ClusterIP   10.96.0.1      <none>        443/TCP          4m23s
+db               ClusterIP   10.110.145.2   <none>        5432/TCP         3m28s
+django-service   NodePort    10.108.200.125 <none>        8000:30007/TCP   3m28s
 ```
 
-## Open a new terminal window and run the following command
+### Port Forwarding to Access the App
+To access your app without Minikube tunnels or LoadBalancers, use `kubectl port-forward`:
 ```bash
-minikube tunnel
+kubectl port-forward service/django-service 8000:8000
+```
+This maps the service to `localhost:8000`. Open your browser and navigate to:
+```
+http://localhost:8000
 ```
 
-##Find the Service URL
-Use minikube service to get the URL for your exposed service:
+> **Note**: If using GitHub Codespaces, ensure port `8000` is added in the Ports tab and set to **Public**.
+
+### Debugging
+Check logs if the application does not behave as expected:
 ```bash
-minikube service django-service --url
+kubectl logs -f -l app=django-app
 ```
-Expected Output:
-```bash
-http://192.168.49.2:30007
-```
-
-If you see any errors, run:
-```bash
-kubectl describe pod <pod-name>
-kubectl logs <pod-name>
-```
-
-## Access Your Django App ****
-The django-service is exposed via a NodePort on port 30007. To access it:
-
-a. Get the Minikube IP
-If you’re using Minikube, get the IP address:
-
-```bash
-minikube ip
-```
-Assume the output is 192.168.49.2 (replace this with your actual Minikube IP).
-
-b. Find the NodePort
-```bash
-kubectl get svc django-service
-```
-Expected Output:
-```bash
-NAME             TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
-django-service   NodePort   10.108.200.125   <none>        8000:30007/TCP   5m42s
-```
-
-c. Access the App
-Open your browser and navigate to:
-```plaintext
-http://192.168.49.2:30007
-```
-
-## Debugging
+Describe the pod for detailed diagnostics:
 ```bash
 kubectl describe pod -l app=django-app
-kubectl logs -l app=django-app
-```
-## Troubleshooting
-```bash
-minikube status
-```
-Expected Output:
-```bash
-host: Running
-kubelet: Running
-apiserver: Running
-kubeconfig: Configured
 ```
 
-Checking IP address:
-```bash
-minikube service django-service --url
-```
-
-Confirm minikube allows external traffic:
-```bash
-minikube tunnel
-```
-Expected Output:
-```bash
-Status:
-        machine: minikube
-        pid: 13693
-        route: 10.96.0.0/12 -> 192.168.49.2
-        minikube: Running
-        services: [django-service]
-    errors: 
-                minikube: no errors
-                router: no errors
-                loadbalancer emulator: no errors
-```
-
-## DELETING & REAPPLYING MANIFESTS
+### Deleting and Reapplying Manifests
+To restart the deployment cleanly:
 ```bash
 kubectl delete -f k8s/ --recursive
 kubectl apply -f k8s/ --recursive
 ```
+
