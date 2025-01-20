@@ -112,9 +112,17 @@ kubectl get svc
 ```
 Expected Output:
 ```bash
-NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
-db               ClusterIP   10.110.145.2   <none>        5432/TCP         3m28s
-django-service   NodePort    10.108.200.125 <none>        8000:30007/TCP   3m28s
+NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORTNAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+db               ClusterIP   10.96.196.171   <none>        5432/TCP         54s
+django-service   NodePort    10.96.245.57    <none>        8000:30007/TCP   54s
+kubernetes       ClusterIP   10.96.0.1       <none>        443/TCP          2m53s
+```
+
+### Reapply and refresh the application
+```bash
+kubectl apply -f k8s/configs/configmap.yaml
+kubectl apply -f k8s/secrets/secrets.yaml
+kubectl rollout restart deployment django-app
 ```
 
 ### Port Forwarding to Access the App
@@ -122,10 +130,10 @@ To access your app without Minikube tunnels or LoadBalancers, use `kubectl port-
 ```bash
 kubectl port-forward service/django-service 8000:8000
 ```
+
+### Accessing the application
 This maps the a private URL found within the codespace's "PORTS" tab, to the local port 8000.
 
-```
-### Accessing the application
 Under the forwarded address is the URL for your application.
 
 > **Note**: If using GitHub Codespaces, ensure port `8000` is added in the Ports tab and set to **Public**.
