@@ -30,6 +30,23 @@ docker --version
 sudo apt install docker.io
 ```
 
+### Install kind
+```bash
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/kind
+```
+
+#### Check kind's versioN
+```bash
+kind version
+```
+
+### Create a Kubernetes Cluster
+```bash
+kind create cluster --name my-cluster
+```
+
 ### Create a .env File
 Create a `.env` file in the project’s root directory.
 ```bash
@@ -105,10 +122,11 @@ To access your app without Minikube tunnels or LoadBalancers, use `kubectl port-
 ```bash
 kubectl port-forward service/django-service 8000:8000
 ```
-This maps the service to `localhost:8000`. Open your browser and navigate to:
+This maps the a private URL found within the codespace's "PORTS" tab, to the local port 8000.
+
 ```
-http://localhost:8000
-```
+### Accessing the application
+Under the forwarded address is the URL for your application.
 
 > **Note**: If using GitHub Codespaces, ensure port `8000` is added in the Ports tab and set to **Public**.
 
