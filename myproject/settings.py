@@ -160,3 +160,5 @@ CORS_ALLOW_HEADERS = [
     "authorization",
     "x-custom-header",
 ]
+
+SECURE_SSL_REDIRECT = False  # Disable HTTPS redirection for development

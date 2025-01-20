@@ -11,4 +11,3 @@ spec:
       port: 8000 # Port for your app inside Kubernetes
       targetPort: 8000 # Port your Django app is running on
       nodePort: 30007 # Optional: specify a NodePort (range: 30000–32767)
-  type: NodePort
