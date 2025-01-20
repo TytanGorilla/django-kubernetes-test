@@ -73,7 +73,7 @@ To generate a Django secret key for your project, run the following command:
 ```bash
 python generate_django_secret_key.py
 ```
-This will generate a secure secret key, save it into the newly created .env file as the value of DJANGO_SECRET_KEY. Ensure that this value is within "quotes".
+This will generate a secure secret key, SAVE it into the newly created .env file as the value of DJANGO_SECRET_KEY. Ensure that this value is within "quotes".
 
 ## Generate Your secrets.yaml
 Make sure the generate_secrets.sh file is executable:
@@ -114,11 +114,29 @@ kubectl apply -f k8s/ --recursive
 The secrets from your newly created secrets.yaml are now in the cluster.
 The django-deployment.yaml and django-service.yaml define how your Django application is deployed and exposed.
 
-## Confirm Everything Is Running
-Check pods and services:
+## Confirm Everything Is Running after waiting 30 seconds
+Check pods:
 ```bash
 kubectl get pods
+```
+
+Check for the following logs:
+```bash
+NAME                         READY   STATUS    RESTARTS   AGE
+django-app-9c5675d7d-q58wt   1/1     Running   0          94s
+postgres-6ff4d97f74-4zjw9    1/1     Running   0          94s
+```
+
+Check services:
+```bash
 kubectl get svc
+```
+Check for the following logs:
+```bash
+NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+db               ClusterIP   None           <none>        5432/TCP         3m28s
+django-service   NodePort    10.110.145.2   <none>        8000:30007/TCP   3m28s
+kubernetes       ClusterIP   10.96.0.1      <none>        443/TCP          4m23s
 ```
 
 If you see any errors, run:
@@ -128,19 +146,70 @@ kubectl logs <pod-name>
 ```
 
 ## Access Your Django App ****
-NodePort service: Visit http://localhost:<nodePort> 
-Confirm the NodePort via:
+The django-service is exposed via a NodePort on port 30007. To access it:
+
+a. Get the Minikube IP
+If you’re using Minikube, get the IP address:
+
 ```bash
-kubectl get svc
+minikube ip
+```
+Assume the output is 192.168.49.2 (replace this with your actual Minikube IP).
+
+b. Find the NodePort
+```bash
+kubectl get svc django-service
+```
+Expected Output:
+```bash
+NAME             TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+django-service   NodePort   10.108.200.125   <none>        8000:30007/TCP   5m42s
 ```
 
-Port-forwarding: Run
-```bash
-kubectl port-forward svc/django-service 8000:8000
+c. Access the App
+Open your browser and navigate to:
+```plaintext
+http://192.168.49.2:30007
 ```
+
 ## Debugging
 ```bash
 kubectl describe pod -l app=django-app
+kubectl logs -l app=django-app
+```
+## Troubleshooting
+```bash
+minikube status
+```
+Expected Output:
+```bash
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+```
+
+Checking IP address:
+```bash
+minikube service django-service --url
+```
+
+Confirm minikube allows external traffic:
+```bash
+minikube tunnel
+```
+Expected Output:
+```bash
+Status:
+        machine: minikube
+        pid: 35171
+        route: 10.96.0.0/12 -> 192.168.49.2
+        minikube: Running
+        services: []
+    errors: 
+                minikube: no errors
+                router: no errors
+                loadbalancer emulator: no errors
 ```
 
 ## DELETING & REAPPLYING MANIFESTS
