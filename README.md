@@ -1,16 +1,58 @@
-# Setting Up Your Local Environment (for Graders or New Users)
+# Setting Up Your Environment (for Graders or New Users)
 
-## Clone the Repository
-
+## LOCAL DEVELOPMENT
+Create a new folder on your machine and clone the repository into it.
 ```bash
-git clone https://github.com/yourusername/yourproject.git
-cd yourproject
+git clone https://github.com/TytanGorilla/django-kubernetes-test.git
 ```
 
-## Create a .env File
+# OR
 
-Copy the example below into a new file named .env in the project’s root directory (same folder as generate_secrets.sh).
-Replace any placeholder values (***) with your actual credentials or desired settings.
+## ONLINE DEVELOPMENT (GITHUB CODESPACES) - RECOMMENDED 
+While inspecting the repository, click the green code button and select "Open with Codespaces"
+
+### Check current environment for python version
+```bash
+python --version
+# or
+python3 --version
+```
+#### If not installed, install python3
+```bash
+sudo apt install python3
+```
+Considerations: Desipite the application being contained within a docker container, the application is still dependent on the host machine's python version. If you are comfortable with global python installation, proceed. If not, consider using a virtual environment.
+
+## Check installed tools
+### Docker
+```bash
+docker --version
+```
+#### If not installed, install docker
+```bash
+sudo apt install docker.io
+```
+
+### Kubernetes
+```bash
+kubectl version --client
+```
+
+#### If not installed, install kubectl
+```bash
+sudo snap install kubectl --classic
+```
+
+
+## Create a .env File
+Create a .env file in the project's root directory.
+```bash
+touch .env
+```
+
+Copy the example below into a new file named `.env` in the project’s root directory (same folder as `generate_secrets.sh`). Replace any placeholder values (***) with your actual credentials or desired settings. 
+
+For the `DATABASE_URL`, the value should be in the format `postgresql://username:password@host:port/database_name`. Whatever the values for `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_HOST` are, they should be the same as the values in the `.env` file. Use them in the `DATABASE_URL`.
 
 ### Example .env
 ```
@@ -23,6 +65,7 @@ POSTGRES_PASSWORD=***
 POSTGRES_HOST=db
 DATABASE_URL="postgresql://***:***@db:5432/***"
 POSTGRES_PORT=5432
+STORAGE_PATH=autofilled
 ```
 ### Generating a Django Secret Key
 To generate a Django secret key for your project, run the following command:
@@ -45,6 +88,23 @@ Run the script to create a new secrets.yaml:
 ./generate_secrets_configs.sh
 ```
 This reads the .env file, Base64-encodes each variable, and produces a Kubernetes Secret manifest named secrets.yaml. Found in the k8s/secrets directory.
+
+## Ensure that the local Kubernetes cluster is running
+```bash
+minikube start
+```
+
+### Check the status of the local Kubernetes cluster
+```bash
+kubectl cluster-info
+```
+
+### Check configuration
+```bash
+kubectl config view
+```
+Ensure the 'current-context: minikube' is present.
+If developing locally, the current-context could be docker-desktop or minikube.
 
 ## Apply the Secrets and Other Manifests to Kubernetes
 
