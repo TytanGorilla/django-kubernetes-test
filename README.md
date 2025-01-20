@@ -109,7 +109,6 @@ If developing locally, the current-context could be docker-desktop or minikube.
 ## Apply the Secrets and Other Manifests to Kubernetes
 
 ```bash
-kubectl delete -f k8s/ --recursive
 kubectl apply -f k8s/ --recursive
 ```
 The secrets from your newly created secrets.yaml are now in the cluster.
@@ -142,4 +141,10 @@ kubectl port-forward svc/django-service 8000:8000
 ## Debugging
 ```bash
 kubectl describe pod -l app=django-app
+```
+
+## DELETING & REAPPLYING MANIFESTS
+```bash
+kubectl delete -f k8s/ --recursive
+kubectl apply -f k8s/ --recursive
 ```
