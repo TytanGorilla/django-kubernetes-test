@@ -139,6 +139,11 @@ django-service   NodePort    10.110.145.2   <none>        8000:30007/TCP   3m28s
 kubernetes       ClusterIP   10.96.0.1      <none>        443/TCP          4m23s
 ```
 
+## Open a new terminal window and run the following command
+```bash
+minikube tunnel
+```
+
 If you see any errors, run:
 ```bash
 kubectl describe pod <pod-name>
