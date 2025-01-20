@@ -93,7 +93,7 @@ This reads the .env file, Base64-encodes each variable, and produces a Kubernete
 ```bash
 minikube start
 ```
-
+Look for the message "🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default"
 ### Check the status of the local Kubernetes cluster
 ```bash
 kubectl cluster-info
