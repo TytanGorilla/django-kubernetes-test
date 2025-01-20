@@ -94,6 +94,12 @@ This reads the .env file, Base64-encodes each variable, and produces a Kubernete
 minikube start
 ```
 Look for the message "🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default"
+
+## Check minikube status
+```bash
+minikube status
+```
+
 ### Check the status of the local Kubernetes cluster
 ```bash
 kubectl cluster-info
@@ -142,6 +148,16 @@ kubernetes       ClusterIP   10.96.0.1      <none>        443/TCP          4m23s
 ## Open a new terminal window and run the following command
 ```bash
 minikube tunnel
+```
+
+##Find the Service URL
+Use minikube service to get the URL for your exposed service:
+```bash
+minikube service django-service --url
+```
+Expected Output:
+```bash
+http://192.168.49.2:30007
 ```
 
 If you see any errors, run:
@@ -207,10 +223,10 @@ Expected Output:
 ```bash
 Status:
         machine: minikube
-        pid: 35171
+        pid: 13693
         route: 10.96.0.0/12 -> 192.168.49.2
         minikube: Running
-        services: []
+        services: [django-service]
     errors: 
                 minikube: no errors
                 router: no errors
