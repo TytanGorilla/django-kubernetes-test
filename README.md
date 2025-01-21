@@ -118,7 +118,7 @@ django-service   NodePort    10.96.245.57    <none>        8000:30007/TCP   54s
 kubernetes       ClusterIP   10.96.0.1       <none>        443/TCP          2m53s
 ```
 
-### Reapply and refresh the application
+### Delete & Reapply manifest and restart the application
 ```bash
 kubectl delete -f k8s/ --recursive
 kubectl apply -f k8s/ --recursive
@@ -135,10 +135,15 @@ kubectl port-forward service/django-service 8000:8000
 This maps the a private URL found within the codespace's "PORTS" tab, to the local port 8000.
 
 Under the forwarded address is the URL for your application.
+```example of port forwarding from a codespace
+https://cautious-journey-wxvjr657pvq2g55q-8000.app.github.dev/scheduler/
+```
+Equivalent to:
+```example of port forwarding from a local host
+http://localhost:8000/scheduler/
+```
 
-> **Note**: If using GitHub Codespaces, ensure port `8000` is added in the Ports tab and set to **Public**.
-
-### Accessing the App locallly using Docker Desktop with a Kubernetes Cluster
+### Accessing the App locally using Docker Desktop with a Kubernetes Cluster
 To access the application locally, use the URL http://localhost:30007
 
 ### Debugging
