@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: django-container
-        image: tytan22/django-app:latest
+        image: tytan22/django-app:1.0.20250121 # New Django App Docker image
         imagePullPolicy: Always   # Added
         ports:
         - containerPort: 8000

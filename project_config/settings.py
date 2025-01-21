@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'apps.scheduler', # Update the path to include the apps folder
     # Add your custom apps here
 ]
 
@@ -55,12 +56,12 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",  # Must come after CorsMiddleware
 ]
 
-ROOT_URLCONF = 'myproject.urls'
+ROOT_URLCONF = 'project_config.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # Add any template directories if needed
+        'DIRS': [BASE_DIR / 'templates'],  # Add any template directories if needed
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,7 +74,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'myproject.wsgi.application'
+WSGI_APPLICATION = 'project_config.wsgi.application'
 
 
 # ------------------------------------------------------------------------------------

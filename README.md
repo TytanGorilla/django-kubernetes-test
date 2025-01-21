@@ -120,12 +120,12 @@ kubernetes       ClusterIP   10.96.0.1       <none>        443/TCP          2m53
 
 ### Reapply and refresh the application
 ```bash
-kubectl apply -f k8s/configs/configmap.yaml
-kubectl apply -f k8s/secrets/secrets.yaml
+kubectl delete -f k8s/ --recursive
+kubectl apply -f k8s/ --recursive
 kubectl rollout restart deployment django-app
 ```
 
-### Port Forwarding to Access the App
+### Port Forwarding to Access the App From a Codespace
 To access your app without Minikube tunnels or LoadBalancers, use `kubectl port-forward`:
 ```bash
 kubectl port-forward service/django-service 8000:8000
@@ -137,6 +137,9 @@ This maps the a private URL found within the codespace's "PORTS" tab, to the loc
 Under the forwarded address is the URL for your application.
 
 > **Note**: If using GitHub Codespaces, ensure port `8000` is added in the Ports tab and set to **Public**.
+
+### Accessing the App locallly using Docker Desktop with a Kubernetes Cluster
+To access the application locally, use the URL http://localhost:30007
 
 ### Debugging
 Check logs if the application does not behave as expected:
