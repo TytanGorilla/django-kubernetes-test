@@ -132,8 +132,14 @@ USE_TZ = True
 # ------------------------------------------------------------------------------------
 # Static files (CSS, JavaScript, Images)
 # ------------------------------------------------------------------------------------
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static'] # For project_config level static files
+# Specify the URL to access the static files
+STATIC_URL = '/static/' 
+
+# The directory where static files will be collected
+STATIC_ROOT = '/final_project/staticfiles'
+
+#Django's ManifestStaticFilesStorage appends a unique hash to the filenames of static files during the collectstatic process
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 
 # Default primary key field type

@@ -30,5 +30,5 @@ Thumbs.db
 *.out
 
 # Ignore secret manifest files
-k8s/secrets/secrets.yaml
-!k8s/secrets/
+k8s/base/secrets/secrets.yaml
+!k8s/base/secrets/

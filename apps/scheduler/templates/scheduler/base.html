@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Django App{% endblock %}</title>
     <!-- Include global styles -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'scheduler/css/styles.css' %}">
 </head>
 <body>
     <header>
@@ -27,6 +28,6 @@
     <footer>
         <p>&copy; 2025 My Django App</p>
     </footer>
-    <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="{% static 'scheduler/js/scripts.js' %}"></script>
 </body>
 </html>

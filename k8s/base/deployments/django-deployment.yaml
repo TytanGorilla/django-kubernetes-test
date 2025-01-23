@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
       - name: django-container
-        image: tytan22/django-app:1.0.20250121 # New Django App Docker image
-        imagePullPolicy: Always   # Added
+        image: tytan22/django-app:1.0.20250122 # New Django App Docker image
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
         env:
@@ -73,19 +73,10 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "1000m"
-        #readinessProbe: 
-        #  httpGet:
-        #    path: /health/
-        #    port: 8000
-        #  initialDelaySeconds: 30
-        #  periodSeconds: 10
-        #  timeoutSeconds: 5
-        #  failureThreshold: 5
-        #livenessProbe: 
-        #  httpGet:
-        #    path: /health/
-        #    port: 8000
-        #  initialDelaySeconds: 30
-        #  periodSeconds: 30
-        #  timeoutSeconds: 5
-        #  failureThreshold: 5
+        volumeMounts:
+        - name: static-files
+          mountPath: /final_project/staticfiles  # Where static files will be available inside the container
+      volumes:
+      - name: static-files
+        persistentVolumeClaim:
+          claimName: static-files-pvc  # PVC that stores static files

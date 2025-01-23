@@ -123,6 +123,12 @@ kubernetes       ClusterIP   10.96.0.1       <none>        443/TCP          2m53
 kubectl delete -f k8s/ --recursive
 kubectl apply -f k8s/ --recursive
 kubectl rollout restart deployment django-app
+kubectl rollout restart deployment nginx
+kubectl rollout restart deployment postgres
+```
+Or to restart all deployments
+```bash
+kubectl get deployments -o name | xargs -n 1 kubectl rollout restart
 ```
 
 ### Port Forwarding to Access the App From a Codespace
@@ -157,9 +163,24 @@ kubectl describe pod -l app=django-app
 ```
 
 ### Deleting and Reapplying Manifests
-To restart the deployment cleanly:
 ```bash
 kubectl delete -f k8s/ --recursive
 kubectl apply -f k8s/ --recursive
+```
+
+### Rebuilding the Docker Image with dated versioning
+```bash
+docker build -t tytan22/django-app:1.0.20250122 .
+```
+### Pushing the Docker Image to Docker Hub
+```bash
+docker push tytan22/django-app:1.0.20250122
+```
+### Updating django-app Deployment to use the new Docker Image
+```yaml
+containers:
+- name: django-container
+  image: tytan22/django-app:1.0.20250122
+  imagePullPolicy: Always
 ```
 
