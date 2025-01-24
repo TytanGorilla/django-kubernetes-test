@@ -78,9 +78,10 @@ python generate_django_secret_key.py
 Save the key in the `.env` file as the value of `DJANGO_SECRET_KEY`.
 
 ### Generate Your `secrets.yaml`
-Make the script executable:
+Make the scripts executable:
 ```bash
 chmod +x generate_secrets_configs.sh
+chmod +x copy_static_to_docs.sh
 ```
 Run the script to create a new `secrets.yaml` file:
 ```bash
@@ -170,17 +171,17 @@ kubectl apply -f k8s/ --recursive
 
 ### Rebuilding the Docker Image with dated versioning
 ```bash
-docker build -t tytan22/django-app:1.0.20250122 .
+docker build -t tytan22/django-app:1.0.20250124 .
 ```
 ### Pushing the Docker Image to Docker Hub
 ```bash
-docker push tytan22/django-app:1.0.20250122
+docker push tytan22/django-app:1.0.20250124
 ```
 ### Updating django-app Deployment to use the new Docker Image
 ```yaml
 containers:
 - name: django-container
-  image: tytan22/django-app:1.0.20250122
+  image: tytan22/django-app:1.0.20250124 # Update this line to use the new image that is dated
   imagePullPolicy: Always
 ```
 

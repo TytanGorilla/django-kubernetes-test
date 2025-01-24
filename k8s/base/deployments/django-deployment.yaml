@@ -13,10 +13,13 @@ spec:
     metadata:
       labels:
         app: django-app
+      annotations:
+        container-labels: |
+          app=django-app
     spec:
       containers:
       - name: django-container
-        image: tytan22/django-app:1.0.20250122 # New Django App Docker image
+        image: tytan22/django-app:1.0.20250124
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
@@ -75,8 +78,8 @@ spec:
             cpu: "1000m"
         volumeMounts:
         - name: static-files
-          mountPath: /final_project/staticfiles  # Where static files will be available inside the container
+          mountPath: /final_project/staticfiles
       volumes:
       - name: static-files
         persistentVolumeClaim:
-          claimName: static-files-pvc  # PVC that stores static files
+          claimName: static-files-pvc

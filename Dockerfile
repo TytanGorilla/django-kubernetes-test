@@ -24,11 +24,13 @@ ENV PYTHONPATH=/final_project
 # Create the STATIC_ROOT directory
 RUN mkdir -p /final_project/staticfiles
 
-# Run collectstatic to prepare static files for production
-RUN python manage.py collectstatic --noinput
+# Make sure the script is executable
+RUN chmod +x /final_project/copy_static_to_docs.sh
 
 # Expose the port the app runs on
 EXPOSE 8000
 
-# Command to run the application with gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "project_config.wsgi:application"]
+# Set the CMD to run the application and automate the script
+CMD python manage.py collectstatic --noinput && \
+    bash /final_project/copy_static_to_docs.sh && \
+    gunicorn project_config.wsgi:application --bind 0.0.0.0:8000

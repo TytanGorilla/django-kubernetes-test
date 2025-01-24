@@ -141,6 +141,10 @@ STATIC_ROOT = '/final_project/staticfiles'
 #Django's ManifestStaticFilesStorage appends a unique hash to the filenames of static files during the collectstatic process
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'apps/scheduler/static/scheduler',  # Use forward slashes for paths
+]
+
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
