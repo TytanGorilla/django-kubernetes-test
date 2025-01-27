@@ -14,9 +14,15 @@ data:
         server {
             listen 80;
 
-            # Serve static files from this directory
+            # Serve static files from the docs folder mounted at /usr/share/nginx/html
             location /static/ {
-                alias /final_project/staticfiles/;
+                alias /usr/share/nginx/html/;
+                add_header Access-Control-Allow-Origin *;
+                add_header Access-Control-Allow-Methods "GET, OPTIONS";
+                add_header Access-Control-Allow-Headers "Content-Type";
+
+                # Content Security Policy
+                add_header Content-Security-Policy "default-src 'self'; style-src 'self' http://localhost:32212; script-src 'self';";
             }
 
             # Proxy all other requests to the Django application
@@ -25,6 +31,9 @@ data:
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+                # Content Security Policy
+                add_header Content-Security-Policy "default-src 'self'; style-src 'self' http://localhost:32212; script-src 'self';";
             }
         }
     }

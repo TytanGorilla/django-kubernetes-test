@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: django-container
-        image: tytan22/django-app:1.0.20250124
+        image: tytan22/django-app:1.0.20250127
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
@@ -77,9 +77,10 @@ spec:
             memory: "512Mi"
             cpu: "1000m"
         volumeMounts:
-        - name: static-files
-          mountPath: /final_project/staticfiles
+        - name: docs-volume
+          mountPath: /final_project/docs  # Path inside the container
       volumes:
-      - name: static-files
-        persistentVolumeClaim:
-          claimName: static-files-pvc
+      - name: docs-volume
+        hostPath:
+          path: /run/desktop/mnt/host/d/Software/CS50W/final_project/docs  # Correct host path for Windows
+          type: DirectoryOrCreate  # Creates the directory if it doesn’t exist

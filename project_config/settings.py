@@ -133,7 +133,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # ------------------------------------------------------------------------------------
 # Specify the URL to access the static files
-STATIC_URL = '/static/' 
+STATIC_URL = 'http://localhost:32212/static/' 
 
 # The directory where static files will be collected
 STATIC_ROOT = '/final_project/staticfiles'

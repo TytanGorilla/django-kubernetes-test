@@ -23,12 +23,12 @@ spec:
         - name: nginx-config
           mountPath: /etc/nginx/nginx.conf  # Replace the main nginx.conf file
           subPath: nginx.conf
-        - name: static-files
-          mountPath: /final_project/staticfiles
+        - name: docs-volume
+          mountPath: /usr/share/nginx/html  # Mount the docs folder to NGINX's default web root
       volumes:
       - name: nginx-config
         configMap:
           name: nginx-config
-      - name: static-files
+      - name: docs-volume
         persistentVolumeClaim:
-          claimName: static-files-pvc
+          claimName: docs-pvc

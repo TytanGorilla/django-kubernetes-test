@@ -32,3 +32,11 @@ Thumbs.db
 # Ignore secret manifest files
 k8s/base/secrets/secrets.yaml
 !k8s/base/secrets/
+
+# Ignore all files in the docs folder
+docs/*
+
+# Allow only Scheduler static files
+!docs/scheduler/
+!docs/scheduler/css/
+!docs/scheduler/js/
