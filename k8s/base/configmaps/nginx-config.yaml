@@ -22,7 +22,7 @@ data:
                 add_header Access-Control-Allow-Headers "Content-Type";
 
                 # Content Security Policy
-                add_header Content-Security-Policy "default-src 'self'; style-src 'self' http://localhost:32212; script-src 'self';";
+                add_header Content-Security-Policy "default-src 'self'; style-src 'self' https://tytangorilla.github.io; script-src 'self' https://tytangorilla.github.io;";
             }
 
             # Proxy all other requests to the Django application
@@ -33,7 +33,7 @@ data:
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
                 # Content Security Policy
-                add_header Content-Security-Policy "default-src 'self'; style-src 'self' http://localhost:32212; script-src 'self';";
+                add_header Content-Security-Policy "default-src 'self'; style-src 'self' https://tytangorilla.github.io; script-src 'self' https://tytangorilla.github.io;";
             }
         }
     }
