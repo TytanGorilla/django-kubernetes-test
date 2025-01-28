@@ -114,8 +114,15 @@ password: NOT SHOWN HERE, but is the password you set for your supabase account.
   - The values of DJANGO_SECRET_KEY, POSTGRES_PASSWORD & DATABASE_URL, should be in quotations to prevent odd characters influencing the necessary database connection.
 Then populate the DATABASE_URL with the relevant values referenced in your .env file.\
 
-Example 1: DATABASE_URL="postgresql://POSTGRES_USER:YOUR_SUPABASE_PASSWORD@:POSTGRES_HOST:POSTGRES_PORT/POSTGRES_DB"
-Example 2: DATABASE_URL="postgresql://postgres.jxpsamnvzjziemtpziig:YOUR_SUPABASE_PASSWORD@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
+Example 1: 
+```
+DATABASE_URL="postgresql://POSTGRES_USER:YOUR_SUPABASE_PASSWORD@:POSTGRES_HOST:POSTGRES_PORT/POSTGRES_DB"
+```
+
+Example 2:
+```
+DATABASE_URL="postgresql://postgres.jxpsamnvzjziemtpziig:YOUR_SUPABASE_PASSWORD@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
+```
 
 ### Generate Your `secrets.yaml`
 Make the scripts executable:
@@ -260,6 +267,8 @@ To access the application locally, use the URL
 http://localhost:32212/scheduler/
 http://localhost:30007/scheduler/
 
+## TESTING
+If you have reached this stage in the README, you have successfully deployed the application to Kubernetes! Congratulations! Now you can proceed to testing / grading the application.
 
 ### Debugging
 Check logs if the application does not behave as expected:
