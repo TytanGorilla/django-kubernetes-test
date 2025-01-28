@@ -97,7 +97,7 @@ python generate_django_secret_key.py
 Copy the key generated password in your CLI.
 The save it in your `.env` file as the value of `DJANGO_SECRET_KEY`.
 
-## Supabase parameters -> .env Values \
+## Supabase parameters -> .env Values 
 ```
 host:aws-0-eu-central-1.pooler.supabase.com -> POSTGRES_HOST
 
@@ -144,9 +144,9 @@ kubectl get pods
 Expected Output:
 ```bash
 NAME                          READY   STATUS    RESTARTS      AGE
-django-app-5ffdf59874-nt5kk   1/1     Running   1 (20m ago)   15h
-nginx-675678bc8c-7t7p9        1/1     Running   3 (19m ago)   15h
-postgres-df8fc69d4-hlptz      1/1     Running   1 (20m ago)   15h
+django-app-5ffdf59874-nt5kk   1/1     Running   0             44s
+nginx-675678bc8c-7t7p9        1/1     Running   0             44s
+postgres-df8fc69d4-hlptz      1/1     Running   0             44s
 ```
 Check services:
 ```bash
@@ -154,11 +154,11 @@ kubectl get svc
 ```
 Expected Output:
 ```bash
-NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORTNAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-db               ClusterIP   10.104.227.111   <none>        5432/TCP         15h
-django-service   NodePort    10.98.214.242    <none>        8000:30007/TCP   15h
-kubernetes       ClusterIP   10.96.0.1        <none>        443/TCP          11d
-nginx-service    NodePort    10.108.113.22    <none>        80:32212/TCP     15h
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+db               ClusterIP   10.96.35.129    <none>        5432/TCP         100s
+django-service   NodePort    10.96.56.138    <none>        8000:30007/TCP   100s
+kubernetes       ClusterIP   10.96.0.1       <none>        443/TCP          5m48s
+nginx-service    NodePort    10.96.245.237   <none>        80:32212/TCP     100s
 ```
 
 ### Delete & Reapply manifest and restart the application
@@ -243,7 +243,11 @@ kubectl port-forward service/django-service 8000:8000
 This maps the a private URL found within the codespace's "PORTS" tab, to the local port 8000.
 
 Under the forwarded address is the URL for your application.
-```example of port forwarding from a codespace
+```
+Example of port forwarding from a codespace
+https://cautious-journey-wxvjr657pvq2g55q-8000.app.github.dev/
+
+Ensure that you append /scheduler/ to the end of the URL, becoming:
 https://cautious-journey-wxvjr657pvq2g55q-8000.app.github.dev/scheduler/
 ```
 Equivalent to:
