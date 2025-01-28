@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ENV_FILE=".env"
-SECRETS_FILE="k8s/secrets/secrets.yaml"
-CONFIGMAP_FILE="k8s/configs/configmap.yaml"
+SECRETS_FILE="k8s/base/secrets/secrets.yaml"
+CONFIGMAP_FILE="k8s/base/configmaps/configmap.yaml"
 DEBUG=false
 
 # Define keys for Secrets and ConfigMap
@@ -39,8 +39,8 @@ if ! grep -q "^STORAGE_PATH=" "$ENV_FILE"; then
   echo "Added STORAGE_PATH to $ENV_FILE: $STORAGE_PATH"
 fi
 
-# Start generating Kubernetes manifests
-mkdir -p k8s/secrets k8s/configs
+# Ensure required folders exist
+mkdir -p k8s/base/secrets k8s/base/configmaps
 
 # Generate Secrets YAML
 echo "Generating Kubernetes Secret..."

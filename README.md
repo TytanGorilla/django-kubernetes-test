@@ -46,7 +46,7 @@ kind version
 ```bash
 kind create cluster --name my-cluster
 ```
-## Setup Simple Cloud Managed Database with Subabase
+## Setup Simple Cloud Managed Database with Supabase
 Visit [Supabase](https://supabase.com)
   - Setup a free account by signing in with your GitHub account.
   - Navigate to the database tab on the left of the initial screen.
@@ -67,6 +67,8 @@ user:postgres.jxpsamnvzjziemtpziig
 pool_mode: session
 ```
   - Copy each of these parameter values into your to be created .env file.
+  - database:postgres should replace placeholder value in POSTGRES_DB.
+  - The values of DJANGO_SECRET_KEY, POSTGRES_PASSWORD & DATABASE_URL, should be in quotations to prevent odd characters influencing the necessary database connection.
 
 ### Create a .env File
 Create a `.env` file in the project’s root directory.
@@ -96,7 +98,7 @@ To generate a secure secret key, run:
 ```bash
 python generate_django_secret_key.py
 ```
-Copy the key generated in your CLI.
+Copy the key generated password in your CLI.
 The save it in your `.env` file as the value of `DJANGO_SECRET_KEY`.
 
 ### Generate Your `secrets.yaml`
@@ -203,7 +205,7 @@ SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, compression: 
 Type "help" for help.
 ```
 
-#### Test the database connection in the sqll shell
+#### Test the database connection in the sql shell
 ```sql
 SELECT 'Connection successful!' AS message;
 ```
@@ -234,7 +236,10 @@ http://localhost:8000/scheduler/
 ```
 
 ### Accessing the App locally using Docker Desktop with a Kubernetes Cluster
-To access the application locally, use the URL http://localhost:30007
+To access the application locally, use the URL
+http://localhost:32212/scheduler/
+http://localhost:30007/scheduler/
+
 
 ### Debugging
 Check logs if the application does not behave as expected:
@@ -254,17 +259,17 @@ kubectl apply -f k8s/ --recursive
 
 ### Rebuilding the Docker Image with dated versioning
 ```bash
-docker build -t tytan22/django-app:1.0.20250127 .
+docker build -t tytan22/django-app:1.0.20250128 .
 ```
 ### Pushing the Docker Image to Docker Hub
 ```bash
-docker push tytan22/django-app:1.0.20250127
+docker push tytan22/django-app:1.0.20250128
 ```
 ### Updating django-app Deployment to use the new Docker Image
 ```yaml
 containers:
 - name: django-container
-  image: tytan22/django-app:1.0.20250127 # Update this line to use the new image that is dated
+  image: tytan22/django-app:1.0.20250128 # Update this line to use the new image that is dated
   imagePullPolicy: Always
 ```
 
