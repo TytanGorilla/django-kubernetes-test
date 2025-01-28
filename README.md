@@ -67,7 +67,6 @@ user:postgres.jxpsamnvzjziemtpziig
 pool_mode: session
 ```
   - Copy each of these parameter values into your to be created .env file.
-  - database:postgres should replace placeholder value in POSTGRES_DB.
   - The values of DJANGO_SECRET_KEY, POSTGRES_PASSWORD & DATABASE_URL, should be in quotations to prevent odd characters influencing the necessary database connection.
 
 ### Create a .env File
@@ -75,9 +74,8 @@ Create a `.env` file in the project’s root directory.
 ```bash
 touch .env
 ```
-Copy the example below into the `.env` file. Replace any placeholder values (***) with your actual credentials or desired settings.
-Then populate the DATABASE_URL with the relevant values referenced in your .env file.
-Example: DATABASE_URL="postgresql://postgres:example_password@:db.jxpsamnvzjziemtpziig.supabase.co:5432/postgres"
+Copy the example below into your newly created `.env` file.\
+Replace any placeholder values (***) with your actual credentials or desired settings.\
 
 #### Example .env
 ```
@@ -100,6 +98,23 @@ python generate_django_secret_key.py
 ```
 Copy the key generated password in your CLI.
 The save it in your `.env` file as the value of `DJANGO_SECRET_KEY`.
+
+## Supabase parameters -> .env Values \
+```
+host:aws-0-eu-central-1.pooler.supabase.com -> POSTGRES_HOST
+
+port:5432 -> POSTGRES_PORT
+
+database:postgres -> POSTGRES_DB
+
+user:postgres.jxpsamnvzjziemtpziig -> POSTGRES_USER
+
+password: NOT SHOWN HERE, but is the password you set for your supabase account. This password fills the POSTGRES_PASSWORD value in the .env file.
+
+```
+Then populate the DATABASE_URL with the relevant values referenced in your .env file.\
+
+Example: DATABASE_URL="postgresql://POSTGRES_USER:YOUR_SUPABASE_PASSWORD@:POSTGRES_HOST:POSTGRES_PORT/POSTGRES_DB"
 
 ### Generate Your `secrets.yaml`
 Make the scripts executable:
