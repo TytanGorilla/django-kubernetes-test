@@ -46,6 +46,27 @@ kind version
 ```bash
 kind create cluster --name my-cluster
 ```
+## Setup Simple Cloud Managed Database with Subabase
+Visit [Supabase](https://supabase.com)
+  - Setup a free account by signing in with your GitHub account.
+  - Navigate to the database tab on the left of the initial screen.
+  - At the top of the screen click the button "Connect".
+  - A popup will appear titled "Connect to your project".
+  - Select the tab "Connection String".
+  - Type of "URI" should be selected, and Source should be "Primary Database".
+  - Under "Session Pooler", under the connection string, click "View parameters".
+```
+host:aws-0-eu-central-1.pooler.supabase.com
+
+port:5432
+
+database:postgres
+
+user:postgres.jxpsamnvzjziemtpziig
+
+pool_mode: session
+```
+  - Copy each of these parameter values into your to be created .env file.
 
 ### Create a .env File
 Create a `.env` file in the project’s root directory.
@@ -53,8 +74,8 @@ Create a `.env` file in the project’s root directory.
 touch .env
 ```
 Copy the example below into the `.env` file. Replace any placeholder values (***) with your actual credentials or desired settings.
-
-For `DATABASE_URL`, use the format: `postgresql://username:password@host:port/database_name`.
+Then populate the DATABASE_URL with the relevant values referenced in your .env file.
+Example: DATABASE_URL="postgresql://postgres:example_password@:db.jxpsamnvzjziemtpziig.supabase.co:5432/postgres"
 
 #### Example .env
 ```
@@ -63,10 +84,10 @@ DJANGO_DEBUG=True
 DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,10.1.0.43,*
 POSTGRES_DB=***
 POSTGRES_USER=***
-POSTGRES_PASSWORD=***
-POSTGRES_HOST=db
-DATABASE_URL="postgresql://***:***@db:5432/***"
-POSTGRES_PORT=5432
+POSTGRES_PASSWORD="YOUR_SUPABASE_PASSWORD"
+POSTGRES_HOST=***
+POSTGRES_PORT=***
+DATABASE_URL="postgresql://[POSTGRES_USER]:[POSTGRES_PASSWORD]@[POSTGRES_HOST]:[POSTGRES_PORT]/[POSTGRES_DB]"
 STORAGE_PATH=autofilled
 ```
 
@@ -75,7 +96,8 @@ To generate a secure secret key, run:
 ```bash
 python generate_django_secret_key.py
 ```
-Save the key in the `.env` file as the value of `DJANGO_SECRET_KEY`.
+Copy the key generated in your CLI.
+The save it in your `.env` file as the value of `DJANGO_SECRET_KEY`.
 
 ### Generate Your `secrets.yaml`
 Make the scripts executable:
@@ -103,9 +125,10 @@ kubectl get pods
 ```
 Expected Output:
 ```bash
-NAME                         READY   STATUS    RESTARTS   AGE
-django-app-9c5675d7d-q58wt   1/1     Running   0          94s
-postgres-6ff4d97f74-4zjw9    1/1     Running   0          94s
+NAME                          READY   STATUS    RESTARTS      AGE
+django-app-5ffdf59874-nt5kk   1/1     Running   1 (20m ago)   15h
+nginx-675678bc8c-7t7p9        1/1     Running   3 (19m ago)   15h
+postgres-df8fc69d4-hlptz      1/1     Running   1 (20m ago)   15h
 ```
 Check services:
 ```bash
@@ -114,9 +137,10 @@ kubectl get svc
 Expected Output:
 ```bash
 NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORTNAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-db               ClusterIP   10.96.196.171   <none>        5432/TCP         54s
-django-service   NodePort    10.96.245.57    <none>        8000:30007/TCP   54s
-kubernetes       ClusterIP   10.96.0.1       <none>        443/TCP          2m53s
+db               ClusterIP   10.104.227.111   <none>        5432/TCP         15h
+django-service   NodePort    10.98.214.242    <none>        8000:30007/TCP   15h
+kubernetes       ClusterIP   10.96.0.1        <none>        443/TCP          11d
+nginx-service    NodePort    10.108.113.22    <none>        80:32212/TCP     15h
 ```
 
 ### Delete & Reapply manifest and restart the application
@@ -130,6 +154,65 @@ kubectl rollout restart deployment postgres
 Or to restart all deployments
 ```bash
 kubectl get deployments -o name | xargs -n 1 kubectl rollout restart
+```
+
+### Test the database
+#### Local Development
+1) Download the PostgreSQL installer from the PostgreSQL Official Website.
+2) During installation, select the Command Line Tools option.
+3) After installation, add the bin directory to your PATH (e.g., C:\Program Files\PostgreSQL\15\bin).
+4) Open a new terminal and verify:
+```bash
+psql --version
+```
+
+#### Code Space
+For Debian-Based Codespaces (Default)
+Codespaces are typically based on Ubuntu/Debian, so you can use apt to install the PostgreSQL client tools:
+
+1) Open the Codespace terminal
+Update the package list:
+```bash
+sudo apt update
+```
+2) Install the PostgreSQL client tools
+```bash
+sudo apt install -y postgresql-client
+```
+3) Open a new terminal and verify:
+```bash
+psql --version
+```
+
+Copy your own database connection string from your .env file.
+```bash
+psql postgresql://USERNAME:PASSWORD@HOST:PORT/DATABASE
+
+Example:
+postgresql://postgres.jxpsamnvzjziemtpziig:[YOUR-PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
+```
+
+#### Expected Output
+```bash
+$ psql postgresql://postgres.jxpsamnvzjziemtpziig:Uyr04Wp9IoDd^h3@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
+psql (17.2, server 15.8)
+WARNING: Console code page (850) differs from Windows code page (1252)
+         8-bit characters might not work correctly. See psql reference
+         page "Notes for Windows users" for details.
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, compression: off, ALPN: none)
+Type "help" for help.
+```
+
+#### Test the database connection in the sqll shell
+```sql
+SELECT 'Connection successful!' AS message;
+```
+#### Expected Output
+```bash
+    message
+-------------------
+ Connection successful!
+(1 row)
 ```
 
 ### Port Forwarding to Access the App From a Codespace

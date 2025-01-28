@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'apps.scheduler', # Update the path to include the apps folder
+    'apps.scheduler', # Updated the path to include the apps folder
     # Add your custom apps here
 ]
 
