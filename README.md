@@ -129,6 +129,8 @@ Make the scripts executable:
 ```bash
 chmod +x generate_secrets_configs.sh
 chmod +x copy_static_to_docs.sh
+chmod +x sync_migrations.sh
+
 ```
 Run the script to create a new `secrets.yaml` file:
 ```bash
@@ -288,17 +290,22 @@ kubectl apply -f k8s/ --recursive
 
 ### Rebuilding the Docker Image with dated versioning
 ```bash
-docker build -t tytan22/django-app:1.0.20250128 .
+docker build -t tytan22/django-app:1.0.20250129 .
 ```
 ### Pushing the Docker Image to Docker Hub
 ```bash
-docker push tytan22/django-app:1.0.20250128
+docker push tytan22/django-app:1.0.20250129
 ```
 ### Updating django-app Deployment to use the new Docker Image
 ```yaml
 containers:
 - name: django-container
-  image: tytan22/django-app:1.0.20250128 # Update this line to use the new image that is dated
+  image: tytan22/django-app:1.0.20250129 # Update this line to use the new image that is dated
   imagePullPolicy: Always
 ```
-
+### Applying migrations
+```bash
+kubectl exec -it -n default deploy/django-app -- bash
+python manage.py makemigrations scheduler
+python manage.py migrate scheduler
+```
