@@ -2,7 +2,7 @@
 
 ENV_FILE=".env"
 SECRETS_FILE="k8s/base/secrets/secrets.yaml"
-CONFIGMAP_FILE="k8s/base/configmaps/configmap.yaml"
+CONFIGMAP_FILE="k8s/base/configmaps/django-config.yaml"
 DEBUG=false
 
 # Define keys for Secrets and ConfigMap
@@ -14,30 +14,16 @@ SECRET_KEYS=(
   "POSTGRES_HOST"
   "POSTGRES_PORT"
   "DATABASE_URL"
+)
+
+CONFIG_KEYS=(
   "DJANGO_DEBUG"
   "DJANGO_ALLOWED_HOSTS"
 )
-CONFIG_KEYS=(
-  "STORAGE_PATH"
-  "APP_MODE"
-)
 
-# Detect Environment
-if [[ -n "$CODESPACES" || -n "$GITHUB_CODESPACES" ]]; then
-  ENVIRONMENT="codespaces"
-  STORAGE_PATH="/tmp/postgres"  # Use ephemeral storage in Codespaces
-  echo "Running in Codespaces environment. Setting STORAGE_PATH to $STORAGE_PATH."
-else
-  ENVIRONMENT="local"
-  STORAGE_PATH="/data/postgres"  # Use local storage for local environments
-  echo "Running in local environment. Setting STORAGE_PATH to $STORAGE_PATH."
-fi
-
-# Write dynamic STORAGE_PATH to .env (optional)
-if ! grep -q "^STORAGE_PATH=" "$ENV_FILE"; then
-  echo "STORAGE_PATH=$STORAGE_PATH" >> "$ENV_FILE"
-  echo "Added STORAGE_PATH to $ENV_FILE: $STORAGE_PATH"
-fi
+# Default values for DJANGO_DEBUG and DJANGO_ALLOWED_HOSTS
+DEFAULT_DJANGO_DEBUG="True"
+DEFAULT_DJANGO_ALLOWED_HOSTS="localhost,127.0.0.1,10.1.0.43,*"
 
 # Ensure required folders exist
 mkdir -p k8s/base/secrets k8s/base/configmaps
@@ -60,13 +46,14 @@ cat <<EOF > $CONFIGMAP_FILE
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: app-config
+  name: django-config
   namespace: default
 data:
-  STORAGE_PATH: "$STORAGE_PATH"
+  DJANGO_DEBUG: "$DEFAULT_DJANGO_DEBUG"
+  DJANGO_ALLOWED_HOSTS: "$DEFAULT_DJANGO_ALLOWED_HOSTS"
 EOF
 
-# Process .env for Secrets
+# Process .env for Secrets and ConfigMap
 while IFS= read -r line || [[ -n "$line" ]]; do
   [[ -z "$line" || "$line" =~ ^# ]] && continue
   key=$(echo "$line" | cut -d '=' -f 1)
@@ -80,6 +67,8 @@ while IFS= read -r line || [[ -n "$line" ]]; do
   if [[ " ${SECRET_KEYS[@]} " =~ " $key " ]]; then
     encoded_value=$(echo -n "$value" | base64 --wrap=0)
     echo "  $key: $encoded_value" >> $SECRETS_FILE
+  elif [[ " ${CONFIG_KEYS[@]} " =~ " $key " ]]; then
+    echo "  $key: \"$value\"" >> $CONFIGMAP_FILE
   fi
 done < "$ENV_FILE"
 

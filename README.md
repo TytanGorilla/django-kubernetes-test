@@ -78,15 +78,12 @@ Replace any placeholder values (***) with your actual credentials or desired set
 #### Example .env
 ```
 DJANGO_SECRET_KEY="GENERATED_SECRET_KEY"
-DJANGO_DEBUG=True
-DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,10.1.0.43,*
 POSTGRES_DB=***
 POSTGRES_USER=***
 POSTGRES_PASSWORD="YOUR_SUPABASE_PASSWORD"
 POSTGRES_HOST=***
 POSTGRES_PORT=***
 DATABASE_URL="postgresql://[POSTGRES_USER]:[POSTGRES_PASSWORD]@[POSTGRES_HOST]:[POSTGRES_PORT]/[POSTGRES_DB]"
-STORAGE_PATH=autofilled
 ```
 
 ### Generate a Django Secret Key
@@ -221,7 +218,7 @@ postgresql://postgres.jxpsamnvzjziemtpziig:[YOUR-PASSWORD]@aws-0-eu-central-1.po
 
 #### Expected Output
 ```bash
-$ psql postgresql://postgres.jxpsamnvzjziemtpziig:Uyr04Wp9IoDd^h3@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
+$ psql postgresql://postgres.jxpsamnvzjziemtpziig:[YOUR-PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
 psql (17.2, server 15.8)
 WARNING: Console code page (850) differs from Windows code page (1252)
          8-bit characters might not work correctly. See psql reference
@@ -241,6 +238,13 @@ SELECT 'Connection successful!' AS message;
  Connection successful!
 (1 row)
 ```
+
+### Check database table schema
+```sql
+\dt
+```
+
+
 
 ### Port Forwarding to Access the App From a Codespace
 To access your app without Minikube tunnels or LoadBalancers, use `kubectl port-forward`:
@@ -290,11 +294,11 @@ kubectl apply -f k8s/ --recursive
 
 ### Rebuilding the Docker Image with dated versioning
 ```bash
-docker build -t tytan22/django-app:1.0.20250129 .
+docker build -t tytan22/django-app:1.0.20250130 .
 ```
 ### Pushing the Docker Image to Docker Hub
 ```bash
-docker push tytan22/django-app:1.0.20250129
+docker push tytan22/django-app:1.0.20250130
 ```
 ### Updating django-app Deployment to use the new Docker Image
 ```yaml
@@ -303,7 +307,7 @@ containers:
   image: tytan22/django-app:1.0.20250129 # Update this line to use the new image that is dated
   imagePullPolicy: Always
 ```
-### Applying migrations
+### Applying migrations manually from within the container
 ```bash
 kubectl exec -it -n default deploy/django-app -- bash
 python manage.py makemigrations scheduler

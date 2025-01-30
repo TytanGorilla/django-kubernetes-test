@@ -22,11 +22,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "fallback_secret")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
+# Fetch DJANGO_DEBUG from the environment (ConfigMap), defaulting to False if not found
+DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() in ("true", "1")
 
-# By default, allow local hosts or any fallback.
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+# Fetch DJANGO_ALLOWED_HOSTS from the environment (ConfigMap), defaulting to a safe fallback
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 # ------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------------
