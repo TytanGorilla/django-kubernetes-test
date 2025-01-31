@@ -265,13 +265,13 @@ https://cautious-journey-wxvjr657pvq2g55q-8000.app.github.dev/scheduler/
 ```
 Equivalent to:
 ```example of port forwarding from a local host
-http://localhost:8000/scheduler/
+http://localhost:8000/
 ```
 
 ### Accessing the App locally using Docker Desktop with a Kubernetes Cluster
 To access the application locally, use the URL
-http://localhost:32212/scheduler/
-http://localhost:30007/scheduler/
+http://localhost:32212/
+http://localhost:30007/
 
 ## TESTING
 If you have reached this stage in the README, you have successfully deployed the application to Kubernetes! Congratulations! Now you can proceed to testing / grading the application.
