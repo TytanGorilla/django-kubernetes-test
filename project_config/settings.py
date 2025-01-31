@@ -61,7 +61,9 @@ ROOT_URLCONF = 'project_config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Add any template directories if needed
+        'DIRS': [
+            BASE_DIR / 'project_config/templates',  # Global templates
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -142,7 +144,8 @@ STATIC_ROOT = '/final_project/staticfiles'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'apps/scheduler/static/scheduler',  # Use forward slashes for paths
+    BASE_DIR / 'project_config/static',  # Global static files
+    BASE_DIR / 'apps/scheduler/static',  # Scheduler app's static files
 ]
 
 

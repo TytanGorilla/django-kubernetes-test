@@ -1,0 +1,9 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+    <h1>Welcome to the Core Landing Page</h1>
+    <p>Click link below to go to Scheduler</p>
+    <a href="{% url 'scheduler_home' %}">Go to Scheduler</a>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+
+{% block title %}Scheduler{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'scheduler/css/scheduler-styles.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1>Scheduler Section</h1>
+    {% block scheduler_content %}{% endblock %}
+{% endblock %}
