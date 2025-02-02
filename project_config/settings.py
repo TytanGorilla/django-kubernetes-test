@@ -150,6 +150,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'project_config/static',  # Global static files
     BASE_DIR / 'apps/scheduler/static',  # Scheduler app's static files
     os.path.join(BASE_DIR, "staticfiles/frontend"),  # ✅ Point Django to React’s build
+    os.path.join(BASE_DIR, "core/static"),  # Ensure core CSS is included
 ]
 
 
