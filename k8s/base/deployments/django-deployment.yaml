@@ -19,7 +19,7 @@ spec:
     spec:
       initContainers:
       - name: migrate
-        image: tytan22/django-app:1.0.20250131
+        image: tytan22/django-app:1.0.20250202
         command: ["python", "manage.py", "migrate", "--noinput"]
         envFrom:
         - secretRef:
@@ -29,7 +29,7 @@ spec:
 
       containers:
       - name: django-container
-        image: tytan22/django-app:1.0.20250131
+        image: tytan22/django-app:1.0.20250202
         imagePullPolicy: Always
         ports:
         - containerPort: 8000

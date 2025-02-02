@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import os
+import json # Added for JSON parsing of React's asset-manifest.json
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -63,6 +64,8 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             BASE_DIR / 'project_config/templates',  # Global templates
+            BASE_DIR / "apps/scheduler/templates",  # Scheduler templates
+            BASE_DIR / "frontend/build",  # ✅ React's index.html
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -146,6 +149,7 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 STATICFILES_DIRS = [
     BASE_DIR / 'project_config/static',  # Global static files
     BASE_DIR / 'apps/scheduler/static',  # Scheduler app's static files
+    os.path.join(BASE_DIR, "staticfiles/frontend"),  # ✅ Point Django to React’s build
 ]
 
 
@@ -157,7 +161,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Replace with your frontend's URL
-    "http://192.168.49.2:30007",
+    "http://192.168.49.2:30007", # What of "http://192.168.49.2:32212"
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -178,3 +182,14 @@ CORS_ALLOW_HEADERS = [
 ]
 
 SECURE_SSL_REDIRECT = False  # Disable HTTPS redirection for development
+
+# Reads React's asset-manifest.json to dynamically get the latest hashed filenames
+# Ensures Django loads the correct CSS and JS files even after new builds
+def get_manifest_file():
+    manifest_path = os.path.join(BASE_DIR, "frontend/build/asset-manifest.json")
+    if os.path.exists(manifest_path):
+        with open(manifest_path) as f:
+            return json.load(f)
+    return {}
+
+REACT_MANIFEST = get_manifest_file()

@@ -1,0 +1,22 @@
+{% extends "scheduler/base_scheduler.html" %}
+{% load static %}
+
+{% block title %}
+    Scheduler Home
+{% endblock %}
+
+{% block scheduler_content %}
+    <h2 id="welcome">Welcome to My Newly Updated Cloud Database Starting Calendar Application for CS50W!</h2>
+    
+    <div id="root"></div>  <!-- React Calendar will be injected here -->
+
+    <!-- ✅ Dynamically load React’s built CSS -->
+    {% if react_manifest.files.main.css %}
+        <link rel="stylesheet" href="{% static 'frontend/css/main.css' %}">
+    {% endif %}
+    <!-- ✅ Dynamically load React’s built JS -->
+    {% if react_manifest.files.main.js %}
+        <script src="{% static 'frontend/js/main.js' %}" defer></script>
+    {% endif %}
+
+{% endblock %}

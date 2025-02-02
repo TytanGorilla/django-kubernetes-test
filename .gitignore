@@ -40,3 +40,6 @@ docs/*
 !docs/scheduler/
 !docs/scheduler/css/
 !docs/scheduler/js/
+
+# Ignore node__modules
+node_modules/

@@ -1,36 +1,57 @@
-# Use an official Python runtime as a parent image
-FROM python:3.11-slim
+# ------------------ BACKEND (Django) ------------------
+    FROM python:3.11-slim AS backend
 
-# Set the working directory inside the container
-WORKDIR /final_project
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    && apt-get clean
-
-# Copy the requirements file into the image
-COPY requirements.txt /final_project/
-
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the entire project into the container
-COPY . /final_project
-
-# Ensure the Python path includes the working directory
-ENV PYTHONPATH=/final_project
-
-# Create the STATIC_ROOT directory
-RUN mkdir -p /final_project/staticfiles
-
-# Make sure the script is executable
-RUN chmod +x /final_project/copy_static_to_docs.sh
-
-# Expose the port the app runs on
-EXPOSE 8000
-
-# Set the CMD to run the application and automate the script
-CMD python manage.py collectstatic --noinput && \
-    bash /final_project/copy_static_to_docs.sh && \
-    gunicorn project_config.wsgi:application --bind 0.0.0.0:8000
+    WORKDIR /final_project
+    
+    # Install system dependencies
+    RUN apt-get update && apt-get install -y \
+        curl \
+        nodejs \
+        npm \
+        build-essential \
+        python3-dev \
+        default-libmysqlclient-dev \
+        libpq-dev \
+        && apt-get clean
+    
+    # Copy the requirements file and install Python dependencies
+    COPY requirements.txt /final_project/
+    RUN pip install --no-cache-dir -r requirements.txt
+    
+    # Copy the entire project into the container
+    COPY . /final_project
+    
+    # Ensure the Python path includes the working directory
+    ENV PYTHONPATH=/final_project
+    
+    # ------------------ FRONTEND (React) ------------------
+    FROM node:18 AS frontend
+    
+    WORKDIR /app/frontend
+    
+    # Copy package files and install dependencies
+    COPY frontend/package.json frontend/package-lock.json ./
+    RUN npm install
+    
+    # Copy frontend source files and build React
+    COPY frontend/ ./
+    RUN npm run build
+    
+    # ------------------ MERGE FRONTEND INTO DJANGO ------------------
+    FROM backend AS final
+    
+    # Ensure the STATIC_ROOT directory is created before copying files
+    RUN mkdir -p /final_project/staticfiles
+    
+    # Copy built React files into Django static files
+    COPY --from=frontend /app/frontend/build /final_project/staticfiles/frontend/
+    
+    # Copy entrypoint script
+    COPY entrypoint.sh /entrypoint.sh
+    RUN chmod +x /entrypoint.sh
+    
+    # Expose the port the app runs on
+    EXPOSE 8000
+    
+    # Set entrypoint to ensure proper execution order
+    ENTRYPOINT ["/entrypoint.sh"]    
