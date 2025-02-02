@@ -54,4 +54,4 @@
     EXPOSE 8000
     
     # Set entrypoint to ensure proper execution order
-    ENTRYPOINT ["/entrypoint.sh"]    
+    CMD ["sh", "/entrypoint.sh"]
