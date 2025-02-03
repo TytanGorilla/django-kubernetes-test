@@ -39,27 +39,23 @@
     
     # ------------------ MERGE FRONTEND INTO DJANGO ------------------
     FROM backend AS final
-
+    
     WORKDIR /final_project
-
-    # Ensure the STATIC_ROOT directory is created before copying files
-    RUN mkdir -p /final_project/staticfiles
-
-    # ✅ Debug: Show frontend build before copying
-    RUN ls -l /final_project/frontend/build || echo "BUILD FOLDER MISSING"
-
-    # ✅ First, copy the frontend build explicitly to backend
-    COPY --from=frontend /final_project/frontend/build /final_project/frontend/build
-
-    # ✅ Then copy from backend (which now has build/) to staticfiles
-    COPY /final_project/frontend/build/. /final_project/staticfiles/frontend/
-
-    # Copy entrypoint script
+    
+    # Ensure the STATIC_ROOT directory is created before copying files.
+    # We also create the destination folder for the frontend build.
+    RUN mkdir -p /final_project/staticfiles/frontend
+    
+    # Copy the frontend build directly from the frontend stage into staticfiles.
+    # This avoids referencing an absolute path in the build context.
+    COPY --from=frontend /final_project/frontend/build/. /final_project/staticfiles/frontend/
+    
+    # Copy entrypoint script and ensure it's executable
     COPY entrypoint.sh /entrypoint.sh
     RUN chmod +x /entrypoint.sh
-
+    
     # Expose the port the app runs on
     EXPOSE 8000
-
+    
     # Set entrypoint to ensure proper execution order
-    CMD ["sh", "/entrypoint.sh"]
+    CMD ["sh", "/entrypoint.sh"]    
