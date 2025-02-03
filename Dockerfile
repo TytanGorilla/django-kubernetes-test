@@ -27,28 +27,32 @@
     # ------------------ FRONTEND (React) ------------------
     FROM node:18 AS frontend
     
-    WORKDIR /final_project/frontend  # ✅ Fixed path to match actual structure
+    # Set working directory for the frontend stage
+    WORKDIR /final_project/frontend
     
     # Copy package files and install dependencies
     COPY frontend/package.json frontend/package-lock.json ./
     RUN npm install
     
-    # Copy frontend source files and build React
+    # Copy the rest of the frontend source files and build React
     COPY frontend/ ./
     RUN npm run build
+    
+    # Debug: List files so we can verify the build folder is created.
+    RUN ls -la
     
     # ------------------ MERGE FRONTEND INTO DJANGO ------------------
     FROM backend AS final
     
     WORKDIR /final_project
     
-    # Ensure the STATIC_ROOT directory is created before copying files.
-    # We also create the destination folder for the frontend build.
+    # Create the destination directory for static files
     RUN mkdir -p /final_project/staticfiles/frontend
     
-    # Copy the frontend build directly from the frontend stage into staticfiles.
-    # This avoids referencing an absolute path in the build context.
-    COPY --from=frontend /final_project/frontend/build/. /final_project/staticfiles/frontend/
+    # Copy the built frontend assets from the frontend stage.
+    # Here we use a relative path ("build") which refers to
+    # /final_project/frontend/build in the frontend stage.
+    COPY --from=frontend build/. /final_project/staticfiles/frontend/
     
     # Copy entrypoint script and ensure it's executable
     COPY entrypoint.sh /entrypoint.sh
