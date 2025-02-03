@@ -27,7 +27,7 @@
     # ------------------ FRONTEND (React) ------------------
     FROM node:18 AS frontend
     
-    WORKDIR /app/frontend
+    WORKDIR /final_project/frontend  # ✅ Fixed path to match actual structure
     
     # Copy package files and install dependencies
     COPY frontend/package.json frontend/package-lock.json ./
@@ -44,7 +44,7 @@
     RUN mkdir -p /final_project/staticfiles
     
     # Copy built React files into Django static files
-    COPY --from=frontend /app/frontend/build /final_project/staticfiles/frontend/
+    COPY --from=frontend /final_project/frontend/build /final_project/staticfiles/frontend/
     
     # Copy entrypoint script
     COPY entrypoint.sh /entrypoint.sh
