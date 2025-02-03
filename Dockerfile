@@ -39,6 +39,8 @@
     
     # ------------------ MERGE FRONTEND INTO DJANGO ------------------
     FROM backend AS final
+
+    WORKDIR /final_project
     
     # Ensure the STATIC_ROOT directory is created before copying files
     RUN mkdir -p /final_project/staticfiles
