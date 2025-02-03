@@ -45,6 +45,7 @@
     # Ensure the STATIC_ROOT directory is created before copying files
     RUN mkdir -p /final_project/staticfiles
     
+    RUN ls -l /final_project/frontend
     # Copy built React files into Django static files
     COPY --from=frontend /final_project/frontend/build /final_project/staticfiles/frontend/
     
