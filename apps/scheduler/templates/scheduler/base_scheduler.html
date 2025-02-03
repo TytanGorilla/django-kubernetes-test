@@ -6,8 +6,8 @@
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'scheduler/css/scheduler-styles.css' %}">
 
-    {% if react_manifest.files.main.css %}
-    <link rel="stylesheet" href="{% static react_manifest.files.main.css %}">
+    {% if react_manifest.files.main_css %}
+    <link rel="stylesheet" href="{% static react_manifest.files.main_css %}">
     {% endif %}
 {% endblock %}
 
@@ -17,7 +17,7 @@
 {% endblock %}
 
 {% block extra_js %}
-    {% if react_manifest.files.main.js %}
-        <script src="{% static react_manifest.files.main.js %}" defer></script>
+    {% if react_manifest.files.main_js %}
+        <script src="{% static react_manifest.files.main_js %}" defer></script>
     {% endif %}
 {% endblock %}
