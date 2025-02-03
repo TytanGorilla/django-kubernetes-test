@@ -47,7 +47,7 @@
     
     RUN ls -l /final_project/frontend
     # Copy built React files into Django static files
-    COPY --from=frontend /final_project/frontend/build /final_project/staticfiles/frontend/
+    COPY --from=frontend /final_project/frontend/build/ /final_project/staticfiles/frontend/
     
     # Copy entrypoint script
     COPY entrypoint.sh /entrypoint.sh
