@@ -294,7 +294,7 @@ kubectl apply -f k8s/ --recursive
 
 ### Rebuilding the Docker Image with dated versioning
 ```bash
-docker build -t tytan22/django-app:1.0.20250203 .
+docker build --no-cache -t tytan22/django-app:1.0.20250203 .
 ```
 ### Pushing the Docker Image to Docker Hub
 ```bash

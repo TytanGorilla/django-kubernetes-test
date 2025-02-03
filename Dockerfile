@@ -41,19 +41,19 @@
     FROM backend AS final
 
     WORKDIR /final_project
-    
+        
     # Ensure the STATIC_ROOT directory is created before copying files
     RUN mkdir -p /final_project/staticfiles
-    
-    # Copy built React files into Django static files
+        
+    # ✅ Fix the COPY path
     COPY --from=frontend /final_project/frontend/build/. /final_project/staticfiles/frontend/
-    
+        
     # Copy entrypoint script
     COPY entrypoint.sh /entrypoint.sh
     RUN chmod +x /entrypoint.sh
-    
+        
     # Expose the port the app runs on
     EXPOSE 8000
-    
+        
     # Set entrypoint to ensure proper execution order
     CMD ["sh", "/entrypoint.sh"]
