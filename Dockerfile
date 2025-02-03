@@ -46,7 +46,7 @@
     RUN mkdir -p /final_project/staticfiles
         
     # ✅ Fix the COPY path
-    COPY --from=frontend frontend/build /final_project/staticfiles/frontend/
+    COPY --from=frontend /final_project/frontend/build/. /final_project/staticfiles/frontend/
         
     # Copy entrypoint script
     COPY entrypoint.sh /entrypoint.sh
