@@ -48,8 +48,11 @@
     # ✅ Debug: Show frontend build before copying
     RUN ls -l /final_project/frontend/build || echo "BUILD FOLDER MISSING"
 
-    # ✅ Fix COPY path (Frontend build should exist here)
-    COPY --from=frontend /final_project/frontend/build/. /final_project/staticfiles/frontend/
+    # ✅ First, copy the frontend build explicitly to backend
+    COPY --from=frontend /final_project/frontend/build /final_project/frontend/build
+
+    # ✅ Then copy from backend (which now has build/) to staticfiles
+    COPY /final_project/frontend/build/. /final_project/staticfiles/frontend/
 
     # Copy entrypoint script
     COPY entrypoint.sh /entrypoint.sh
