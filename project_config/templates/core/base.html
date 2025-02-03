@@ -24,6 +24,10 @@
     <footer>
         <p>&copy; 2025 Base Template</p>
     </footer>
+
     <script src="{% static 'core/js/scripts.js' %}"></script>
+
+    {# ✅ New block for additional JavaScript (Used by `base_scheduler.html`) #}
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -5,9 +5,19 @@
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'scheduler/css/scheduler-styles.css' %}">
+
+    {% if react_manifest.files.main.css %}
+    <link rel="stylesheet" href="{% static react_manifest.files.main.css %}">
+    {% endif %}
 {% endblock %}
 
 {% block content %}
     <h1>Scheduler Section</h1>
     {% block scheduler_content %}{% endblock %}
+{% endblock %}
+
+{% block extra_js %}
+    {% if react_manifest.files.main.js %}
+        <script src="{% static react_manifest.files.main.js %}" defer></script>
+    {% endif %}
 {% endblock %}
