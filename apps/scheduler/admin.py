@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Calendar, Event, Task
+from .models import Calendar, Event
 
 # Customizing the Admin Panel for Event Model
 class EventAdmin(admin.ModelAdmin):
@@ -10,4 +10,3 @@ class EventAdmin(admin.ModelAdmin):
 # Register models with the admin site
 admin.site.register(Calendar)
 admin.site.register(Event, EventAdmin)  # Use the custom admin class
-admin.site.register(Task)
