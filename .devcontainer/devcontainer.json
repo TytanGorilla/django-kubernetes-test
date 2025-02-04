@@ -4,9 +4,6 @@
       "dockerfile": "../Dockerfile"
     },
     "features": {
-      "node": "20",
-      "python": "3.11"
-    },
-    "postCreateCommand": "cd frontend && npm install"
+      "node": "20"
+    }
   }
-  

@@ -29,7 +29,7 @@
     
     # Copy package files and install dependencies
     COPY frontend/package.json frontend/package-lock.json ./
-    RUN npm install
+    RUN npm install --silent
     
     # Copy all frontend source files and build the React app
     COPY frontend/ ./
