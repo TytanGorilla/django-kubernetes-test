@@ -4,7 +4,6 @@
       "dockerfile": "../Dockerfile"
     },
     "features": {
-      "node": "20",
-      "ghcr.io/devcontainers/features/docker:1": {}
+      "node": "20"
     }
   }

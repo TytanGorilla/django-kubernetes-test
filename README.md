@@ -21,16 +21,16 @@ apt install python3
 ```
 > **Note**: While the application is containerized, the host machine’s Python version is still required for certain scripts and configurations. Consider using a virtual environment if you are not comfortable with global Python installations.
 
-### Check Docker Installation
+### Check Docker Installation - REMOVE
 ```bash
 docker --version
 ```
-#### If not installed, install Docker
+#### If not installed, install Docker - REMOVE
 ```bash
 apt install docker.io
 ```
 
-### Install kind
+### Install kind - REMOVE
 ```bash
 curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
 chmod +x ./kind
