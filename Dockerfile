@@ -59,6 +59,11 @@
     # Install Kind (Kubernetes IN Docker)
     RUN curl -Lo /usr/local/bin/kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64 && \
     chmod +x /usr/local/bin/kind
+
+    # **Install kubectl**
+    RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    chmod +x kubectl && \
+    mv kubectl /usr/local/bin/
     
     # Expose the port the app runs on
     EXPOSE 8000

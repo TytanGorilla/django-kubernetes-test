@@ -9,34 +9,6 @@ git clone https://github.com/TytanGorilla/django-kubernetes-test.git
 ## ONLINE DEVELOPMENT (GITHUB CODESPACES) - RECOMMENDED
 While inspecting the repository, click the green code button and select "Open with Codespaces."
 
-### Check Python Version
-```bash
-python --version
-# or
-python3 --version
-```
-#### If not installed, install Python3
-```bash
-apt install python3
-```
-> **Note**: While the application is containerized, the host machine’s Python version is still required for certain scripts and configurations. Consider using a virtual environment if you are not comfortable with global Python installations.
-
-### Check Docker Installation - REMOVE
-```bash
-docker --version
-```
-#### If not installed, install Docker - REMOVE
-```bash
-apt install docker.io
-```
-
-### Install kind - REMOVE
-```bash
-curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
-chmod +x ./kind
-sudo mv ./kind /usr/local/bin/kind
-```
-
 #### Check kind's versioN
 ```bash
 kind version
@@ -113,7 +85,7 @@ Then populate the DATABASE_URL with the relevant values referenced in your .env 
 
 Example 1: 
 ```
-DATABASE_URL="postgresql://POSTGRES_USER:YOUR_SUPABASE_PASSWORD@:POSTGRES_HOST:POSTGRES_PORT/POSTGRES_DB"
+DATABASE_URL="postgresql://POSTGRES_USER:YOUR_SUPABASE_PASSWORD@POSTGRES_HOST:POSTGRES_PORT/POSTGRES_DB"
 ```
 
 Example 2:
@@ -127,7 +99,6 @@ Make the scripts executable:
 chmod +x generate_secrets_configs.sh
 chmod +x copy_static_to_docs.sh
 chmod +x sync_migrations.sh
-
 ```
 Run the script to create a new `secrets.yaml` file:
 ```bash
@@ -243,8 +214,6 @@ SELECT 'Connection successful!' AS message;
 ```sql
 \dt
 ```
-
-
 
 ### Port Forwarding to Access the App From a Codespace
 To access your app without Minikube tunnels or LoadBalancers, use `kubectl port-forward`:
