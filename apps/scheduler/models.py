@@ -16,8 +16,6 @@ class Event(models.Model):
     calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE, related_name="events")
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    all_day = models.BooleanField(default=False)
-    location = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"{self.title} ({self.start_time.strftime('%Y-%m-%d %H:%M')})"

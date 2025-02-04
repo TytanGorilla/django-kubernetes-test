@@ -18,6 +18,20 @@ kind version
 ```bash
 kind create cluster --name my-cluster
 ```
+Expected Output:
+```bash
+Creating cluster "my-cluster" ...
+ ✓ Ensuring node image (kindest/node:v1.32.1) 🖼 
+ ✓ Preparing nodes 📦  
+ ✓ Writing configuration 📜 
+ ✓ Starting control-plane 🕹️ 
+ ✓ Installing CNI 🔌 
+ ✓ Installing StorageClass 💾 
+Set kubectl context to "kind-my-cluster"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-my-cluster
+```
 ## Setup Simple Cloud Managed Database with Supabase
 Visit [Supabase](https://supabase.com)
   - Setup a free account by signing in with your GitHub account.
@@ -168,11 +182,11 @@ Codespaces are typically based on Ubuntu/Debian, so you can use apt to install t
 1) Open the Codespace terminal
 Update the package list:
 ```bash
-sudo apt update
+apt update
 ```
 2) Install the PostgreSQL client tools
 ```bash
-sudo apt install -y postgresql-client
+apt install -y postgresql-client
 ```
 3) Open a new terminal and verify:
 ```bash
