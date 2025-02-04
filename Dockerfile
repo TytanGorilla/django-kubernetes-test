@@ -53,6 +53,9 @@
     COPY entrypoint.sh /entrypoint.sh
     RUN chmod +x /entrypoint.sh
 
+    # Install Docker CLI
+    RUN apt-get update && apt-get install -y docker.io && apt-get clean
+
     # Install Kind (Kubernetes IN Docker)
     RUN curl -Lo /usr/local/bin/kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64 && \
     chmod +x /usr/local/bin/kind
