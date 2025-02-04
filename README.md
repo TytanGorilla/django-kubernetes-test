@@ -291,9 +291,8 @@ containers:
   image: tytan22/django-app:1.0.20250204 # Update this line to use the new image that is dated
   imagePullPolicy: Always
 ```
-### Applying migrations manually from within the container
+### Applying migrations manually by running the following script:
+
 ```bash
-kubectl exec -it -n default deploy/django-app -- bash
-python manage.py makemigrations scheduler
-python manage.py migrate scheduler
+./sync_migrations.sh
 ```
