@@ -52,6 +52,10 @@
     # Copy entrypoint script and ensure it's executable
     COPY entrypoint.sh /entrypoint.sh
     RUN chmod +x /entrypoint.sh
+
+    # Install Kind (Kubernetes IN Docker)
+    RUN curl -Lo /usr/local/bin/kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64 && \
+    chmod +x /usr/local/bin/kind
     
     # Expose the port the app runs on
     EXPOSE 8000

@@ -17,7 +17,7 @@ python3 --version
 ```
 #### If not installed, install Python3
 ```bash
-sudo apt install python3
+apt install python3
 ```
 > **Note**: While the application is containerized, the host machine’s Python version is still required for certain scripts and configurations. Consider using a virtual environment if you are not comfortable with global Python installations.
 
@@ -27,7 +27,7 @@ docker --version
 ```
 #### If not installed, install Docker
 ```bash
-sudo apt install docker.io
+apt install docker.io
 ```
 
 ### Install kind
