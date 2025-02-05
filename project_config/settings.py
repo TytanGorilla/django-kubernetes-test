@@ -144,7 +144,7 @@ USE_TZ = True
 STATIC_URL = '/static/' 
 
 # The directory where static files will be collected
-STATIC_ROOT = '/final_project/staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 #Django's ManifestStaticFilesStorage appends a unique hash to the filenames of static files during the collectstatic process
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
