@@ -11,6 +11,7 @@
         python3-dev \
         default-libmysqlclient-dev \
         libpq-dev \
+        rsync \
         && apt-get clean
     
     # Copy the requirements file and install Python dependencies
