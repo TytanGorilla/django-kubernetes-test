@@ -12,6 +12,7 @@
         default-libmysqlclient-dev \
         libpq-dev \
         rsync \
+        bash \
         && apt-get clean
     
     # Copy the requirements file and install Python dependencies
@@ -70,4 +71,4 @@
     EXPOSE 8000
     
     # Set entrypoint to ensure proper execution order
-    CMD ["sh", "/entrypoint.sh"]
+    CMD ["bash", "/entrypoint.sh"]

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e  # Stop the script on errors
 
 echo "Collecting static files..."
