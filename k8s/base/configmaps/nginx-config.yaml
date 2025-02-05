@@ -14,7 +14,7 @@ data:
 
             # Serve static files from the correct location
             location /static/ {
-                alias /final_project/docs/;
+                alias /final_project/staticfiles/;
                 autoindex on;
 
                 # Allow cross-origin requests (CORS)

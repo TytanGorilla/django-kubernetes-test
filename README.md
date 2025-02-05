@@ -126,6 +126,14 @@ This reads the `.env` file, Base64-encodes variables, and produces a Kubernetes 
 2. Create a new `.env` file:
 3. Copy `.env.example` contents to `.env`
 4. Update the new .env file's `REACT_APP_BACKEND_URL` with the correct backend URL for Codespaces.
+```ini
+PUBLIC_URL=http://localhost:32212/static/frontend
+REACT_APP_BACKEND_URL=http://localhost:32212
+```
+📌 What this does:
+
+PUBLIC_URL → Makes React look for JS files in Nginx (/static/frontend/)
+REACT_APP_BACKEND_URL → Ensures React API calls hit Django (http://localhost:32212).
 
 
 ### Apply Manifests to Kubernetes
