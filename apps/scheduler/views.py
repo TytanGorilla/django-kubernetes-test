@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.conf import settings
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 from .serializers import EventSerializer, CalendarSerializer
 from .models import Event, Calendar
 
@@ -14,10 +15,11 @@ def index(request):
 
 class EventViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows events to be viewed or edited.
+    API endpoint for viewing, creating, updating, and deleting events.
     """
     queryset = Event.objects.all().order_by('start_time')
     serializer_class = EventSerializer
+    permission_classes = [IsAuthenticated]  # Require authentication 
 
 class CalendarViewSet(viewsets.ModelViewSet):
     """

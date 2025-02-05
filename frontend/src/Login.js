@@ -1,72 +1,41 @@
-// src/Login.js
-
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import axios from "axios";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    // Get the backend URL from the environment variables
-    const backendUrl = process.env.REACT_APP_BACKEND_URL;
-    // Construct the JWT token endpoint URL
-    const tokenEndpoint = `${backendUrl}/api/token/`;
-
     try {
-      // Send a POST request to the JWT token endpoint with email and password
-      const response = await axios.post(tokenEndpoint, {
-        email,
-        password,
-      });
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/token/`, formData);
       
-      // Save the tokens in localStorage (or you could use context/state as needed)
-      localStorage.setItem("accessToken", response.data.access);
-      localStorage.setItem("refreshToken", response.data.refresh);
-      
-      // Optionally, set the default Authorization header for future Axios requests
-      axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access;
-      
-      // Redirect the user to the scheduler page after successful login
-      navigate("/scheduler");
-    } catch (err) {
-      setError("Invalid credentials. Please try again.");
-      console.error("Login failed:", err);
+      localStorage.setItem("access_token", response.data.access);
+      localStorage.setItem("refresh_token", response.data.refresh);
+
+      console.log("Login successful!", response.data);
+      window.location.href = "/scheduler"; // Redirect user after login
+
+    } catch (error) {
+      setError("Invalid username or password");
+      console.error("Login error:", error);
     }
   };
 
   return (
-    <div className="login-container" style={{ maxWidth: "400px", margin: "0 auto", padding: "1rem" }}>
+    <div>
       <h2>Login</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "1rem" }}>
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{ width: "100%", padding: "0.5rem" }}
-          />
-        </div>
-        <div style={{ marginBottom: "1rem" }}>
-          <label>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{ width: "100%", padding: "0.5rem" }}
-          />
-        </div>
-        <button type="submit" style={{ padding: "0.5rem 1rem" }}>Login</button>
+        <input type="text" name="username" placeholder="Username" value={formData.username} onChange={handleChange} required />
+        <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
+        <button type="submit">Login</button>
       </form>
     </div>
   );

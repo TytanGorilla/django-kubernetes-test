@@ -1,13 +1,21 @@
-import React from "react";
-import CalendarUI from "./calendar_ui";
+import { BrowserRouter as Router, Route, Navigate, Routes } from "react-router-dom";
+import CalendarUI from "./CalendarUI";
+import Login from "./Login";
 
-function App() {
+const PrivateRoute = ({ element }) => {
+  const token = localStorage.getItem("access_token");
+  return token ? element : <Navigate to="/login" />;
+};
+
+const App = () => {
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-center my-4">My Calendar App</h1>
-      <CalendarUI />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/scheduler" element={<PrivateRoute element={<CalendarUI />} />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

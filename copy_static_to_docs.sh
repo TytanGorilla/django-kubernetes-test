@@ -20,9 +20,9 @@ if [ ! -d "$DOCS_DIR" ]; then
     mkdir -p "$DOCS_DIR"
 fi
 
-# Copy static files from staticfiles to docs
+# Copy static files from staticfiles to docs, excluding the 'static' subdirectory
 echo "Copying files from $STATICFILES_DIR to $DOCS_DIR..."
-cp -R "$STATICFILES_DIR/." "$DOCS_DIR/"
+rsync -av --exclude='static' "$STATICFILES_DIR/" "$DOCS_DIR/"
 
 echo "Files copied successfully! Contents of $DOCS_DIR:"
 ls -la "$DOCS_DIR"
