@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 import json # Added for JSON parsing of React's asset-manifest.json
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework', # Added for Django REST Framework (DRF)
+    'rest_framework_simplejwt', # Added for Django REST Framework Simple JWT
     'corsheaders',
     'apps.scheduler', # Updated the path to include the apps folder
     # Add your custom apps here
@@ -194,3 +196,17 @@ def get_manifest_file():
     return {}
 
 REACT_MANIFEST = get_manifest_file()
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # Optionally, you can also include SessionAuthentication if needed:
+        # 'rest_framework.authentication.SessionAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    # Other settings as needed...
+}

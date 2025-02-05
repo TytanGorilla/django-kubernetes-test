@@ -3,6 +3,7 @@ import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { format } from "date-fns";
+import axios from "axios"; // Make sure to install axios (npm install axios)
 
 const localizer = momentLocalizer(moment);
 
@@ -15,23 +16,42 @@ const CalendarUI = () => {
   const handleSelectSlot = ({ start }) => {
     setSelectedDate(start);
     setIsDialogOpen(true);
-    setFormData({ ...formData, start: format(start, "yyyy-MM-dd HH:mm"), end: format(start, "yyyy-MM-dd HH:mm") });
+    // Format the date in a way that the datetime-local input expects
+    setFormData({ 
+      ...formData, 
+      start: format(start, "yyyy-MM-dd'T'HH:mm"), 
+      end: format(start, "yyyy-MM-dd'T'HH:mm") 
+    });
   };
 
   const handleFormChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // Build the new event object
     const newEvent = {
       title: formData.title,
       description: formData.description,
-      start: new Date(formData.start),
-      end: new Date(formData.end),
-      allDay: false,
+      // Convert the datetime strings into ISO format (or as expected by your DRF serializer)
+      start_time: new Date(formData.start).toISOString(),
+      end_time: new Date(formData.end).toISOString(),
     };
-    setEvents([...events, newEvent]);
-    setIsDialogOpen(false);
+
+    try {
+      // Send a POST request to your Django API endpoint
+      const response = await axios.post("http://YOUR_BACKEND_URL/api/events/", newEvent, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      
+      // On success, update local state with the returned event (which should include its database ID, etc.)
+      setEvents([...events, response.data]);
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error("Error saving event:", error);
+    }
   };
 
   return (
@@ -39,8 +59,8 @@ const CalendarUI = () => {
       <BigCalendar
         localizer={localizer}
         events={events}
-        startAccessor="start"
-        endAccessor="end"
+        startAccessor="start_time"
+        endAccessor="end_time"
         selectable
         style={{ height: 500 }}
         onSelectSlot={handleSelectSlot}

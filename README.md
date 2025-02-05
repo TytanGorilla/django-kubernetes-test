@@ -120,6 +120,14 @@ Run the script to create a new `secrets.yaml` file:
 ```
 This reads the `.env` file, Base64-encodes variables, and produces a Kubernetes Secret manifest named `secrets.yaml` in the `k8s/secrets` directory.
 
+## CREATE YET ANOTHER .env file in the frontend directory
+## Setup Instructions
+1. Change directory to the frontend directory:
+2. Create a new `.env` file:
+3. Copy `.env.example` contents to `.env`
+4. Update the new .env file's `REACT_APP_BACKEND_URL` with the correct backend URL for Codespaces.
+
+
 ### Apply Manifests to Kubernetes
 Apply the secrets and other manifests:
 ```bash
@@ -254,7 +262,7 @@ http://localhost:8000/
 ### Accessing the App locally using Docker Desktop with a Kubernetes Cluster
 To access the application locally, use the URL
 http://localhost:32212/
-http://localhost:30007/
+http://localhost:30007/ ### REMOVE THIS LINE
 
 ## TESTING
 If you have reached this stage in the README, you have successfully deployed the application to Kubernetes! Congratulations! Now you can proceed to testing / grading the application.
