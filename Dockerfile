@@ -46,10 +46,16 @@
     
     # Ensure the destination directory exists
     RUN mkdir -p /final_project/staticfiles/frontend
+
+    # Debug: Check if the frontend build exists before copying
+    RUN ls -la /final_project/frontend/build || echo "⚠️ No build folder found in /final_project/frontend/build"
     
     # Copy the built frontend assets from the frontend stage.
     # The trailing slash on the source tells Docker to copy the folder’s contents.
     COPY --from=frontend /final_project/frontend/build/ /final_project/staticfiles/frontend/
+
+    # Debug: Check if the files were copied successfully
+    RUN ls -la /final_project/staticfiles/frontend || echo "⚠️ No frontend assets found in /final_project/staticfiles/frontend"
     
     # Copy entrypoint script and ensure it's executable
     COPY entrypoint.sh /entrypoint.sh
