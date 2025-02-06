@@ -293,18 +293,18 @@ kubectl apply -f k8s/ --recursive
 
 ### Rebuilding the Docker Image with dated versioning
 ```bash
-docker build --no-cache -t tytan22/django-app:1.0.20250205 .
-docker build -t tytan22/django-app:1.0.20250205 .
+docker build --no-cache -t tytan22/django-app:1.0.20250206 .
+docker build -t tytan22/django-app:1.0.20250206 .
 ```
 ### Pushing the Docker Image to Docker Hub
 ```bash
-docker push tytan22/django-app:1.0.20250205
+docker push tytan22/django-app:1.0.20250206
 ```
 ### Updating django-app Deployment to use the new Docker Image
 ```yaml
 containers:
 - name: django-container
-  image: tytan22/django-app:1.0.20250205 # Update this line to use the new image that is dated
+  image: tytan22/django-app:1.0.20250206 # Update this line to use the new image that is dated
   imagePullPolicy: Always
 ```
 ### Applying migrations manually by running the following script:
