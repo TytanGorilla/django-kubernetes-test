@@ -14,21 +14,24 @@ spec:
       labels:
         app: nginx
     spec:
-      containers:
-      - name: nginx
-        image: nginx:latest
-        ports:
-        - containerPort: 80
-        volumeMounts:
-        - name: nginx-config
-          mountPath: /etc/nginx/nginx.conf  # Replace the main nginx.conf file
-          subPath: nginx.conf
-        - name: docs-volume
-          mountPath: /usr/share/nginx/html  # Mount the docs folder to NGINX's default web root
       volumes:
-      - name: nginx-config
-        configMap:
-          name: nginx-config
-      - name: docs-volume
-        persistentVolumeClaim:
-          claimName: docs-pvc
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+        - name: static-files
+          hostPath:
+            path: /final_project/staticfiles  # 🔍 This must match Django's STATIC_ROOT
+            type: DirectoryOrCreate  # ✅ Ensure directory is created if missing
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf  # Replace the main nginx.conf file
+              subPath: nginx.conf
+            - name: docs-volume
+              mountPath: /usr/share/nginx/html  # Mount the docs folder to NGINX's default web root
+            - name: static-files
+              mountPath: /final_project/staticfiles  # ✅ Mount static files in Nginx
