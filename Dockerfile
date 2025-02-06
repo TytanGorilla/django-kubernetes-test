@@ -45,12 +45,9 @@
     WORKDIR /final_project
     
     # Ensure the destination directory exists
-    RUN mkdir -p /final_project/staticfiles/frontend
-
-    # Debug: Check if the frontend build exists before copying
-    RUN ls -la /final_project/frontend/build || echo "⚠️ No build folder found in /final_project/frontend/build"
+    RUN mkdir -p /final_project/staticfiles
     
-    # Copy the built frontend assets from the frontend stage.
+    # Copy the built frontend assets from the frontend stage before collect static runs
     # The trailing slash on the source tells Docker to copy the folder’s contents.
     COPY --from=frontend /final_project/frontend/build/ /final_project/staticfiles/frontend/
 
