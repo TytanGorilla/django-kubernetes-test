@@ -9,21 +9,51 @@ data:
     }
 
     http {
+        include       mime.types;
+        default_type  application/octet-stream;
+
+        # Enable gzip compression for better performance
+        gzip on;
+        gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+        gzip_vary on;
+
+        # Optimize file serving performance
+        sendfile        on;
+        keepalive_timeout  65;
+
         server {
             listen 80;
 
-            # Serve static files from the correct location
+            # Ensure logs are properly captured
+            access_log /var/log/nginx/access.log;
+            error_log /var/log/nginx/error.log warn;
+
+            # Serve static files from Django's collectstatic folder
             location /static/ {
-                alias /final_project/staticfiles/;
+                alias /final_project/staticfiles/frontend/static/;
                 autoindex on;
 
-                # Allow cross-origin requests (CORS)
+                # Set correct MIME types
+                types {
+                    text/html  html;
+                    text/css   css;
+                    application/javascript  js;
+                    image/png  png;
+                    image/jpeg jpg;
+                    image/svg+xml svg;
+                }
+
+                # Allow browser caching for static files
+                expires 30d;
+                add_header Cache-Control "public, max-age=2592000";
+
+                # Proper CORS handling
                 add_header Access-Control-Allow-Origin *;
                 add_header Access-Control-Allow-Methods "GET, OPTIONS";
                 add_header Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With";
                 add_header Access-Control-Expose-Headers "Content-Length, Content-Range";
 
-                # Preflight request handling
+                # Handle preflight CORS requests
                 if ($request_method = 'OPTIONS') {
                     add_header Access-Control-Allow-Origin *;
                     add_header Access-Control-Allow-Methods "GET, OPTIONS";
@@ -32,15 +62,21 @@ data:
                 }
             }
 
-            # Serve the React app from GitHub Pages (if needed)
+            # Serve the React app (if using GitHub Pages)
             location / {
                 proxy_pass http://django-service:8000;
                 proxy_set_header Host $host;
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-
-                # Content Security Policy (Allow Inline React Scripts)
-                add_header Content-Security-Policy "default-src 'self' data: blob: https://tytangorilla.github.io; style-src 'self' 'unsafe-inline' https://tytangorilla.github.io; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://tytangorilla.github.io;";
+                
+                # Security headers for React & Django API
+                add_header Content-Security-Policy "default-src 'self' data: blob: https://tytangorilla.github.io; 
+                                                     style-src 'self' 'unsafe-inline' https://tytangorilla.github.io; 
+                                                     script-src 'self' 'unsafe-inline' 'unsafe-eval' https://tytangorilla.github.io;";
+                
+                add_header X-Frame-Options "DENY";
+                add_header X-XSS-Protection "1; mode=block";
+                add_header X-Content-Type-Options "nosniff";
             }
         }
     }
