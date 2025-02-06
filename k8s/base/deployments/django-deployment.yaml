@@ -18,14 +18,14 @@ spec:
           app=django-app
     spec:
       initContainers:
-      - name: migrate
-        image: tytan22/django-app:1.0.20250206
-        command: ["python", "manage.py", "migrate", "--noinput"]
-        envFrom:
-        - secretRef:
-            name: django-app-secrets
-        - configMapRef:
-            name: django-config  # Non-sensitive config variables
+      #- name: migrate
+      #  image: tytan22/django-app:1.0.20250206
+      #  command: ["python", "manage.py", "migrate", "--noinput"]
+      #  envFrom:
+      #  - secretRef:
+      #      name: django-app-secrets
+      #  - configMapRef:
+      #      name: django-config  # Non-sensitive config variables
 
       containers:
       - name: django-container
