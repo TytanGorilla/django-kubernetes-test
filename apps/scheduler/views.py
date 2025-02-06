@@ -4,6 +4,8 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .serializers import EventSerializer, CalendarSerializer
 from .models import Event, Calendar
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
 
 def index(request):
     manifest = settings.REACT_MANIFEST.copy()
@@ -27,3 +29,8 @@ class CalendarViewSet(viewsets.ModelViewSet):
     """
     queryset = Calendar.objects.all().order_by('created_at')
     serializer_class = CalendarSerializer
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def user_info(request):
+    return Response({"message": "You are authenticated!", "user": request.user.username})
