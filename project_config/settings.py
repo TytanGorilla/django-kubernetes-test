@@ -189,7 +189,7 @@ SECURE_SSL_REDIRECT = False  # Disable HTTPS redirection for development
 # Reads React's asset-manifest.json to dynamically get the latest hashed filenames
 # Ensures Django loads the correct CSS and JS files even after new builds
 def get_manifest_file():
-    manifest_path = os.path.join(BASE_DIR, "docs/frontend/asset-manifest.json")
+    manifest_path = os.path.join(BASE_DIR, "frontend/build/asset-manifest.json")
     if os.path.exists(manifest_path):
         with open(manifest_path) as f:
             return json.load(f)
