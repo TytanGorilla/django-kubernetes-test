@@ -49,7 +49,7 @@
     
     # Copy the built frontend assets from the frontend stage before collect static runs
     # The trailing slash on the source tells Docker to copy the folder’s contents.
-    COPY --from=frontend /final_project/frontend/build/ /final_project/staticfiles/frontend/
+    COPY --from=frontend /final_project/frontend/build/static /final_project/staticfiles/frontend/
 
     # Debug: Check if the files were copied successfully
     RUN ls -la /final_project/staticfiles/frontend || echo "⚠️ No frontend assets found in /final_project/staticfiles/frontend"

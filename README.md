@@ -312,3 +312,8 @@ containers:
 ```bash
 ./sync_migrations.sh
 ```
+
+### Bashing into the active django-app pod
+```bash
+kubectl exec -it $(kubectl get pod -l app=django-app -o jsonpath="{.items[0].metadata.name}") -- bash
+```
