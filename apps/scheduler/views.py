@@ -10,11 +10,10 @@ from rest_framework.response import Response
 def index(request):
     manifest = settings.REACT_MANIFEST.copy()
 
-    # Ensure all manifest paths start with '/static/'
-    if "files" in manifest:
-        for key, value in manifest["files"].items():
-            if not value.startswith("/"):
-                manifest["files"][key] = f"/{value}" # Add leading "/"
+    # ✅ Extract paths correctly from "files" key
+    files = manifest.get("files", {})
+    manifest["files"]["main_js"] = files.get("main.js", "")  # Fix key lookup
+    manifest["files"]["main_css"] = files.get("main.css", "")
 
     return render(request, 'scheduler/scheduler_index.html', {"react_manifest": manifest})
 
