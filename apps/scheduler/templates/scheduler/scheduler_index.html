@@ -8,5 +8,13 @@
 {% block scheduler_content %}
     <h2 id="welcome">Welcome to My Newly Updated Cloud Database Starting Calendar Application for CS50W!</h2>
     
-    <div id="root"></div>  <!-- React Calendar will be injected here -->
+    <div id="root"></div>  <!-- ✅ React app injects here -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (!document.getElementById('root').children.length) {
+                console.error("React failed to mount! Check static file paths.");
+            }
+        });
+    </script>
 {% endblock %}

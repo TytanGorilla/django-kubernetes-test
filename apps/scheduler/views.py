@@ -12,10 +12,13 @@ def index(request):
 
     # ✅ Extract paths correctly from "files" key
     files = manifest.get("files", {})
-    manifest["files"]["main_js"] = files.get("main.js", "")  # Fix key lookup
-    manifest["files"]["main_css"] = files.get("main.css", "")
+    
+    # ✅ Remove extra `/static/` prefix if present
+    manifest["files"]["main_js"] = files.get("main.js", "").replace("/static/frontend/static/", "/static/frontend/")
+    manifest["files"]["main_css"] = files.get("main.css", "").replace("/static/frontend/static/", "/static/frontend/")
 
     return render(request, 'scheduler/scheduler_index.html', {"react_manifest": manifest})
+
 
 class EventViewSet(viewsets.ModelViewSet):
     """

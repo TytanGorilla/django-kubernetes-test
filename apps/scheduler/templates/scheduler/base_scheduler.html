@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="{% static 'scheduler/css/scheduler-styles.css' %}">
 
     {% if react_manifest.files.main_css %}
-        <link rel="stylesheet" href="{{ react_manifest.files.main_css }}">
+    <link rel="stylesheet" href="{{ react_manifest.files.main_css }}">
     {% endif %}
+
 {% endblock %}
 
 {% block content %}
@@ -18,8 +19,9 @@
 
 {% block extra_js %}
     {% if react_manifest.files.main_js %}
-        <script src="{{ react_manifest.files.main_js }}" defer></script>  {# ✅ This should load the React app #}
+        <script src="/static/frontend/{{ react_manifest.files.main_js|lstrip:'static/' }}" defer></script>
     {% else %}
         <script>console.error("React main.js not found in manifest!")</script>
     {% endif %}
+
 {% endblock %}
