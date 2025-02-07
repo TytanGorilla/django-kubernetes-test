@@ -9,6 +9,13 @@ from rest_framework.response import Response
 
 def index(request):
     manifest = settings.REACT_MANIFEST.copy()
+    
+    # Adjust paths inside the manifest to match STATIC_URL
+    if "files" in manifest:
+        for key, value in manifest["files"].items():
+            if value.startswith("/static/"):
+                manifest["files"][key] = value.lstrip("/static/")  # Remove extra prefix
+    
     return render(request, 'scheduler/scheduler_index.html', {"react_manifest": manifest})
 
 class EventViewSet(viewsets.ModelViewSet):
