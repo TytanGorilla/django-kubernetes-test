@@ -18,6 +18,8 @@
 
 {% block extra_js %}
     {% if react_manifest.files.main_js %}
-        <script src="{{ react_manifest.files.main_js }}" defer></script>
+        <script src="{{ react_manifest.files.main_js }}" defer></script>  {# ✅ This should load the React app #}
+    {% else %}
+        <script>console.error("React main.js not found in manifest!")</script>
     {% endif %}
 {% endblock %}

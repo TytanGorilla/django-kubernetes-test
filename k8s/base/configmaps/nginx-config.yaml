@@ -43,7 +43,7 @@ data:
             }
 
             location /static/frontend/ {
-                alias /usr/share/nginx/html/static/frontend/;  # Serves React frontend static files
+                alias /usr/share/nginx/html/static/frontend/static/;  # Serves React frontend static files
                 autoindex on;
                 expires 30d;
                 add_header Cache-Control "public, max-age=2592000";
