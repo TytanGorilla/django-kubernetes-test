@@ -162,8 +162,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Replace with your frontend's URL
-    "http://192.168.49.2:30007", # What of "http://192.168.49.2:32212"
+    os.getenv("FRONTEND_URL", "http://localhost:3000"),
+    os.getenv("NGINX_URL", "http://192.168.49.2:32212"),  # If React is served from Nginx
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -188,7 +188,7 @@ SECURE_SSL_REDIRECT = False  # Disable HTTPS redirection for development
 # Reads React's asset-manifest.json to dynamically get the latest hashed filenames
 # Ensures Django loads the correct CSS and JS files even after new builds
 def get_manifest_file():
-    manifest_path = os.path.join(BASE_DIR, "/usr/share/nginx/html/static/frontend/asset-manifest.json")
+    manifest_path = "/usr/share/nginx/html/static/frontend/asset-manifest.json" # ✅ Correct path in Nginx-mounted volume
     if os.path.exists(manifest_path):
         with open(manifest_path) as f:
             return json.load(f)
