@@ -7,19 +7,20 @@
     <link rel="stylesheet" href="{% static 'scheduler/css/scheduler-styles.css' %}">
 
     {% if react_manifest.files.main_css %}
-    <link rel="stylesheet" href="{{ react_manifest.files.main_css }}">
+    <link rel="stylesheet" href="/static/frontend/{{ react_manifest.files.main_css|cut:'static/' }}">
     {% endif %}
 
 {% endblock %}
 
 {% block content %}
-    <h1>Scheduler Section</h1>
+    <h1>Scheduler Section!</h1>
     {% block scheduler_content %}{% endblock %}
 {% endblock %}
 
 {% block extra_js %}
     {% if react_manifest.files.main_js %}
-        <script src="/static/frontend/{{ react_manifest.files.main_js|lstrip:'static/' }}" defer></script>
+        <script src="/static/frontend/{{ react_manifest.files.main_js|cut:'static/' }}" defer></script>
+
     {% else %}
         <script>console.error("React main.js not found in manifest!")</script>
     {% endif %}
