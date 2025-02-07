@@ -13,19 +13,19 @@ spec:
     metadata:
       labels:
         app: django-app
-      annotations:
-        container-labels: |
-          app=django-app
     spec:
       initContainers:
-      #- name: migrate
-      #  image: tytan22/django-app:1.0.20250207
-      #  command: ["python", "manage.py", "migrate", "--noinput"]
-      #  envFrom:
-      #  - secretRef:
-      #      name: django-app-secrets
-      #  - configMapRef:
-      #      name: django-config  # Non-sensitive config variables
+      - name: migrate  # ✅ Runs migrations before starting Django
+        image: tytan22/django-app:1.0.20250207
+        command: ["python", "manage.py", "migrate", "--noinput"]
+        envFrom:
+        - secretRef:
+            name: django-app-secrets
+        - configMapRef:
+            name: django-config
+        volumeMounts:
+        - name: staticfiles-storage
+          mountPath: /usr/share/nginx/html/static  # ✅ Django writes static here, Nginx reads from here
 
       containers:
       - name: django-container
@@ -37,7 +37,7 @@ spec:
         - secretRef:
             name: django-app-secrets
         - configMapRef:
-            name: django-config  # Non-sensitive config variables
+            name: django-config
         resources:
           requests:
             memory: "256Mi"
@@ -46,11 +46,10 @@ spec:
             memory: "512Mi"
             cpu: "1000m"
         volumeMounts:
-        - name: docs-volume
-          mountPath: /final_project/docs  # Path inside the container
+        - name: staticfiles-storage
+          mountPath: /usr/share/nginx/html/static  # ✅ Shared storage for static files
 
       volumes:
-      - name: docs-volume
-        hostPath:
-          path: /run/desktop/mnt/host/d/Software/CS50W/final_project/docs  # Correct host path for Windows
-          type: DirectoryOrCreate  # Creates the directory if it doesn’t exist
+      - name: staticfiles-storage
+        persistentVolumeClaim:
+          claimName: staticfiles-pvc  # ✅ Shared PVC for static files
