@@ -44,11 +44,11 @@
     FROM backend AS final
     WORKDIR /final_project
     
-    # ✅ Mount volume for static files (PVC will provide `/usr/share/nginx/html/static/`)
-    VOLUME [ "/usr/share/nginx/html/static/" ]
-    
-    # ✅ Copy React build (static files) so Django can collect them later
-    COPY --from=frontend /final_project/frontend/build/static /usr/share/nginx/html/static/
+    # ✅ 1. Copy entire React build (not just static) so Django can reference `asset-manifest.json`
+    COPY --from=frontend /final_project/frontend/build/ /final_project/staticfiles/frontend/
+
+    # ✅ 2. Copy React’s built static files to Nginx's serving directory
+    COPY --from=frontend /final_project/frontend/build/static/ /usr/share/nginx/html/static/
     
     # Debug: Check if frontend static files were copied successfully
     RUN ls -la /usr/share/nginx/html/static/ || echo "⚠️ No frontend assets found!"
