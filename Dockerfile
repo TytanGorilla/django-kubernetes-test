@@ -37,41 +37,40 @@
     COPY frontend/ ./
     RUN npm run build
     
-    # (Optional Debug) List the contents so you can verify the build folder was created
-    RUN ls -la /final_project/frontend
+    # Debug: Verify the React build folder was created
+    RUN ls -la /final_project/frontend/build || echo "⚠️ No React build found!"
     
-    # ------------------ MERGE FRONTEND INTO DJANGO ------------------
+    # ------------------ FINAL IMAGE (Django + Nginx Static Files) ------------------
     FROM backend AS final
     WORKDIR /final_project
     
-    # Ensure the destination directory exists
-    RUN mkdir -p /final_project/staticfiles
+    # ✅ Mount volume for static files (PVC will provide `/usr/share/nginx/html/static/`)
+    VOLUME [ "/usr/share/nginx/html/static/" ]
     
-    # Copy the built frontend assets from the frontend stage before collect static runs
-    # The trailing slash on the source tells Docker to copy the folder’s contents.
-    COPY --from=frontend /final_project/frontend/build/static /final_project/staticfiles/frontend/
-
-    # Debug: Check if the files were copied successfully
-    RUN ls -la /final_project/staticfiles/frontend || echo "⚠️ No frontend assets found in /final_project/staticfiles/frontend"
+    # ✅ Copy React build (static files) so Django can collect them later
+    COPY --from=frontend /final_project/frontend/build/static /usr/share/nginx/html/static/
     
-    # Copy entrypoint script and ensure it's executable
+    # Debug: Check if frontend static files were copied successfully
+    RUN ls -la /usr/share/nginx/html/static/ || echo "⚠️ No frontend assets found!"
+    
+    # ✅ Copy entrypoint script and ensure it's executable
     COPY entrypoint.sh /entrypoint.sh
     RUN chmod +x /entrypoint.sh
-
-    # Install Docker CLI
+    
+    # Install Docker CLI (for Kubernetes support)
     RUN apt-get update && apt-get install -y docker.io && apt-get clean
-
+    
     # Install Kind (Kubernetes IN Docker)
     RUN curl -Lo /usr/local/bin/kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64 && \
-    chmod +x /usr/local/bin/kind
-
-    # **Install kubectl**
+        chmod +x /usr/local/bin/kind
+    
+    # Install kubectl
     RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
-    chmod +x kubectl && \
-    mv kubectl /usr/local/bin/
+        chmod +x kubectl && \
+        mv kubectl /usr/local/bin/
     
     # Expose the port the app runs on
     EXPOSE 8000
     
-    # Set entrypoint to ensure proper execution order
-    CMD ["bash", "/entrypoint.sh"]
+    # ✅ Run entrypoint script to collect static files and start the server
+    CMD ["bash", "/entrypoint.sh"]    

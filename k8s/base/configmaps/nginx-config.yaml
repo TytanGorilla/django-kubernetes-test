@@ -25,9 +25,25 @@ data:
             access_log /var/log/nginx/access.log;
             error_log /var/log/nginx/error.log warn;
 
-            # ✅ Serve ALL static files (Django + React) from /usr/share/nginx/html/static/ Nginx expects static files inside /usr/share/nginx/html/, which is its default web root directory.
-            location /static/ {
-                alias /usr/share/nginx/html/static/;
+            # ✅ Serve Django + React static files with correct subdirectories
+            location /static/core/ {
+                alias /usr/share/nginx/html/static/core/;  # Serves core static files
+                autoindex on;
+                expires 30d;
+                add_header Cache-Control "public, max-age=2592000";
+                add_header Access-Control-Allow-Origin *;
+            }
+
+            location /static/scheduler/ {
+                alias /usr/share/nginx/html/static/scheduler/;  # Serves scheduler static files
+                autoindex on;
+                expires 30d;
+                add_header Cache-Control "public, max-age=2592000";
+                add_header Access-Control-Allow-Origin *;
+            }
+
+            location /static/frontend/ {
+                alias /usr/share/nginx/html/static/frontend/;  # Serves React frontend static files
                 autoindex on;
                 expires 30d;
                 add_header Cache-Control "public, max-age=2592000";

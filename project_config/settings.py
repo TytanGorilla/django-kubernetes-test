@@ -150,10 +150,9 @@ STATIC_ROOT = "/usr/share/nginx/html/static/"
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'project_config/static',  # Global static files
-    BASE_DIR / 'apps/scheduler/static',  # Scheduler app's static files
-    os.path.join(BASE_DIR, "frontend/build/static"),  # ✅ Point Django to React’s built static files
-    os.path.join(BASE_DIR, "project_config/static/core"),  # Ensure core CSS is included
+    ("core", BASE_DIR / "project_config/static/core"),  # Core static files → /static/core/
+    ("scheduler", BASE_DIR / "apps/scheduler/static/scheduler"),  # Scheduler static → /static/scheduler/
+    ("frontend", BASE_DIR / "frontend/build/static"),  # React frontend static → /static/frontend/
 ]
 
 # Default primary key field type
