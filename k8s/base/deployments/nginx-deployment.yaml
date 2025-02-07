@@ -21,14 +21,14 @@ spec:
         - containerPort: 80
         volumeMounts:
         - name: nginx-config
-          mountPath: /etc/nginx/nginx.conf
+          mountPath: /etc/nginx/nginx.conf  # ✅ Correctly mounting nginx.conf
           subPath: nginx.conf
-        - name: staticfiles
-          mountPath: /usr/share/nginx/html
+        - name: staticfiles-storage # Define a volume (this is just a label)
+          mountPath: /usr/share/nginx/html/static  # ✅ Match Nginx static serving path
       volumes:
       - name: nginx-config
         configMap:
           name: nginx-config
-      - name: staticfiles
+      - name: staticfiles-storage # Mount the PVC volume
         persistentVolumeClaim:
           claimName: staticfiles-pvc

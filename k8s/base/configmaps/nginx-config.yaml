@@ -4,16 +4,14 @@ metadata:
   name: nginx-config
 data:
   nginx.conf: |
-    # Define general Nginx settings
     events {
         worker_connections 1024;
     }
 
     http {
-        include       mime.types;  # Load MIME types
-        default_type  application/octet-stream;  # Default MIME type
+        include       mime.types;
+        default_type  application/octet-stream;
 
-        # Enable gzip compression for better performance
         gzip on;
         gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
         gzip_vary on;
@@ -24,37 +22,13 @@ data:
         server {
             listen 80;
 
-            # Log locations for debugging
             access_log /var/log/nginx/access.log;
             error_log /var/log/nginx/error.log warn;
 
-            # ✅ Serve all static files (Django + React) from the correct location
+            # ✅ Serve ALL static files (Django + React) from /usr/share/nginx/html/static/ Nginx expects static files inside /usr/share/nginx/html/, which is its default web root directory.
             location /static/ {
-                alias /final_project/staticfiles/;
+                alias /usr/share/nginx/html/static/;
                 autoindex on;
-
-                # Allow browser caching for static files
-                expires 30d;
-                add_header Cache-Control "public, max-age=2592000";
-
-                # Enable CORS for JS and CSS files
-                add_header Access-Control-Allow-Origin *;
-            }
-
-            # ✅ Serve React-built assets (JS, CSS, Images) correctly
-            location /static/frontend/ {
-                alias /final_project/staticfiles/frontend/;  # This maps /static/frontend/* → /final_project/staticfiles/frontend/*
-                autoindex on;
-
-                # Serve correct MIME types
-                types {
-                    text/css css;
-                    application/javascript js;
-                    image/png png;
-                    image/jpeg jpg;
-                    image/svg+xml svg;
-                }
-
                 expires 30d;
                 add_header Cache-Control "public, max-age=2592000";
                 add_header Access-Control-Allow-Origin *;

@@ -111,7 +111,6 @@ DATABASE_URL="postgresql://postgres.jxpsamnvzjziemtpziig:YOUR_SUPABASE_PASSWORD@
 Make the scripts executable:
 ```bash
 chmod +x generate_secrets_configs.sh
-chmod +x copy_static_to_docs.sh
 chmod +x sync_migrations.sh
 ```
 Run the script to create a new `secrets.yaml` file:
