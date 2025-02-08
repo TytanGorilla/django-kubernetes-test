@@ -31,3 +31,10 @@ spec:
             secretKeyRef:
               name: django-app-secrets
               key: POSTGRES_PASSWORD
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data  # ✅ Correctly mounted inside the container
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc  # ✅ Attach to persistent storage

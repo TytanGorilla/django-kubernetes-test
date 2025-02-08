@@ -162,9 +162,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-    os.getenv("FRONTEND_URL", "http://localhost:3000"),
+    os.getenv("FRONTEND_URL", "http://localhost:3000"), # React Dev Server
     os.getenv("NGINX_URL", "http://192.168.49.2:32212"),  # If React is served from Nginx
 ]
+
+# ✅ Allow dynamic frontend origin from environment variable
+if "CODESPACE_NAME" in os.environ:
+    CORS_ALLOWED_ORIGINS.append(f"https://{os.environ['CODESPACE_NAME']}-3000.app.github.dev")
+
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS  # ✅ Trust same origins for CSRF
 
 CORS_ALLOW_CREDENTIALS = True
 
