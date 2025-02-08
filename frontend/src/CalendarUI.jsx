@@ -19,15 +19,25 @@ const CalendarUI = () => {
     const fetchEvents = async () => {
       try {
         const token = localStorage.getItem("access_token");
+
+        if (!token) {
+          console.error("❌ No access token found in localStorage. User may need to log in.");
+          return; // Prevent request if token is missing
+        }
+
+        console.log("📡 Sending request with token:", token);
+
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/events/`, {
           headers: {
             "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
           },
         });
 
+        console.log("✅ Events response:", response.data);
         setEvents(response.data);
       } catch (error) {
-        console.error("Error fetching events:", error);
+        console.error("❌ Error fetching events:", error.response?.data || error);
       }
     };
 

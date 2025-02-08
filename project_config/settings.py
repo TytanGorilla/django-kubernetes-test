@@ -206,8 +206,9 @@ REACT_MANIFEST = get_manifest_file()
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # Optionally, you can also include SessionAuthentication if needed:
-        # 'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # ✅ Requires login to access API
     ),
 }
 

@@ -15,36 +15,29 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
+  
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/token/`, formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true, // ✅ Ensure cookies are sent if needed
-      });
-
-      localStorage.setItem("access_token", response.data.access);
-      localStorage.setItem("refresh_token", response.data.refresh);
-
-      console.log("✅ Login successful!", response.data);
-      window.location.href = "/scheduler"; // Redirect after login
-
-    } catch (error) {
-      console.error("❌ Login error:", error);
-
-      if (error.response) {
-        console.error("Server Response:", error.response.data);
-        setError(error.response.data.detail || "Invalid username or password");
-      } else if (error.request) {
-        console.error("No response from server.");
-        setError("Unable to connect to the backend. Check your network.");
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/token/`, formData);
+  
+      console.log("Login Response:", response.data);
+  
+      if (response.data.access && response.data.refresh) {
+        localStorage.setItem("access_token", response.data.access);
+        localStorage.setItem("refresh_token", response.data.refresh);
+        console.log("Token saved to localStorage:", localStorage.getItem("access_token"));
       } else {
-        console.error("Request setup error:", error.message);
-        setError("Something went wrong. Please try again.");
+        console.error("Token missing in response!", response.data);
+        setError("Authentication failed: No token received");
+        return;
       }
+  
+      window.location.href = "/scheduler";  // Redirect user after login
+  
+    } catch (error) {
+      console.error("Login error:", error.response?.data || error);
+      setError("Invalid username or password");
     }
-  };
+  };  
 
   return (
     <div>
