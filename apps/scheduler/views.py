@@ -7,6 +7,7 @@ from .models import Event, Calendar
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
+
 def index(request):
     manifest = settings.REACT_MANIFEST.copy()
 
@@ -26,7 +27,9 @@ class EventViewSet(viewsets.ModelViewSet):
     """
     queryset = Event.objects.all().order_by('start_time')
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated]  # Require authentication 
+    permission_classes = [IsAuthenticated]  # Require authentication
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)  # Save event to use
 
 class CalendarViewSet(viewsets.ModelViewSet):
     """
