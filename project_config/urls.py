@@ -22,9 +22,16 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.home, name='home'),  # Homepage at http://localhost:32212/
-    path('scheduler/', include('apps.scheduler.urls')),  # Routes requests starting with /scheduler/ to scheduler's urls.py
+    path('admin/', admin.site.urls),  # ✅ Django Admin Panel
+    path('', views.home, name='home'),  # ✅ Homepage at http://localhost:32212/
+    
+    # ✅ Routes requests starting with /scheduler/ to the scheduler app
+    path('scheduler/', include('apps.scheduler.urls')),  
+    
+    # ✅ Make API available directly under `/api/` instead of `/scheduler/api/`
+    path('api/', include('apps.scheduler.api_urls')),  
+
+    # ✅ JWT Authentication Endpoints
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

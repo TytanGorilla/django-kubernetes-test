@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework', # Added for Django REST Framework (DRF)
     'rest_framework_simplejwt', # Added for Django REST Framework Simple JWT
+    'django_extensions',  # ✅ Add this to enable `show_urls`
     'corsheaders',
     'apps.scheduler', # Updated the path to include the apps folder
     # Add your custom apps here

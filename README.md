@@ -169,15 +169,31 @@ nginx-service    NodePort    10.96.245.237   <none>        80:32212/TCP     100s
 
 ### Delete & Reapply manifest and restart the application
 ```bash
-kubectl delete -f k8s/ --recursive
-kubectl apply -f k8s/ --recursive
+# Step 1: Scale down workloads (avoid issues with PVC deletion)
+kubectl scale deployment django-app --replicas=0
+kubectl scale deployment nginx --replicas=0
+kubectl scale deployment postgres --replicas=0
+
+# Step 2: Delete deployments (preserve PVCs)
+kubectl delete -f k8s/base/deployments --recursive
+
+# Step 3: Ensure PVCs are still there
+kubectl get pvc  # Check if PVCs exist before applying again
+
+# Step 4: Apply PVCs first
+kubectl apply -f k8s/base/pvc --recursive
+
+# Step 5: Apply ConfigMaps & Secrets
+kubectl apply -f k8s/base/configmaps --recursive
+kubectl apply -f k8s/base/secrets --recursive
+
+# Step 6: Apply Deployments (ensuring PVCs exist now)
+kubectl apply -f k8s/base/deployments --recursive
+
+# Step 7: Rollout restarts in order
+kubectl rollout restart deployment postgres
 kubectl rollout restart deployment django-app
 kubectl rollout restart deployment nginx
-kubectl rollout restart deployment postgres
-```
-Or to restart all deployments
-```bash
-kubectl get deployments -o name | xargs -n 1 kubectl rollout restart
 ```
 
 ### Test the database
