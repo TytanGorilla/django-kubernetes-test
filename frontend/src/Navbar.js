@@ -10,13 +10,17 @@ const Navbar = () => {
   };
 
   return (
-    <nav>
-      <Link to="/scheduler">Scheduler</Link>
-      {token ? (
-        <button onClick={handleLogout}>Logout</button>
-      ) : (
-        <Link to="/login">Login</Link>
-      )}
+    <nav style={{ display: "flex", justifyContent: "space-between", padding: "10px", backgroundColor: "#333", color: "white" }}>
+      <div>
+        <Link to="/scheduler" style={{ marginRight: "15px", color: "white", textDecoration: "none" }}>Scheduler</Link>
+      </div>
+      <div>
+        {token ? (
+          <button onClick={handleLogout} style={{ backgroundColor: "red", color: "white", border: "none", padding: "5px 10px" }}>Logout</button>
+        ) : (
+          <Link to="/login" style={{ color: "white", textDecoration: "none" }}>Login</Link>
+        )}
+      </div>
     </nav>
   );
 };
