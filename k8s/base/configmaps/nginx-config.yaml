@@ -50,6 +50,14 @@ data:
                 add_header Access-Control-Allow-Origin *;
             }
 
+            # ⛔ Prevent caching of `index.html`
+            location /static/frontend/index.html {
+                alias /usr/share/nginx/html/static/frontend/index.html;
+                add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate";
+                add_header Pragma "no-cache";
+                add_header Expires 0;
+            }
+
             # 🔁 Proxy all API requests to Django
             location / {
                 proxy_pass http://django-service:8000;

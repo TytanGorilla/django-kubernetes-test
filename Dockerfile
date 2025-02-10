@@ -35,9 +35,16 @@
     
     # Copy all frontend source files and build the React app
     COPY frontend/ ./
+
+    # ✅ Load environment variables from .env (Manually Pass It)
+    ARG BUILD_VERSION
+    ENV REACT_APP_BUILD_VERSION=$BUILD_VERSION
     
     # ✅ Force build React
     RUN npm run build --verbose || (echo "⚠️ React build failed!" && exit 1)
+
+    # ✅ Debug: Ensure cache-busting version is set
+    RUN cat build/index.html | grep main.js || echo "⚠️ No cache-busting found!"
     
     # Debug: Verify the React build folder was created
     RUN ls -la /final_project/frontend/build || echo "⚠️ No React build found!"

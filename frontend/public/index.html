@@ -4,8 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>React Calendar App</title>
+  <!-- ✅ Cache-busting styles -->
+  <link rel="stylesheet" href="%PUBLIC_URL%/static/css/main.css?v=%REACT_APP_BUILD_VERSION%">
 </head>
 <body>
   <div id="root"></div>
+  <!-- ✅ Cache-busting scripts -->
+  <script defer src="%PUBLIC_URL%/static/js/main.js?v=%REACT_APP_BUILD_VERSION%"></script>
 </body>
 </html>
