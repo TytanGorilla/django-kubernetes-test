@@ -12,10 +12,6 @@ const App = () => {
   return (
     <Router>
       <Navbar />
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/scheduler" element={<PrivateRoute element={<CalendarUI />} />} />
-      </Routes>
     </Router>
   );
 };

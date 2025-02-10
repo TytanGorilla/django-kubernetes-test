@@ -4,6 +4,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("access_token");
   console.log("✅ React Navbar Mounted");
+  console.log("✅ Navbar Loaded at", new Date().toISOString());
+
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
