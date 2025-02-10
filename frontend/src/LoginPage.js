@@ -3,10 +3,10 @@ import axios from "axios";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:32212";
 
-const Login = () => {
+const LoginPage = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // ✅ State for toggling password
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,27 +15,21 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-  
+
     try {
       const response = await axios.post(`${BACKEND_URL}/api/token/`, formData);
-  
-      console.log("Login Response:", response.data);
-  
+
       if (response.data.access && response.data.refresh) {
         localStorage.setItem("access_token", response.data.access);
         localStorage.setItem("refresh_token", response.data.refresh);
-        console.log("Token saved to localStorage:", localStorage.getItem("access_token"));
+        window.location.href = "/scheduler"; // Redirect user after login
       } else {
         setError("Authentication failed: No token received");
-        return;
       }
-  
-      window.location.href = "/scheduler";  // Redirect user after login
-  
     } catch (error) {
       setError("Invalid username or password");
     }
-  };  
+  };
 
   return (
     <div>
@@ -53,7 +47,7 @@ const Login = () => {
         
         <div style={{ display: "flex", alignItems: "center" }}>
           <input
-            type={showPassword ? "text" : "password"} // ✅ Toggle visibility
+            type={showPassword ? "text" : "password"}
             name="password"
             placeholder="Password"
             value={formData.password}
@@ -80,4 +74,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;

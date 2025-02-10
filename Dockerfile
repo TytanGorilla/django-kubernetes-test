@@ -37,7 +37,7 @@
     COPY frontend/ ./
     
     # ✅ Force build React
-    RUN npm run build || (echo "⚠️ React build failed!" && exit 1)
+    RUN npm run build --verbose || (echo "⚠️ React build failed!" && exit 1)
     
     # Debug: Verify the React build folder was created
     RUN ls -la /final_project/frontend/build || echo "⚠️ No React build found!"
