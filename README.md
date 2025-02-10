@@ -308,9 +308,8 @@ kubectl apply -f k8s/ --recursive
 
 ### Rebuilding the Docker Image with dated versioning
 ```bash
-docker build --no-cache --env-file frontend/.env -t tytan22/django-app:1.0.20250210 .
-
-docker build --no-cache --env-file frontend/.env -t tytan22/django-app:1.0.$(date +%Y%m%d) .
+docker build --no-cache --build-arg BUILD_VERSION=$(date +%Y%m%d) -t tytan22/django-app:1.0.$(date +%Y%m%d) .
+docker build --no-cache --build-arg BUILD_VERSION=$(date +%Y%m%d) -t tytan22/django-app:1.0.20250210 .
 
 docker build --no-cache -t tytan22/django-app:1.0.20250210 .
 docker build -t tytan22/django-app:1.0.20250210 .

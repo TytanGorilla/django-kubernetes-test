@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -8,10 +8,15 @@ const AuthButtons = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("access_token");
 
+  useEffect(() => {
+    console.log("✅ AuthButtons Component Rendered!");
+    console.log("🔑 Token in localStorage:", token);
+  }, [token]);
+
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
-    navigate("/login"); // Redirect to login page
+    window.location.href = "/login";  // ✅ Forces full page reload to login page
   };
 
   return (
