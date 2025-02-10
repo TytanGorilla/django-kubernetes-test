@@ -33,33 +33,5 @@ Thumbs.db
 k8s/base/secrets/secrets.yaml
 !k8s/base/secrets/
 
-# Ignore everything in the docs folder by default
-docs/*
-
-# Allow all static files inside docs/
-!docs/static/
-!docs/static/css/
-!docs/static/js/
-
-# Allow frontend assets (React build)
-!docs/frontend/
-!docs/frontend/index.html
-!docs/frontend/static/
-!docs/frontend/static/css/
-!docs/frontend/static/js/
-
-# Allow Scheduler-specific static files
-!docs/scheduler/
-!docs/scheduler/css/
-!docs/scheduler/js/
-
-# Allow core static files
-!docs/core/
-!docs/core/css/
-!docs/core/js/
-
-# Ignore Django Admin static files (not needed for GH Pages)
-docs/admin/
-
 # Ignore node__modules
 node_modules/

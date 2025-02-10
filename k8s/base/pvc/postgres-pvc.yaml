@@ -4,7 +4,7 @@ metadata:
   name: postgres-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce  # ✅ Ensures only one pod can use it at a time
   resources:
     requests:
-      storage: 1Gi  # Adjust as needed
+      storage: 1Gi  # ✅ Set required storage size
