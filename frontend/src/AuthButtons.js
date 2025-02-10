@@ -1,33 +1,32 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:32212";
+import ReactDOM from "react-dom";
 
 const AuthButtons = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("access_token");
-
-  useEffect(() => {
-    console.log("✅ AuthButtons Component Rendered!");
-    console.log("🔑 Token in localStorage:", token);
-  }, [token]);
+  const [token, setToken] = useState(localStorage.getItem("access_token"));
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    window.location.href = "/login";  // ✅ Forces full page reload to login page
+    setToken(null);
+    navigate("/login");
   };
 
-  return (
-    <span>
-      {token ? (
-        <button onClick={handleLogout}>Logout</button>
-      ) : (
-        <Link to="/login">Login</Link>
-      )}
-    </span>
-  );
+  useEffect(() => {
+    const authContainer = document.getElementById("react-auth-buttons");
+    if (authContainer) {
+      ReactDOM.render(
+        token ? (
+          <button onClick={handleLogout}>Logout</button>
+        ) : (
+          <Link to="/login">Login</Link>
+        ),
+        authContainer
+      );
+    }
+  }, [token]);
+
+  return null; // ✅ Injects into Django's template, no React UI needed
 };
 
 export default AuthButtons;
