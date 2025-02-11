@@ -3,7 +3,27 @@
 {% block title %}Welcome{% endblock %}
 
 {% block content %}
-    <h1>Welcome to the Core Landing Page</h1>
-    <p>Click link below to go to Scheduler</p>
-    <a href="{% url 'scheduler_home' %}">Go to Scheduler</a>
+    <h1>Welcome to the Core Django Application Landing Page</h1>
+    <p>This Django Application potentially houses multiple application services.</p>
+    <p>Click on the links above to navigate to the respective application services.</p>
+    <p>For this CS50W Final Project, this app is a calendar scheduler app built with Django and React.</p>
+
+    <!-- ✅ Features Section with Images -->
+    <section class="features-container">
+        <div class="feature-item">
+            <h3>Data Capture & Persistence</h3>
+            <p>Powered by Django REST API</p>
+            <img src="{% static 'core/images/django-rest.png' %}" alt="Django REST API" />
+        </div>
+        <div class="feature-item">
+            <h3>Cloud-Based Deployment</h3>
+            <p>Scalable & managed with Kubernetes</p>
+            <img src="{% static 'core/images/kubernetes.png' %}" alt="Kubernetes Deployment" />
+        </div>
+        <div class="feature-item">
+            <h3>Cloud-Managed Storage</h3>
+            <p>Integrated seamlessly with Supabase</p>
+            <img src="{% static 'core/images/supabase.png' %}" alt="Supabase Storage" />
+        </div>
+    </section>
 {% endblock %}

@@ -1,4 +1,4 @@
-/* Center the login container */
+/* Ensure login container has proper width */
 .login-container {
     max-width: 350px;
     margin: 50px auto;
@@ -9,41 +9,33 @@
     text-align: center;
   }
   
-  /* Style the error message */
-  .error-message {
-    color: red;
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-  
-  /* Style input fields */
+  /* Make sure input fields match the container width */
   .input-group {
     display: flex;
     flex-direction: column;
     text-align: left;
     margin-bottom: 15px;
-  }
-  
-  .input-group label {
-    font-weight: bold;
-    margin-bottom: 5px;
+    width: 100%; /* Ensure full width */
   }
   
   .input-group input {
-    width: 100%;
+    width: 100%; /* Forces input to take full width of the container */
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box; /* ✅ Prevents input from overflowing */
   }
   
-  /* Password input with toggle button */
+  /* Fix for password input & toggle button */
   .password-container {
     display: flex;
     align-items: center;
+    width: 100%;
   }
   
   .password-container input {
-    flex: 1;
+    flex: 1; /* Makes input take up available space */
   }
   
   .toggle-password {
@@ -52,9 +44,10 @@
     cursor: pointer;
     font-size: 14px;
     padding-left: 10px;
+    white-space: nowrap;
   }
   
-  /* Style the login button */
+  /* Ensure login button fits nicely */
   .login-button {
     width: 100%;
     padding: 10px;
@@ -69,4 +62,4 @@
   
   .login-button:hover {
     background: #0056b3;
-  }  
+  }
