@@ -316,6 +316,7 @@ docker build -t tytan22/django-app:1.0.20250210 .
 ```
 ### Pushing the Docker Image to Docker Hub
 ```bash
+docker push tytan22/django-app:1.0.$(date +%Y%m%d)
 docker push tytan22/django-app:1.0.20250210
 ```
 ### Updating django-app Deployment to use the new Docker Image
@@ -334,4 +335,12 @@ containers:
 ### Bashing into the active django-app pod
 ```bash
 kubectl exec -it $(kubectl get pod -l app=django-app -o jsonpath="{.items[0].metadata.name}") -- bash
+```
+
+Rebuild Frontend & Deploy
+1️⃣ Build the frontend locally:
+cd to frontend
+```bash
+export REACT_APP_BUILD_VERSION=$(date +%s)
+npm run build
 ```

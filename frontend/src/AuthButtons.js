@@ -13,20 +13,32 @@ const AuthButtons = () => {
   };
 
   useEffect(() => {
-    const authContainer = document.getElementById("react-auth-buttons");
-    if (authContainer) {
-      ReactDOM.render(
-        token ? (
-          <button onClick={handleLogout}>Logout</button>
-        ) : (
-          <Link to="/login">Login</Link>
-        ),
-        authContainer
-      );
-    }
+    console.log("✅ React AuthButtons useEffect running...");
+
+    const injectAuthButtons = () => {
+      const authContainer = document.getElementById("react-auth-buttons");
+      console.log("🔍 Found auth container:", authContainer);
+
+      if (authContainer) {
+        console.log("✅ Injecting React buttons into Django navbar...");
+        authContainer.innerHTML = ""; // Clear previous content
+        ReactDOM.render(
+          token ? (
+            <button onClick={handleLogout}>Logout</button>
+          ) : (
+            <Link to="/login">Login</Link>
+          ),
+          authContainer
+        );
+      } else {
+        console.error("❌ Could not find #react-auth-buttons in DOM!");
+      }
+    };
+
+    setTimeout(injectAuthButtons, 100); // ✅ Ensures Django fully loads before React injects
   }, [token]);
 
-  return null; // ✅ Injects into Django's template, no React UI needed
+  return null; // 🚀 React doesn’t render anything itself, just injects into Django.
 };
 
 export default AuthButtons;

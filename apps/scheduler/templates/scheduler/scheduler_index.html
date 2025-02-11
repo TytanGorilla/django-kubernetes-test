@@ -6,14 +6,15 @@
 {% endblock %}
 
 {% block scheduler_content %}
-    <h2 id="welcome">Welcome to My Newly Updated Cloud Database Starting Calendar Application for CS50W!</h2>
+    <h2 id="welcome">Welcome to My Newly Updated Cloud Database managed Calendar Application for CS50W!!</h2>
     
     <div id="root"></div>  <!-- ✅ React app injects here -->
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            console.log("✅ Django template fully loaded.");
             if (!document.getElementById('root').children.length) {
-                console.error("React failed to mount! Check static file paths.");
+                console.error("❌ React failed to mount! Check static file paths.");
             }
         });
     </script>
