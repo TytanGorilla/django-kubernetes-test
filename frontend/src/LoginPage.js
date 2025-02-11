@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import "./LoginPage.css";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:32212";
 
@@ -32,43 +33,44 @@ const LoginPage = () => {
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Login</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={formData.username}
-          onChange={handleChange}
-          required
-        />
-        
-        <div style={{ display: "flex", alignItems: "center" }}>
+      {error && <p className="error-message">{error}</p>}
+      <form className="login-form" onSubmit={handleSubmit}>
+        <div className="input-group">
+          <label>Username</label>
           <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="Password"
-            value={formData.password}
+            type="text"
+            name="username"
+            placeholder="Enter your username"
+            value={formData.username}
             onChange={handleChange}
             required
           />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            style={{
-              marginLeft: "10px",
-              backgroundColor: "transparent",
-              border: "none",
-              cursor: "pointer"
-            }}
-          >
-            {showPassword ? "🙈 Hide" : "👁 Show"}
-          </button>
         </div>
 
-        <button type="submit">Login</button>
+        <div className="input-group">
+          <label>Password</label>
+          <div className="password-container">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="toggle-password"
+            >
+              {showPassword ? "🙈 Hide" : "👁 Show"}
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" className="login-button">Login</button>
       </form>
     </div>
   );

@@ -128,12 +128,13 @@ This reads the `.env` file, Base64-encodes variables, and produces a Kubernetes 
 ```ini
 PUBLIC_URL=http://localhost:32212/static/frontend
 REACT_APP_BACKEND_URL=http://localhost:32212
+REACT_APP_BUILD_VERSION=$(date +%s)
 ```
 📌 What this does:
 
 PUBLIC_URL → Makes React look for JS files in Nginx (/static/frontend/)
 REACT_APP_BACKEND_URL → Ensures React API calls hit Django (http://localhost:32212).
-
+REACT_APP_BUILD_VERSION -> Make React look for latest version of React for cache busting.
 
 ### Apply Manifests to Kubernetes
 Apply the secrets and other manifests:
