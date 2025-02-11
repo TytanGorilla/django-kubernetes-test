@@ -1,12 +1,11 @@
 from django.contrib import admin
-from .models import Calendar, Event
+from .models import Event
 
 # Customizing the Admin Panel for Event Model
 class EventAdmin(admin.ModelAdmin):
-    list_display = ('title', 'calendar', 'start_time', 'end_time')  # Columns in admin list view
-    list_filter = ('calendar', 'start_time')  # Filter options in the sidebar
-    search_fields = ('title', 'description')  # Search bar for events
+    list_display = ('title', 'start_time', 'end_time')  # ❌ Removed 'calendar'
+    list_filter = ('start_time',)  # ❌ Removed 'calendar'
+    search_fields = ('title', 'description')
 
 # Register models with the admin site
-admin.site.register(Calendar)
-admin.site.register(Event, EventAdmin)  # Use the custom admin class
+admin.site.register(Event, EventAdmin)

@@ -178,8 +178,8 @@ kubectl scale deployment postgres --replicas=0
 # Step 2: Delete deployments (preserve PVCs)
 kubectl delete -f k8s/base/deployments --recursive
 
-# Step 3: Ensure PVCs are still there
-kubectl get pvc  # Check if PVCs exist before applying again
+# Step 3: Ensure PVCs are still there, Check if PVCs exist before applying again
+kubectl get pvc  
 
 # Step 4: Apply PVCs first
 kubectl apply -f k8s/base/pvc --recursive
@@ -333,6 +333,15 @@ containers:
 ./sync_migrations.sh
 ```
 
+### Creating Migrations Locally only after models changes
+```bash
+DATABASE_URL="postgresql://postgres.jxpsamnvzjziemtpziig:Uyr04Wp9IoDd^h3@aws-0-eu-central-1.pooler.supabase.com:5432/postgres" python manage.py makemigrations scheduler
+
+# To force creation use --empty
+DATABASE_URL="postgresql://postgres.jxpsamnvzjziemtpziig:Uyr04Wp9IoDd^h3@aws-0-eu-central-1.pooler.supabase.com:5432/postgres" python manage.py makemigrations scheduler --empty
+```
+
+
 ### Bashing into the active django-app pod
 ```bash
 kubectl exec -it $(kubectl get pod -l app=django-app -o jsonpath="{.items[0].metadata.name}") -- bash
@@ -340,6 +349,11 @@ kubectl exec -it $(kubectl get pod -l app=django-app -o jsonpath="{.items[0].met
 
 Rebuild Frontend & Deploy
 1️⃣ Build the frontend locally:
+cd to frontend
+```bash
+npm run build
+```
+2 Build the frontend for production & to bust cache from stale files:
 cd to frontend
 ```bash
 export REACT_APP_BUILD_VERSION=$(date +%s)

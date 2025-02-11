@@ -3,7 +3,7 @@ import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { format } from "date-fns";
-import axios from "axios";
+import supabase from "./supabase"; // ✅ Import Supabase client
 
 const localizer = momentLocalizer(moment);
 
@@ -14,37 +14,23 @@ const CalendarUI = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({ id: null, title: "", description: "", start: "", end: "" });
 
-  // Fetch events on page load
+  // ✅ Fetch events from Supabase on page load
   useEffect(() => {
     const fetchEvents = async () => {
-      try {
-        const token = localStorage.getItem("access_token");
+      const { data, error } = await supabase.from("events").select("*");
 
-        if (!token) {
-          console.error("❌ No access token found in localStorage. User may need to log in.");
-          return; // Prevent request if token is missing
-        }
-
-        console.log("📡 Sending request with token:", token);
-
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/events/`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-        });
-
-        console.log("✅ Events response:", response.data);
-        setEvents(response.data);
-      } catch (error) {
-        console.error("❌ Error fetching events:", error.response?.data || error);
+      if (error) {
+        console.error("❌ Error fetching events:", error.message);
+      } else {
+        console.log("✅ Supabase events response:", data);
+        setEvents(data);
       }
     };
 
     fetchEvents();
   }, []);
 
-  // Handle selecting a time slot to create a new event
+  // ✅ Handle selecting a time slot to create a new event
   const handleSelectSlot = ({ start }) => {
     setSelectedDate(start);
     setSelectedEvent(null);
@@ -58,7 +44,7 @@ const CalendarUI = () => {
     });
   };
 
-  // Handle selecting an event (Edit Mode)
+  // ✅ Handle selecting an event (Edit Mode)
   const handleSelectEvent = (event) => {
     setSelectedEvent(event);
     setIsDialogOpen(true);
@@ -71,12 +57,12 @@ const CalendarUI = () => {
     });
   };
 
-  // Handle input changes in the form
+  // ✅ Handle input changes in the form
   const handleFormChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle saving (Create or Update event)
+  // ✅ Handle saving (Create or Update event)
   const handleSubmit = async () => {
     const eventData = {
       title: formData.title,
@@ -86,53 +72,41 @@ const CalendarUI = () => {
     };
 
     try {
-      const token = localStorage.getItem("access_token");
-
       if (formData.id) {
-        // Update existing event
-        const response = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/events/${formData.id}/`, eventData, {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-        });
+        // ✅ Update existing event in Supabase
+        const { data, error } = await supabase
+          .from("events")
+          .update(eventData)
+          .match({ id: formData.id });
 
-        setEvents(events.map((event) => (event.id === formData.id ? response.data : event)));
+        if (error) throw error;
+        setEvents(events.map((event) => (event.id === formData.id ? data[0] : event)));
       } else {
-        // Create new event
-        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/events/`, eventData, {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-        });
+        // ✅ Insert new event in Supabase
+        const { data, error } = await supabase.from("events").insert([eventData]);
 
-        setEvents([...events, response.data]);
+        if (error) throw error;
+        setEvents([...events, data[0]]);
       }
 
       setIsDialogOpen(false);
     } catch (error) {
-      console.error("Error saving event:", error);
+      console.error("❌ Error saving event:", error.message);
     }
   };
 
-  // Handle deleting an event
+  // ✅ Handle deleting an event
   const handleDelete = async () => {
     if (!selectedEvent) return;
 
     try {
-      const token = localStorage.getItem("access_token");
+      const { error } = await supabase.from("events").delete().match({ id: selectedEvent.id });
 
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/events/${selectedEvent.id}/`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
+      if (error) throw error;
       setEvents(events.filter((event) => event.id !== selectedEvent.id));
       setIsDialogOpen(false);
     } catch (error) {
-      console.error("Error deleting event:", error);
+      console.error("❌ Error deleting event:", error.message);
     }
   };
 

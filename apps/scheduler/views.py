@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.conf import settings
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from .serializers import EventSerializer, CalendarSerializer
-from .models import Event, Calendar
+from .serializers import EventSerializer
+from .models import Event
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
@@ -30,13 +30,6 @@ class EventViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]  # Require authentication
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)  # Save event to use
-
-class CalendarViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows calendars to be viewed or edited.
-    """
-    queryset = Calendar.objects.all().order_by('created_at')
-    serializer_class = CalendarSerializer
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

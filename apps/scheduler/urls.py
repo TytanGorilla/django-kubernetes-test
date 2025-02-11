@@ -1,11 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import EventViewSet, CalendarViewSet, user_info, index
+from .views import EventViewSet, user_info, index
 
 # Create a router to automatically handle API endpoints
 router = DefaultRouter()
 router.register(r'events', EventViewSet, basename='event')
-router.register(r'calendars', CalendarViewSet, basename='calendar')
 
 # Define URL patterns
 urlpatterns = [
