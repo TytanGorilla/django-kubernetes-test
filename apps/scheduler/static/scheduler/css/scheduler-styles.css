@@ -8,8 +8,8 @@ body {
 
 /* Make the header unique */
 header {
-    background-color: #28a745;  /* Green header (instead of blue) */
-    font-size: 1.8em; /* Slightly bigger */
+    background-color: #179988;  /* Green header (instead of blue) */
+    font-size: 1.5em;
 }
 
 /* Change the navbar */
@@ -19,7 +19,6 @@ nav {
 
 nav a {
     color: white;
-    font-weight: bold;
     border-bottom: 2px solid transparent;
 }
 
