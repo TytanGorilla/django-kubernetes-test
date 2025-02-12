@@ -19,6 +19,9 @@
     # Copy the entire project into the container
     COPY . /final_project
     
+    # ✅ Copy the frontend build folder into the Django project
+    COPY frontend/build /final_project/frontend/build
+    
     # Ensure the Python path includes the working directory
     ENV PYTHONPATH=/final_project
     
@@ -40,5 +43,4 @@
     EXPOSE 8000
     
     # ✅ Run entrypoint script to collect static files and start the server
-    CMD ["bash", "/entrypoint.sh"]
-    
+    CMD ["bash", "/entrypoint.sh"]    

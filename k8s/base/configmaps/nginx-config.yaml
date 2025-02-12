@@ -1,181 +1,46 @@
-import { useState, useEffect } from "react";
-import { Calendar as BigCalendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import { format } from "date-fns";
-
-const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
-const EVENTS_TABLE = "events";
-
-const localizer = momentLocalizer(moment);
-
-const CalendarUI = () => {
-  const [events, setEvents] = useState([]);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    id: null, title: "", description: "", start: "", end: ""
-  });
-
-  // ✅ Fetch events from Supabase
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/${EVENTS_TABLE}`, {
-          method: "GET",
-          headers: {
-            "apikey": SUPABASE_ANON_KEY,
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        
-        const data = await response.json();
-        console.log("✅ Fetched events:", data);
-        setEvents(data);
-      } catch (error) {
-        console.error("❌ Error fetching events:", error.message);
-      }
-    };
-
-    fetchEvents();
-  }, []);
-
-  // ✅ Handle selecting a time slot to create a new event
-  const handleSelectSlot = ({ start }) => {
-    setSelectedDate(start);
-    setSelectedEvent(null);
-    setIsDialogOpen(true);
-    setFormData({
-      id: null,
-      title: "",
-      description: "",
-      start: format(start, "yyyy-MM-dd'T'HH:mm"),
-      end: format(start, "yyyy-MM-dd'T'HH:mm"),
-    });
-  };
-
-  // ✅ Handle selecting an event (Edit Mode)
-  const handleSelectEvent = (event) => {
-    setSelectedEvent(event);
-    setIsDialogOpen(true);
-    setFormData({
-      id: event.id,
-      title: event.title,
-      description: event.description,
-      start: format(new Date(event.start_time), "yyyy-MM-dd'T'HH:mm"),
-      end: format(new Date(event.end_time), "yyyy-MM-dd'T'HH:mm"),
-    });
-  };
-
-  // ✅ Handle input changes in the form
-  const handleFormChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // ✅ Handle saving (Create or Update event)
-  const handleSubmit = async () => {
-    const eventData = {
-      title: formData.title,
-      description: formData.description,
-      start_time: new Date(formData.start).toISOString(),
-      end_time: new Date(formData.end).toISOString(),
-    };
-
-    try {
-      let response;
-      if (formData.id) {
-        // ✅ Update existing event
-        response = await fetch(`${SUPABASE_URL}/rest/v1/${EVENTS_TABLE}?id=eq.${formData.id}`, {
-          method: "PATCH",
-          headers: {
-            "apikey": SUPABASE_ANON_KEY,
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(eventData),
-        });
-      } else {
-        // ✅ Insert new event
-        response = await fetch(`${SUPABASE_URL}/rest/v1/${EVENTS_TABLE}`, {
-          method: "POST",
-          headers: {
-            "apikey": SUPABASE_ANON_KEY,
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(eventData),
-        });
-      }
-
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-      
-      const data = await response.json();
-      setEvents((prev) => (formData.id ? prev.map((e) => (e.id === formData.id ? data[0] : e)) : [...prev, data[0]]));
-      
-      setIsDialogOpen(false);
-    } catch (error) {
-      console.error("❌ Error saving event:", error.message);
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: default
+data:
+  nginx.conf: |
+    events {
+      worker_connections 1024;
     }
-  };
 
-  // ✅ Handle deleting an event
-  const handleDelete = async () => {
-    if (!selectedEvent) return;
+    http {
+      include       mime.types;
+      default_type  application/octet-stream;
+      
+      server {
+          listen 80;
+          
+          # Serve React Frontend from Nginx
+          location / {
+              root /usr/share/nginx/html;
+              index index.html;
+              try_files $uri /index.html =404;
+          }
 
-    try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/${EVENTS_TABLE}?id=eq.${selectedEvent.id}`, {
-        method: "DELETE",
-        headers: {
-          "apikey": SUPABASE_ANON_KEY,
-          "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-        },
-      });
+          # Serve Django Static Files
+          location /static/ {
+              alias /usr/share/nginx/html/static/;
+              autoindex on;
+          }
 
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+          # Proxy API requests to Django
+          location /api/ {
+              proxy_pass http://django-service:8000;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+          }
 
-      setEvents(events.filter((event) => event.id !== selectedEvent.id));
-      setIsDialogOpen(false);
-    } catch (error) {
-      console.error("❌ Error deleting event:", error.message);
+          # Security Headers
+          add_header X-Frame-Options SAMEORIGIN;
+          add_header X-XSS-Protection "1; mode=block";
+          add_header X-Content-Type-Options nosniff;
+      }
     }
-  };
-
-  return (
-    <div className="p-4">
-      <BigCalendar
-        localizer={localizer}
-        events={events}
-        startAccessor="start_time"
-        endAccessor="end_time"
-        selectable
-        style={{ height: 500 }}
-        onSelectSlot={handleSelectSlot}
-        onSelectEvent={handleSelectEvent} // Enables event selection for editing
-      />
-
-      {isDialogOpen && (
-        <div className="dialog">
-          <h2>{selectedEvent ? "Edit Event" : "Create Event"}</h2>
-          <label>Title</label>
-          <input name="title" value={formData.title} onChange={handleFormChange} />
-          <label>Description</label>
-          <textarea name="description" value={formData.description} onChange={handleFormChange} />
-          <label>Start Time</label>
-          <input type="datetime-local" name="start" value={formData.start} onChange={handleFormChange} />
-          <label>End Time</label>
-          <input type="datetime-local" name="end" value={formData.end} onChange={handleFormChange} />
-          <button onClick={handleSubmit}>{selectedEvent ? "Update" : "Save"}</button>
-          {selectedEvent && <button onClick={handleDelete}>Delete</button>}
-          <button onClick={() => setIsDialogOpen(false)}>Cancel</button>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default CalendarUI;

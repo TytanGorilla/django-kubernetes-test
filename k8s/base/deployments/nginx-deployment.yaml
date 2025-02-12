@@ -21,20 +21,22 @@ spec:
         - containerPort: 80
         volumeMounts:
         - name: nginx-config
-          mountPath: /etc/nginx/nginx.conf  # ✅ Correctly mounting nginx.conf
-          subPath: nginx.conf
-        - name: staticfiles-storage # Define a volume (this is just a label)
-          mountPath: /usr/share/nginx/html/static  # ✅ Match Nginx static serving path
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf  # ✅ Ensures only `nginx.conf` is mounted
+        - name: staticfiles-storage
+          mountPath: /usr/share/nginx/html/static
+          subPath: static  # ✅ Ensures only `/static` subdirectory is mounted
         - name: frontend-storage
-          mountPath: /usr/share/nginx/html/frontend  # ✅ Serve frontend from Ngin
+          mountPath: /usr/share/nginx/html
+          subPath: frontend  # ✅ Ensures only `/frontend` subdirectory is mounted
 
       volumes:
       - name: nginx-config
         configMap:
           name: nginx-config
-      - name: staticfiles-storage # Mount the PVC volume
+      - name: staticfiles-storage
         persistentVolumeClaim:
           claimName: staticfiles-pvc
       - name: frontend-storage
         persistentVolumeClaim:
-          claimName: frontend-pvc  # ✅ Frontend React App storage
+          claimName: frontend-pvc

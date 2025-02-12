@@ -18,12 +18,12 @@ spec:
         env:
         - name: POSTGRES_DB
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: django-config
               key: POSTGRES_DB
         - name: POSTGRES_USER
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: django-config
               key: POSTGRES_USER
         - name: POSTGRES_PASSWORD
