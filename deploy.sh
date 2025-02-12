@@ -13,5 +13,11 @@ docker build --no-cache \
 docker push tytan22/frontend-app:1.0.$DATE
 
 echo "🚀 Updating Kubernetes deployments..."
+# ✅ Update Django main container
 kubectl set image deployment/django-app django-container=tytan22/django-app:1.0.$DATE
+
+# ✅ Update Django initContainer (migrate)
+kubectl patch deployment django-app --type='json' -p="[{'op': 'replace', 'path': '/spec/template/spec/initContainers/0/image', 'value': 'tytan22/django-app:1.0.$DATE'}]"
+
+# ✅ Update Frontend container
 kubectl set image deployment/frontend frontend=tytan22/frontend-app:1.0.$DATE
