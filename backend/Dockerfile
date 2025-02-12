@@ -12,35 +12,27 @@
         bash \
         && apt-get clean
     
-    # Copy the requirements file and install Python dependencies
-    COPY requirements.txt /final_project/
+    # Copy requirements and install dependencies
+    COPY requirements.txt ./
     RUN pip install --no-cache-dir -r requirements.txt
     
-    # Copy the entire project into the container
+    # ✅ Copy the entire project
     COPY . /final_project
     
-    # ✅ Copy the frontend build folder into the Django project
-    COPY frontend/build /final_project/frontend/build
-    
-    # Ensure the Python path includes the working directory
+    # ✅ Ensure Python path
     ENV PYTHONPATH=/final_project
     
-    # ✅ Keep Docker CLI and Kubernetes tools for Kubernetes support
-    RUN apt-get update && apt-get install -y docker.io && apt-get clean
-    
-    RUN curl -Lo /usr/local/bin/kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64 && \
-        chmod +x /usr/local/bin/kind
-    
+    # ✅ Install Kubernetes tools (if needed)
     RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
         chmod +x kubectl && \
         mv kubectl /usr/local/bin/
     
-    # ✅ Copy entrypoint script and ensure it's executable
+    # ✅ Make entrypoint executable
     COPY entrypoint.sh /entrypoint.sh
     RUN chmod +x /entrypoint.sh
     
-    # Expose the port the app runs on
+    # Expose Django port
     EXPOSE 8000
     
-    # ✅ Run entrypoint script to collect static files and start the server
+    # ✅ Run entrypoint script to collect static files and start server
     CMD ["bash", "/entrypoint.sh"]    

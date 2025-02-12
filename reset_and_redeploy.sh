@@ -1,6 +1,5 @@
 #!/bin/bash
-
-set -e  # Exit on any critical error
+set -e  # Exit on error
 
 echo "🚀 Scaling down workloads..."
 kubectl scale deployment django-app --replicas=0 || echo "⚠️ django-app scale down failed"
@@ -14,15 +13,19 @@ kubectl delete -f k8s/base/deployments --recursive || echo "⚠️ Deployment de
 echo "🔍 Checking existing PVCs..."
 kubectl get pvc || echo "⚠️ No PVCs found!"
 
+echo "🗑 Cleaning up PostgreSQL if it keeps failing..."
+if kubectl get pod -l app=postgres -o jsonpath='{.items[0].status.phase}' | grep -q "Failed"; then
+  echo "⚠️ PostgreSQL PVC seems to be corrupted. Deleting..."
+  kubectl delete pvc postgres-pvc --force --grace-period=0 || echo "❌ Failed to delete postgres PVC!"
+  sleep 5
+fi
+
 echo "✅ Applying PVCs..."
 kubectl apply -f k8s/base/pvc --recursive || { echo "❌ Failed to apply PVCs"; exit 1; }
 
 echo "🔄 Reapplying ConfigMaps & Secrets..."
 kubectl apply -f k8s/base/configmaps --recursive || echo "⚠️ ConfigMaps application encountered issues"
 kubectl apply -f k8s/base/secrets --recursive || echo "⚠️ Secrets application encountered issues"
-
-echo "🔄 Applying Services..."
-kubectl apply -f k8s/base/services --recursive || { echo "❌ Failed to apply services"; exit 1; }
 
 echo "🚀 Redeploying applications..."
 kubectl apply -f k8s/base/deployments --recursive || { echo "❌ Deployment application failed"; exit 1; }
