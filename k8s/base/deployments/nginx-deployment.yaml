@@ -25,6 +25,9 @@ spec:
           subPath: nginx.conf
         - name: staticfiles-storage # Define a volume (this is just a label)
           mountPath: /usr/share/nginx/html/static  # ✅ Match Nginx static serving path
+        - name: frontend-storage
+          mountPath: /usr/share/nginx/html/frontend  # ✅ Serve frontend from Ngin
+
       volumes:
       - name: nginx-config
         configMap:
@@ -32,3 +35,6 @@ spec:
       - name: staticfiles-storage # Mount the PVC volume
         persistentVolumeClaim:
           claimName: staticfiles-pvc
+      - name: frontend-storage
+        persistentVolumeClaim:
+          claimName: frontend-pvc  # ✅ Frontend React App storage

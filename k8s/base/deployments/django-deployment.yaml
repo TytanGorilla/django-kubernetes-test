@@ -16,11 +16,11 @@ spec:
     spec:
       initContainers:
       - name: migrate  # ✅ Runs migrations before starting Django
-        image: tytan22/django-app:1.0.20250211
+        image: tytan22/django-app:1.0.20250212
         command: ["python", "manage.py", "migrate", "--noinput"]
         envFrom:
         - secretRef:
-            name: django-app-secrets
+            name: django-secrets
         - configMapRef:
             name: django-config
         volumeMounts:
@@ -29,13 +29,13 @@ spec:
 
       containers:
       - name: django-container
-        image: tytan22/django-app:1.0.20250211
+        image: tytan22/django-app:1.0.20250212
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
         envFrom:
         - secretRef:
-            name: django-app-secrets
+            name: django-secrets
         - configMapRef:
             name: django-config
         resources:

@@ -53,34 +53,33 @@ user:postgres.jxpsamnvzjziemtpziig
 pool_mode: session
 ```
 
-### Create a .env File
-Create a `.env` file in the project’s root directory.
-```bash
-touch .env
+## Update backend .env variable files (.env.config & .env.secrets_example_backend)
+Rename .env.secrets_example_backend -> .env.secrets
+This is your own backend secrets environment file.
+Populate its contents with your sensitive information.
 ```
-Copy the example below into your newly created `.env` file.\
-Replace any placeholder values (***) with your actual credentials or desired settings.\
-
-#### Example .env
-```
-DJANGO_SECRET_KEY="GENERATED_SECRET_KEY"
-POSTGRES_DB=***
-POSTGRES_USER=***
-POSTGRES_PASSWORD="YOUR_SUPABASE_PASSWORD"
-POSTGRES_HOST=***
-POSTGRES_PORT=***
 DATABASE_URL="postgresql://[POSTGRES_USER]:[POSTGRES_PASSWORD]@[POSTGRES_HOST]:[POSTGRES_PORT]/[POSTGRES_DB]"
+POSTGRES_PASSWORD="YOUR_SUPABASE_PASSWORD"
+DJANGO_SECRET_KEY="GENERATED_SECRET_KEY_FROM_RUNNING_generate_django_secret_key.py"
+```
+
+Then update your backend .env.config with your own Supabase parameters
+```
+POSTGRES_DB=postgres
+POSTGRES_USER=postgres.jxpsamnvzjziemtpziig
+POSTGRES_HOST=aws-0-eu-central-1.pooler.supabase.com
+POSTGRES_PORT=5432
 ```
 
 ### Generate a Django Secret Key
-To generate a secure secret key, run:
+To generate a secure secret key, run the following command in the backend directory:
 ```bash
 python generate_django_secret_key.py
 ```
 Copy the key generated password in your CLI.
-The save it in your `.env` file as the value of `DJANGO_SECRET_KEY`.
+The save it in your `.env.secrets` file as the value of `DJANGO_SECRET_KEY`.
 
-## Supabase parameters -> .env Values 
+## Supabase parameters -> .env.config Values 
 ```
 host:aws-0-eu-central-1.pooler.supabase.com -> POSTGRES_HOST
 
@@ -90,12 +89,11 @@ database:postgres -> POSTGRES_DB
 
 user:postgres.jxpsamnvzjziemtpziig -> POSTGRES_USER
 
-password: NOT SHOWN HERE, but is the password you set for your supabase account. This password fills the POSTGRES_PASSWORD value in the .env file.
+password: NOT SHOWN HERE, but is the password you set for your Supabase account. This password fills the POSTGRES_PASSWORD value in the .env file.
 
 ```
-  - Copy the relevant parameter values (host, port, database, user) into your newly created .env file.
   - The values of DJANGO_SECRET_KEY, POSTGRES_PASSWORD & DATABASE_URL, should be in quotations to prevent odd characters influencing the necessary database connection.
-Then populate the DATABASE_URL with the relevant values referenced in your .env file.\
+Then populate the DATABASE_URL with the relevant values referencing variables listed in the backend's .env.config & .env.secrets.
 
 Example 1: 
 ```
@@ -107,34 +105,43 @@ Example 2:
 DATABASE_URL="postgresql://postgres.jxpsamnvzjziemtpziig:YOUR_SUPABASE_PASSWORD@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
 ```
 
-### Generate Your `secrets.yaml`
-Make the scripts executable:
-```bash
-chmod +x generate_secrets_configs.sh
-chmod +x sync_migrations.sh
-```
-Run the script to create a new `secrets.yaml` file:
-```bash
-./generate_secrets_configs.sh
-```
-This reads the `.env` file, Base64-encodes variables, and produces a Kubernetes Secret manifest named `secrets.yaml` in the `k8s/secrets` directory.
+## Update frontend .env variable files (.env.config & .env.secrets_example_frontend)
+Rename .env.secrets_example_frontend -> .env.secrets
+This is your own frontend secrets environment file.
+Populate its contents with your sensitive information.
 
-## CREATE YET ANOTHER .env file in the frontend directory
-## Setup Instructions
-1. Change directory to the frontend directory:
-2. Create a new `.env` file:
-3. Copy `.env.example` contents to `.env`
-4. Update the new .env file's `REACT_APP_BACKEND_URL` with the correct backend URL for Codespaces.
-```ini
-PUBLIC_URL=http://localhost:32212/static/frontend
+Obtain your Supabase Anonymous key:
+1) Click Home on your dashboard
+2) Scroll down till you see Project API, within is your Project URL, and below it your public anonymous API key
+```
+REACT_APP_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANONYMOUS_KEY
+```
+
+Then update your backend .env.config with your own Supabase parameters
+```
 REACT_APP_BACKEND_URL=http://localhost:32212
+PUBLIC_URL=/static/frontend
 REACT_APP_BUILD_VERSION=$(date +%s)
+REACT_APP_SUPABASE_URL=YOUR_SUPABASE_PROJECT_URL
 ```
 📌 What this does:
-
 PUBLIC_URL → Makes React look for JS files in Nginx (/static/frontend/)
 REACT_APP_BACKEND_URL → Ensures React API calls hit Django (http://localhost:32212).
 REACT_APP_BUILD_VERSION -> Make React look for latest version of React for cache busting.
+
+### Generate Your Kubernetes Manifests `django-secrets.yaml, frontend-secrets.yaml` & `django-config.yaml, frontend-config.yaml`
+ENSURE YOU HAVE SAVED YOUR CHANGES TO ALL THE .env.secrets & .env.configs IN BOTH the frontend & backend folders.
+Make relevant scripts executable:
+```bash
+chmod +x generate_k8s_secrets_configs.sh
+chmod +x sync_migrations.sh
+chmod +x deploy.sh
+```
+Run the script to create a new `secrets & configs` file:
+```bash
+./generate_k8s_secrets_configs.sh
+```
+This reads the `.env` files, within the backend & frontend folders, Base64-encodes variables, and produces a Kubernetes manifests in the k8s/base/secrets & k8s/base/configmaps directory.
 
 ### Apply Manifests to Kubernetes
 Apply the secrets and other manifests:
@@ -286,7 +293,6 @@ http://localhost:8000/
 ### Accessing the App locally using Docker Desktop with a Kubernetes Cluster
 To access the application locally, use the URL
 http://localhost:32212/
-http://localhost:30007/ ### REMOVE THIS LINE
 
 ## TESTING
 If you have reached this stage in the README, you have successfully deployed the application to Kubernetes! Congratulations! Now you can proceed to testing / grading the application.
@@ -301,39 +307,13 @@ Describe the pod for detailed diagnostics:
 kubectl describe pod -l app=django-app
 ```
 
-### Deleting and Reapplying Manifests
-```bash
-kubectl delete -f k8s/ --recursive
-kubectl apply -f k8s/ --recursive
-```
-
-### Rebuilding the Docker Image with dated versioning
-```bash
-docker build --no-cache --build-arg BUILD_VERSION=$(date +%Y%m%d) -t tytan22/django-app:1.0.$(date +%Y%m%d) .
-docker build --no-cache --build-arg BUILD_VERSION=$(date +%Y%m%d) -t tytan22/django-app:1.0.20250210 .
-
-docker build --no-cache -t tytan22/django-app:1.0.20250210 .
-docker build -t tytan22/django-app:1.0.20250210 .
-```
-### Pushing the Docker Image to Docker Hub
-```bash
-docker push tytan22/django-app:1.0.$(date +%Y%m%d)
-docker push tytan22/django-app:1.0.20250210
-```
-### Updating django-app Deployment to use the new Docker Image
-```yaml
-containers:
-- name: django-container
-  image: tytan22/django-app:1.0.20250210 # Update this line to use the new image that is dated
-  imagePullPolicy: Always
-```
-### Applying migrations manually by running the following script:
+### Applying migrations manually by running the following script: UNSURE
 
 ```bash
 ./sync_migrations.sh
 ```
 
-### Creating Migrations Locally only after models changes
+### Creating Migrations Locally only after models changes UNSURE
 ```bash
 DATABASE_URL="postgresql://postgres.jxpsamnvzjziemtpziig:Uyr04Wp9IoDd^h3@aws-0-eu-central-1.pooler.supabase.com:5432/postgres" python manage.py makemigrations scheduler
 

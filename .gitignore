@@ -1,7 +1,12 @@
 # Ignore sensitive files
-.env
+*.env
+*.env.secrets
 *.key
 *.pem
+
+# Dont ignore the following files
+!frontend/.env.config
+!frontend/.env.example
 
 # Ignore Python cache files
 __pycache__/
@@ -29,9 +34,8 @@ Thumbs.db
 *.so
 *.out
 
-# Ignore secret manifest files
-k8s/base/secrets/secrets.yaml
-!k8s/base/secrets/
+# Ignore generated Kubernetes secrets
+k8s/base/secrets/*.yaml
 
 # Ignore node__modules
 node_modules/

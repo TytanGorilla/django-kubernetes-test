@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: tytan22/frontend-app:1.0.20250212  # ✅ Built with Supabase env vars
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: frontend-config  # ✅ Runtime config values (if needed)
+            - secretRef:
+                name: frontend-secrets  # ✅ Runtime secrets (if needed)
+          volumeMounts:
+            - name: frontend-storage
+              mountPath: /usr/share/nginx/html/frontend  # ✅ Serve frontend from persistent storage
+      volumes:
+        - name: frontend-storage
+          persistentVolumeClaim:
+            claimName: frontend-pvc  # ✅ Create this PVC below
