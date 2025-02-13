@@ -1,3 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: django-config
+  namespace: default
+data:
+  DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,10.1.0.43,*"
+  DJANGO_DEBUG: "True"
   POSTGRES_DB: "postgres"
   POSTGRES_USER: "postgres.jxpsamnvzjziemtpziig"
   POSTGRES_HOST: "aws-0-eu-central-1.pooler.supabase.com"

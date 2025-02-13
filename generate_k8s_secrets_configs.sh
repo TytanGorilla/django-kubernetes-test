@@ -33,10 +33,10 @@ if [[ -f "$FRONTEND_ENV_DIR/.env.config" ]]; then
     sed -i "s|\$(date +%s)|$BUILD_VERSION|g" "$FRONTEND_ENV_DIR/.env.config"
 fi
 
-# Set default values (ConfigMaps only)
-DEFAULTS=(
-    "DJANGO_DEBUG=True"
-    "DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,10.1.0.43,*"
+# Set default values for Django (ConfigMaps only)
+declare -A DEFAULTS=(
+    ["DJANGO_DEBUG"]="True"
+    ["DJANGO_ALLOWED_HOSTS"]="localhost,127.0.0.1,10.1.0.43,*"
 )
 
 # Process each application
@@ -79,19 +79,20 @@ kind: ConfigMap
 metadata:
   name: $APP-config
   namespace: default
-data:" > "$CONFIGMAP_FILE"
+data:" > "$CONFIGMAP_FILE.tmp"
 
-        # Apply default values
-        for DEFAULT in "${DEFAULTS[@]}"; do
-            KEY=$(echo "$DEFAULT" | cut -d '=' -f1)
-            VALUE=$(echo "$DEFAULT" | cut -d '=' -f2-)
-            echo "  $KEY: \"$VALUE\"" >> "$CONFIGMAP_FILE"
-        done
+        # ✅ Append Django default values first
+        if [[ "$APP" == "django" ]]; then
+            for KEY in "${!DEFAULTS[@]}"; do
+                VALUE="${DEFAULTS[$KEY]}"
+                echo "  $KEY: \"$VALUE\"" >> "$CONFIGMAP_FILE.tmp"
+            done
+        fi
 
         # ✅ Track if REACT_APP_BUILD_VERSION is already found
         BUILD_VERSION_FOUND=false
-        TEMP_CONFIG_FILE="${CONFIGMAP_FILE}.tmp"
 
+        # ✅ Append `.env.config` values without overwriting defaults
         while IFS= read -r line || [[ -n "$line" ]]; do
             [[ -z "$line" || "$line" =~ ^# ]] && continue
             key=$(echo "$line" | cut -d '=' -f1)
@@ -103,15 +104,15 @@ data:" > "$CONFIGMAP_FILE"
                 BUILD_VERSION_FOUND=true
             fi
 
-            echo "  $key: \"$value\"" >> "$TEMP_CONFIG_FILE"
+            echo "  $key: \"$value\"" >> "$CONFIGMAP_FILE.tmp"
         done < "$ENV_CONFIG"
 
-        # ✅ Ensure REACT_APP_BUILD_VERSION is only added once to frontend-config.yaml
+        # ✅ Ensure REACT_APP_BUILD_VERSION is only added if missing
         if [[ "$APP" == "frontend" && "$BUILD_VERSION_FOUND" == false ]]; then
-            echo "  REACT_APP_BUILD_VERSION: \"$BUILD_VERSION\"" >> "$TEMP_CONFIG_FILE"
+            echo "  REACT_APP_BUILD_VERSION: \"$BUILD_VERSION\"" >> "$CONFIGMAP_FILE.tmp"
         fi
 
-        mv "$TEMP_CONFIG_FILE" "$CONFIGMAP_FILE"  # Replace original file with modified version
+        mv "$CONFIGMAP_FILE.tmp" "$CONFIGMAP_FILE"  # ✅ Save final file
 
         echo "✅ ConfigMap saved to $CONFIGMAP_FILE"
     else
