@@ -6,7 +6,7 @@
     COPY package.json package-lock.json ./
     RUN npm install --silent
     
-    # ✅ Load environment variables from build args
+    # Load environment variables from build args
     ARG REACT_APP_SUPABASE_URL
     ARG REACT_APP_SUPABASE_ANON_KEY
     ENV REACT_APP_SUPABASE_URL=$REACT_APP_SUPABASE_URL
@@ -16,16 +16,16 @@
     COPY . ./
     RUN npm run build --verbose || (echo "⚠️ React build failed!" && exit 1)
     
-    # ✅ Debug: Check if build was successful
+    # Debug: Check that the build folder was created
     RUN ls -lah build/
     
-    # Serve built frontend using Nginx
+    # ------------------ Serve React via Nginx ------------------
     FROM nginx:alpine AS final
     WORKDIR /usr/share/nginx/html
+        
+    # Copy React’s built files into Nginx’s dedicated frontend static folder
+    COPY --from=frontend /frontend/build/ /usr/share/nginx/html/frontend-static/
     
-    # ✅ Copy React's built files to Nginx
-    COPY --from=frontend /frontend/build/ ./
-    
-    # Expose the port
+    # Expose the port Nginx will serve on
     EXPOSE 80
     CMD ["nginx", "-g", "daemon off;"]    

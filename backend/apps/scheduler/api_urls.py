@@ -7,6 +7,6 @@ router = DefaultRouter()
 router.register(r'events', EventViewSet, basename='event')
 
 urlpatterns = [
-    path('', include(router.urls)),  # ✅ Now `/api/events/` and `/api/calendars/` work
+    path('', include(router.urls)),  # ✅ Now `/api/events/` work
     path('user-info/', user_info, name="user_info"),  # ✅ `/api/user-info/`
 ]

@@ -9,6 +9,5 @@ router.register(r'events', EventViewSet, basename='event')
 # Define URL patterns
 urlpatterns = [
     path('', index, name='scheduler_home'),  # Maps /scheduler/ to the index view
-    path('api/', include(router.urls)),  # Registers all API routes
     path('api/user-info/', user_info, name="user_info"),  # ✅ New API to check authentication
 ]

@@ -144,11 +144,11 @@ USE_TZ = True
 # ------------------------------------------------------------------------------------
 # Static files (CSS, JavaScript, Images)
 # ------------------------------------------------------------------------------------
-# Specify the URL to access the static files
-STATIC_URL = '/static/' 
+# Specify the URL path that will be used to access Django static files
+STATIC_URL = '/static/django/'  # ✅ This ensures Nginx knows how to find Django's static files
 
-# The directory where static files will be collected
-STATIC_ROOT = "/usr/share/nginx/html/static/"
+# The directory where collectstatic will place the files
+STATIC_ROOT = "/usr/share/nginx/html/django-static/"  # ✅ This aligns with nginx-config.yaml
 
 #Django's ManifestStaticFilesStorage appends a unique hash to the filenames of static files during the collectstatic process
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'

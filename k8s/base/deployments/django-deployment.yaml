@@ -15,7 +15,7 @@ spec:
         app: django-app
     spec:
       initContainers:
-      - name: migrate  # ✅ Runs migrations before starting Django
+      - name: migrate
         image: tytan22/django-app:1.0.20250212
         command: ["python", "manage.py", "migrate", "--noinput"]
         envFrom:
@@ -25,8 +25,7 @@ spec:
             name: django-config
         volumeMounts:
         - name: staticfiles-storage
-          mountPath: /usr/share/nginx/html/static  # ✅ Django writes static here, Nginx reads from here
-
+          mountPath: /usr/share/nginx/html/static
       containers:
       - name: django-container
         image: tytan22/django-app:1.0.20250212
@@ -47,9 +46,8 @@ spec:
             cpu: "1000m"
         volumeMounts:
         - name: staticfiles-storage
-          mountPath: /usr/share/nginx/html/static  # ✅ Shared storage for static files
-
+          mountPath: /usr/share/nginx/html/django-static
       volumes:
       - name: staticfiles-storage
         persistentVolumeClaim:
-          claimName: staticfiles-pvc  # ✅ Shared PVC for static files
+          claimName: staticfiles-pvc
