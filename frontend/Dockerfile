@@ -9,6 +9,7 @@
     # Load environment variables from build args
     ARG REACT_APP_SUPABASE_URL
     ARG REACT_APP_SUPABASE_ANON_KEY
+    
     ENV REACT_APP_SUPABASE_URL=$REACT_APP_SUPABASE_URL
     ENV REACT_APP_SUPABASE_ANON_KEY=$REACT_APP_SUPABASE_ANON_KEY
     
@@ -25,7 +26,7 @@
         
     # Copy React’s built files into Nginx’s dedicated frontend static folder
     COPY --from=frontend /frontend/build/ /usr/share/nginx/html/frontend-static/
-    
+
     # Expose the port Nginx will serve on
     EXPOSE 80
     CMD ["nginx", "-g", "daemon off;"]    

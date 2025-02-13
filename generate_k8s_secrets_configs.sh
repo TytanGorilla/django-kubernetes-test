@@ -8,19 +8,24 @@ SECRETS_OUTPUT_DIR="k8s/base/secrets"
 CONFIGMAP_OUTPUT_DIR="k8s/base/configmaps"
 mkdir -p "$SECRETS_OUTPUT_DIR" "$CONFIGMAP_OUTPUT_DIR"
 
-# Autodetect root path incase script is run from a different directory
+# Autodetect root path in case script is run from a different directory
 PROJECT_ROOT=$(dirname "$(realpath "$0")")
+BACKEND_ENV_DIR="$PROJECT_ROOT/backend"  # ✅ Updated backend path
+FRONTEND_ENV_DIR="$PROJECT_ROOT/frontend"
 
 # Define environment file locations
 declare -A ENV_SECRETS_FILES=(
-    ["django"]="$PROJECT_ROOT/.env.secrets"
-    ["frontend"]="$PROJECT_ROOT/frontend/.env.secrets"
+    ["django"]="$BACKEND_ENV_DIR/.env.secrets"
+    ["frontend"]="$FRONTEND_ENV_DIR/.env.secrets"
 )
 
 declare -A ENV_CONFIG_FILES=(
-    ["django"]="$PROJECT_ROOT/.env.config"
-    ["frontend"]="$PROJECT_ROOT/frontend/.env.config"
+    ["django"]="$BACKEND_ENV_DIR/.env.config"
+    ["frontend"]="$FRONTEND_ENV_DIR/.env.config"
 )
+
+# ✅ Generate Build Version (Timestamp-based, to ensure cache-busting)
+BUILD_VERSION=$(date +%s)
 
 # Set default values (ConfigMaps only)
 DEFAULTS=(
@@ -77,12 +82,28 @@ data:" > "$CONFIGMAP_FILE"
             echo "  $KEY: \"$VALUE\"" >> "$CONFIGMAP_FILE"
         done
 
+        # ✅ Track if REACT_APP_BUILD_VERSION is already found
+        BUILD_VERSION_FOUND=false
+
         while IFS= read -r line || [[ -n "$line" ]]; do
             [[ -z "$line" || "$line" =~ ^# ]] && continue
             key=$(echo "$line" | cut -d '=' -f1)
             value=$(echo "$line" | cut -d '=' -f2- | sed -e 's/^"//' -e 's/"$//')
+
+            # ✅ If it's REACT_APP_BUILD_VERSION, replace value with timestamp
+            if [[ "$key" == "REACT_APP_BUILD_VERSION" && "$APP" == "frontend" ]]; then
+                value="$BUILD_VERSION"
+                BUILD_VERSION_FOUND=true
+            fi
+
             echo "  $key: \"$value\"" >> "$CONFIGMAP_FILE"
         done < "$ENV_CONFIG"
+
+        # ✅ Ensure REACT_APP_BUILD_VERSION is only added if missing
+        if [[ "$APP" == "frontend" && "$BUILD_VERSION_FOUND" == false ]]; then
+            echo "  REACT_APP_BUILD_VERSION: \"$BUILD_VERSION\"" >> "$CONFIGMAP_FILE"
+        fi
+
         echo "✅ ConfigMap saved to $CONFIGMAP_FILE"
     else
         echo "⚠️ No config file found for $APP ($ENV_CONFIG). Skipping config."

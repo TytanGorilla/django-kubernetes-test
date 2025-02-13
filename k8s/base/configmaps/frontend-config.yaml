@@ -4,7 +4,9 @@ metadata:
   name: frontend-config
   namespace: default
 data:
+  DJANGO_DEBUG: "True"
+  DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,10.1.0.43,*"
   REACT_APP_BACKEND_URL: "http://localhost:32212"
   PUBLIC_URL: "/static/frontend"
-  REACT_APP_BUILD_VERSION: "$(date +%s)"
+  REACT_APP_BUILD_VERSION: "1739453190"
   REACT_APP_SUPABASE_URL: "https://jxpsamnvzjziemtpziig.supabase.co"
