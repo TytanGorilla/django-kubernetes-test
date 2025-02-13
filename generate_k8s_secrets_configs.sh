@@ -27,6 +27,12 @@ declare -A ENV_CONFIG_FILES=(
 # ✅ Generate Build Version (Timestamp-based, to ensure cache-busting)
 BUILD_VERSION=$(date +%s)
 
+# ✅ Directly modify frontend/.env.config so it no longer contains `$(date +%s)`
+if [[ -f "$FRONTEND_ENV_DIR/.env.config" ]]; then
+    echo "🔄 Updating frontend/.env.config with Build Version: $BUILD_VERSION"
+    sed -i "s|\$(date +%s)|$BUILD_VERSION|g" "$FRONTEND_ENV_DIR/.env.config"
+fi
+
 # Set default values (ConfigMaps only)
 DEFAULTS=(
     "DJANGO_DEBUG=True"
@@ -84,6 +90,7 @@ data:" > "$CONFIGMAP_FILE"
 
         # ✅ Track if REACT_APP_BUILD_VERSION is already found
         BUILD_VERSION_FOUND=false
+        TEMP_CONFIG_FILE="${CONFIGMAP_FILE}.tmp"
 
         while IFS= read -r line || [[ -n "$line" ]]; do
             [[ -z "$line" || "$line" =~ ^# ]] && continue
@@ -96,13 +103,15 @@ data:" > "$CONFIGMAP_FILE"
                 BUILD_VERSION_FOUND=true
             fi
 
-            echo "  $key: \"$value\"" >> "$CONFIGMAP_FILE"
+            echo "  $key: \"$value\"" >> "$TEMP_CONFIG_FILE"
         done < "$ENV_CONFIG"
 
-        # ✅ Ensure REACT_APP_BUILD_VERSION is only added if missing
+        # ✅ Ensure REACT_APP_BUILD_VERSION is only added once to frontend-config.yaml
         if [[ "$APP" == "frontend" && "$BUILD_VERSION_FOUND" == false ]]; then
-            echo "  REACT_APP_BUILD_VERSION: \"$BUILD_VERSION\"" >> "$CONFIGMAP_FILE"
+            echo "  REACT_APP_BUILD_VERSION: \"$BUILD_VERSION\"" >> "$TEMP_CONFIG_FILE"
         fi
+
+        mv "$TEMP_CONFIG_FILE" "$CONFIGMAP_FILE"  # Replace original file with modified version
 
         echo "✅ ConfigMap saved to $CONFIGMAP_FILE"
     else
