@@ -19,17 +19,17 @@ spec:
         - name: POSTGRES_DB
           valueFrom:
             configMapKeyRef:
-              name: django-config
+              name: consolidated-config
               key: POSTGRES_DB
         - name: POSTGRES_USER
           valueFrom:
             configMapKeyRef:
-              name: django-config
+              name: consolidated-config
               key: POSTGRES_USER
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: django-secrets
+              name: consolidated-secrets
               key: POSTGRES_PASSWORD
         volumeMounts:
         - name: postgres-storage

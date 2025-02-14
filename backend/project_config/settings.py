@@ -156,7 +156,7 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 STATICFILES_DIRS = [
     ("core", BASE_DIR / "project_config/static/core"),  # Core static files → /static/core/
     ("scheduler", BASE_DIR / "apps/scheduler/static/scheduler"),  # Scheduler static → /static/scheduler/
-    ("frontend", BASE_DIR / "frontend/build"),  # React frontend static → /static/frontend/
+    #("frontend", BASE_DIR / "frontend/build"),  # React frontend static → /static/frontend/
 ]
 
 # Default primary key field type

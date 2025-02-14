@@ -16,28 +16,15 @@ spec:
     spec:
       containers:
       - name: nginx
-        # Use the frontend image directly for serving React files
-        image: tytan22/frontend-app:1.0.20250212
+        image: tytan22/django-app:1.0.20250214
         imagePullPolicy: Always
         ports:
         - containerPort: 80
         volumeMounts:
         - name: nginx-config
-          mountPath: /etc/nginx/nginx.conf # ✅ This replaces the default Nginx config
+          mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
-        - name: staticfiles-storage
-          mountPath: /usr/share/nginx/html/django-static
-          subPath: django-static
-        - name: frontend-storage
-          mountPath: /usr/share/nginx/html/frontend-static  # Correct path for React static files
-          subPath: frontend-static
       volumes:
       - name: nginx-config
         configMap:
           name: nginx-config
-      - name: staticfiles-storage
-        persistentVolumeClaim:
-          claimName: staticfiles-pvc
-      - name: frontend-storage
-        persistentVolumeClaim:
-          claimName: frontend-pvc

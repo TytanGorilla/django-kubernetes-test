@@ -1,11 +1,15 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: django-config
+  name: consolidated-config
   namespace: default
 data:
   DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,10.1.0.43,*"
   DJANGO_DEBUG: "True"
+  REACT_APP_BACKEND_URL: "http://localhost:32212"
+  PUBLIC_URL: "/static/frontend"
+  REACT_APP_BUILD_VERSION: "1739523231"
+  REACT_APP_SUPABASE_URL: "https://jxpsamnvzjziemtpziig.supabase.co"
   POSTGRES_DB: "postgres"
   POSTGRES_USER: "postgres.jxpsamnvzjziemtpziig"
   POSTGRES_HOST: "aws-0-eu-central-1.pooler.supabase.com"
