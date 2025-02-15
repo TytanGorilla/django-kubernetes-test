@@ -8,7 +8,7 @@ data:
   DJANGO_DEBUG: "True"
   REACT_APP_BACKEND_URL: "http://localhost:32212"
   PUBLIC_URL: "/static/frontend"
-  REACT_APP_BUILD_VERSION: "1739523231"
+  REACT_APP_BUILD_VERSION: "1739525340"
   REACT_APP_SUPABASE_URL: "https://jxpsamnvzjziemtpziig.supabase.co"
   POSTGRES_DB: "postgres"
   POSTGRES_USER: "postgres.jxpsamnvzjziemtpziig"
