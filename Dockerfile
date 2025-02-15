@@ -51,9 +51,12 @@
     COPY backend/requirements.txt /final_project/backend/requirements.txt
 
     RUN pip install --no-cache-dir -r backend/requirements.txt
+
+    # Debug: List files in build context to ensure 'backend/' is present
+    RUN ls -lah /final_project
     
     # Copy the entire backend project (preserving structure) # ✅ Ensures backend structure is copied correctly
-    COPY backend/ /final_project/backend/  
+    COPY backend /final_project/backend/  
     
     # Ensure Python can locate Django
     ENV PYTHONPATH=/final_project/backend
