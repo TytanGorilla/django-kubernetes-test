@@ -4,7 +4,6 @@
     
     # Copy package files and install dependencies
     COPY frontend/package.json frontend/package-lock.json ./
-    
     RUN npm install --silent
     
     # Build-time args for environment variables
@@ -22,21 +21,21 @@
     
     # Copy frontend source and build the React app
     COPY frontend/ ./
-
-    # ✅ Ensure environment variables are passed at build time
+    
     RUN REACT_APP_BUILD_VERSION=$REACT_APP_BUILD_VERSION \
-    REACT_APP_SUPABASE_URL=$REACT_APP_SUPABASE_URL \
-    REACT_APP_SUPABASE_ANON_KEY=$REACT_APP_SUPABASE_ANON_KEY \
-    REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL \
-    PUBLIC_URL=$PUBLIC_URL \
-    npm run build --verbose || (echo "⚠️ React build failed!" && exit 1)
+        REACT_APP_SUPABASE_URL=$REACT_APP_SUPABASE_URL \
+        REACT_APP_SUPABASE_ANON_KEY=$REACT_APP_SUPABASE_ANON_KEY \
+        REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL \
+        PUBLIC_URL=$PUBLIC_URL \
+        npm run build --verbose || (echo "⚠️ React build failed!" && exit 1)
     
     # Debug: List build folder contents
     RUN ls -lah build/
     
     # ------------------ Stage 2: Build Django Backend ------------------
     FROM python:3.11-slim AS backend
-    WORKDIR /final_project/backend  # ✅ Keep backend/ structure inside container
+    # ✅ Set correct root directory before copying backend
+    WORKDIR /final_project
     
     # Install system dependencies required by Django
     RUN apt-get update && apt-get install -y \
@@ -49,21 +48,26 @@
         && apt-get clean
     
     # Copy requirements and install Python dependencies
-    COPY backend/requirements.txt ./
-    RUN pip install --no-cache-dir -r requirements.txt
+    COPY backend/requirements.txt /final_project/backend/requirements.txt
+
+    RUN pip install --no-cache-dir -r backend/requirements.txt
     
-    # Copy the entire backend project (preserving structure)
-    COPY backend /final_project/backend/
+    # Copy the entire backend project (preserving structure) # ✅ Ensures backend structure is copied correctly
+    COPY backend/ /final_project/backend/  
+    
+    # Ensure Python can locate Django
+    ENV PYTHONPATH=/final_project/backend
     
     # Set working directory before running Django commands
     WORKDIR /final_project/backend
     
-    # Collect Django static files with explicit PYTHONPATH
-    RUN PYTHONPATH=/final_project/backend python manage.py collectstatic --noinput
+    # Collect Django static files
+    RUN python manage.py collectstatic --noinput
     
     # ------------------ Stage 3: Final Image with Both Services ------------------
     FROM python:3.11-slim
-    WORKDIR /final_project/backend
+    # ✅ Maintain the backend/ structure
+    WORKDIR /final_project/backend 
     
     # Install system packages including Nginx
     RUN apt-get update && apt-get install -y nginx && apt-get clean
@@ -74,7 +78,7 @@
     
     # ✅ Copy the React build output to Nginx’s folder
     COPY --from=frontend /frontend/build /usr/share/nginx/html/frontend-static
-
+    
     # ✅ Copy the collected Django static files into the final container
     COPY --from=backend /usr/share/nginx/html/django-static /usr/share/nginx/html/django-static
     
@@ -89,4 +93,4 @@
     RUN chmod +x /start.sh
     
     # Use the startup script as the container command
-    CMD ["/start.sh"]
+    CMD ["/start.sh"]    
