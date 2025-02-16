@@ -1,6 +1,6 @@
 # ------------------ Stage 1: Build React Frontend ------------------
     FROM node:18 AS frontend
-    WORKDIR /frontend
+    WORKDIR /final_project/frontend
     
     # Copy package files and install dependencies
     COPY frontend/package.json frontend/package-lock.json ./
@@ -29,13 +29,10 @@
         PUBLIC_URL=$PUBLIC_URL \
         npm run build --verbose || (echo "⚠️ React build failed!" && exit 1)
     
-    # Debug: List build folder contents
-    RUN ls -lah build/
-    
     # ------------------ Stage 2: Build Django Backend ------------------
     FROM python:3.11-slim AS backend
     # ✅ Set correct root directory before copying backend
-    WORKDIR /final_project
+    WORKDIR /final_project/backend
     
     # Install system dependencies required by Django
     RUN apt-get update && apt-get install -y \
@@ -48,29 +45,21 @@
         && apt-get clean
     
     # Copy requirements and install Python dependencies
-    COPY backend/requirements.txt /final_project/backend/requirements.txt
+    COPY backend/requirements.txt ./
 
     RUN pip install --no-cache-dir -r backend/requirements.txt
 
-    # Debug: List files in build context to ensure 'backend/' is present
-    RUN ls -lah /final_project
-    
     # Copy the entire backend project (preserving structure) # ✅ Ensures backend structure is copied correctly
     COPY backend /final_project/backend/  
     
     # Ensure Python can locate Django
     ENV PYTHONPATH=/final_project/backend
     
-    # Set working directory before running Django commands
-    WORKDIR /final_project/backend
-    
     # Collect Django static files
     RUN python manage.py collectstatic --noinput
     
     # ------------------ Stage 3: Final Image with Both Services ------------------
     FROM python:3.11-slim
-    # ✅ Maintain the backend/ structure
-    WORKDIR /final_project/backend 
     
     # Install system packages including Nginx
     RUN apt-get update && apt-get install -y nginx && apt-get clean
@@ -80,13 +69,10 @@
     COPY --from=backend /usr/local/bin /usr/local/bin
     
     # ✅ Copy the React build output to Nginx’s folder
-    COPY --from=frontend /frontend/build /usr/share/nginx/html/frontend-static
+    COPY --from=frontend /frontend/build /usr/share/nginx/html/frontend-static/
     
     # ✅ Copy the collected Django static files into the final container
-    COPY --from=backend /usr/share/nginx/html/django-static /usr/share/nginx/html/django-static
-    
-    # ✅ Ensure PYTHONPATH is set correctly in the final container
-    ENV PYTHONPATH=/final_project/backend
+    COPY --from=backend /usr/share/nginx/html/django-static/ /usr/share/nginx/html/django-static/
     
     # Expose ports (80 for Nginx, 8000 for Django)
     EXPOSE 80 8000
