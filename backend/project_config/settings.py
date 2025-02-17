@@ -148,7 +148,7 @@ USE_TZ = True
 STATIC_URL = '/static/django/'  # ✅ This ensures Nginx knows how to find Django's static files
 
 # The directory where collectstatic will place the files
-STATIC_ROOT = BASE_DIR / 'global_static/'
+STATIC_ROOT = os.getenv('STATIC_ROOT', BASE_DIR / 'global_static')
 
 #Django's ManifestStaticFilesStorage appends a unique hash to the filenames of static files during the collectstatic process
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'

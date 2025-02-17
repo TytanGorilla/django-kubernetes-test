@@ -29,9 +29,21 @@ data:
               autoindex on;
           }
 
+          # Serve static files for 'scheduler' styles
+          location /static/scheduler/ {
+              alias /usr/share/nginx/html/global_static/scheduler/;
+              autoindex on;
+          }
+
+          # Serve static files for 'core' styles
+            location /static/core/ {
+                alias /usr/share/nginx/html/global_static/core/;
+                autoindex on;
+          }
+
           # ✅ Serve React Static Files (JS, CSS, images, etc.)
           location /static/frontend/ {
-              alias /usr/share/nginx/html/frontend-static/;
+              alias /usr/share/nginx/html/frontend-static/static/;
               autoindex on;
           }
 

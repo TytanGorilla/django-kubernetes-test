@@ -52,8 +52,11 @@
     # Copy the entire backend project (preserving structure) # ✅ Ensures backend structure is copied correctly
     COPY backend /final_project/backend/
 
-    # Collect Django static files
-    RUN python manage.py collectstatic --noinput
+    # Set the environment variable for STATIC_ROOT during build
+    ENV STATIC_ROOT=/final_project/global_static
+
+    # Run collectstatic to collect the static files to the specified directory
+    RUN python manage.py collectstatic --noinput && ls -al $STATIC_ROOT
     
     # ------------------ Stage 3: Final Image with Both Services ------------------
     FROM python:3.11-slim
@@ -66,10 +69,10 @@
     COPY --from=backend /usr/local/bin /usr/local/bin
     
     # ✅ Copy the React build output to Nginx’s folder
-    COPY --from=frontend /frontend/build /usr/share/nginx/html/frontend-static/
+    COPY --from=frontend /final_project/frontend/build /usr/share/nginx/html/frontend-static/
     
     # Copy the collected static files from the local filesystem (where collectstatic placed them)
-    COPY global_static /usr/share/nginx/html/global_static/
+    COPY --from=backend /final_project/global_static/ /usr/share/nginx/html/global_static/
     
     # Expose ports (80 for Nginx, 8000 for Django)
     EXPOSE 80 8000

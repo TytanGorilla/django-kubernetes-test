@@ -9,17 +9,7 @@ from rest_framework.response import Response
 
 
 def index(request):
-    manifest = settings.REACT_MANIFEST.copy()
-
-    # ✅ Extract paths correctly from "files" key
-    files = manifest.get("files", {})
-    
-    # ✅ Remove extra `/static/` prefix if present
-    manifest["files"]["main_js"] = files.get("main.js", "").replace("/static/frontend/static/", "/static/frontend/")
-    manifest["files"]["main_css"] = files.get("main.css", "").replace("/static/frontend/static/", "/static/frontend/")
-
-    return render(request, 'scheduler/scheduler_index.html', {"react_manifest": manifest})
-
+    return render(request, 'scheduler/scheduler_index.html')
 
 class EventViewSet(viewsets.ModelViewSet):
     """
