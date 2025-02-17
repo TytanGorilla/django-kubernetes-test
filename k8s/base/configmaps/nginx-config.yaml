@@ -41,8 +41,16 @@ data:
                 autoindex on;
           }
 
-          # ✅ Serve React Static Files (JS, CSS, images, etc.)
+          # Handle shallow paths like /static/frontend/css/main.a181c8ae.css
+          # ✅ Serve React manifest generated (JS, CSS)
           location /static/frontend/ {
+              alias /usr/share/nginx/html/frontend-static/;
+              autoindex on;
+          }
+
+          # Handle deep paths like /static/frontend/static/js/main.0b03628a.js
+          # ✅ Serve Frontend Static Files (JS, CSS, images, etc.)
+          location /static/frontend/static/ {
               alias /usr/share/nginx/html/frontend-static/static/;
               autoindex on;
           }
