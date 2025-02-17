@@ -25,7 +25,7 @@ data:
 
           # Serve Django Static Files (collected by collectstatic)
           location /static/django {
-              alias /usr/share/nginx/html/django-static/;
+              alias /usr/share/nginx/html/global_static/;
               autoindex on;
           }
 

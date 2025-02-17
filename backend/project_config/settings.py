@@ -148,7 +148,7 @@ USE_TZ = True
 STATIC_URL = '/static/django/'  # ✅ This ensures Nginx knows how to find Django's static files
 
 # The directory where collectstatic will place the files
-STATIC_ROOT = "/usr/share/nginx/html/django-static/"  # ✅ This aligns with nginx-config.yaml
+STATIC_ROOT = BASE_DIR / 'global_static/'
 
 #Django's ManifestStaticFilesStorage appends a unique hash to the filenames of static files during the collectstatic process
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
@@ -156,7 +156,6 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 STATICFILES_DIRS = [
     ("core", BASE_DIR / "project_config/static/core"),  # Core static files → /static/core/
     ("scheduler", BASE_DIR / "apps/scheduler/static/scheduler"),  # Scheduler static → /static/scheduler/
-    #("frontend", BASE_DIR / "frontend/build"),  # React frontend static → /static/frontend/
 ]
 
 # Default primary key field type

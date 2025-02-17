@@ -47,20 +47,17 @@
     # Copy requirements and install Python dependencies
     COPY backend/requirements.txt ./
 
-    RUN pip install --no-cache-dir -r backend/requirements.txt
+    RUN pip install --no-cache-dir -r requirements.txt
 
     # Copy the entire backend project (preserving structure) # ✅ Ensures backend structure is copied correctly
-    COPY backend /final_project/backend/  
-    
-    # Ensure Python can locate Django
-    ENV PYTHONPATH=/final_project/backend
-    
+    COPY backend /final_project/backend/
+
     # Collect Django static files
     RUN python manage.py collectstatic --noinput
     
     # ------------------ Stage 3: Final Image with Both Services ------------------
     FROM python:3.11-slim
-    
+
     # Install system packages including Nginx
     RUN apt-get update && apt-get install -y nginx && apt-get clean
     
@@ -71,8 +68,8 @@
     # ✅ Copy the React build output to Nginx’s folder
     COPY --from=frontend /frontend/build /usr/share/nginx/html/frontend-static/
     
-    # ✅ Copy the collected Django static files into the final container
-    COPY --from=backend /usr/share/nginx/html/django-static/ /usr/share/nginx/html/django-static/
+    # Copy the collected static files from the local filesystem (where collectstatic placed them)
+    COPY global_static /usr/share/nginx/html/global_static/
     
     # Expose ports (80 for Nginx, 8000 for Django)
     EXPOSE 80 8000
