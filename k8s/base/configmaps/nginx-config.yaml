@@ -47,6 +47,11 @@ data:
               autoindex on;
           }
 
+          # Serve the asset-manifest.json file
+          location /static/frontend/asset-manifest.json {
+              alias /usr/share/nginx/html/frontend-static/asset-manifest.json;
+          }
+
           # ✅ Forward `/scheduler/` to Django (HTML Pages)
           location /scheduler/ {
               proxy_pass http://django-service:8000/scheduler/;
