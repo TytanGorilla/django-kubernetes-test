@@ -1,5 +1,4 @@
 {% extends "scheduler/base_scheduler.html" %}
-{% load static %}
 
 {% block title %}
     Scheduler Home
@@ -7,8 +6,15 @@
 
 {% block scheduler_content %}
     <h2 id="welcome">Welcome to my CS50W Final Project!</h2>
-    
-    <div id="root"></div>  <!-- ✅ React app injects here -->
+
+    <!-- React app will be injected here -->
+    <div id="root"></div>
+
+    <!-- Inject the dynamically passed CSS file -->
+    <link rel="stylesheet" href="{{ css_file }}">
+
+    <!-- Inject the dynamically passed JS file -->
+    <script defer="defer" src="{{ js_file }}"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

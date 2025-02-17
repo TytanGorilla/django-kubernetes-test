@@ -70,10 +70,13 @@
     
     # ✅ Copy the React build output to Nginx’s folder
     COPY --from=frontend /final_project/frontend/build /usr/share/nginx/html/frontend-static/
+
+    # Copy the asset manifest from React build into Django static directory
+    COPY --from=frontend /final_project/frontend/build/asset-manifest.json /final_project/static/manifest/
     
     # Copy the collected static files from the local filesystem (where collectstatic placed them)
     COPY --from=backend /final_project/global_static/ /usr/share/nginx/html/global_static/
-    
+
     # Expose ports (80 for Nginx, 8000 for Django)
     EXPOSE 80 8000
     

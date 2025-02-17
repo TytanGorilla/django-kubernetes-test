@@ -4,12 +4,13 @@
 {% block title %}Scheduler{% endblock %}
 
 {% block extra_css %}
+    <!-- Static Scheduler Styles served by Nginx -->
     <link rel="stylesheet" href="/static/scheduler/css/scheduler-styles.css">
 
-    {% if react_manifest.files.main_css %}
-        <link rel="stylesheet" href="/static/frontend/css/main.a181c8ae.css">
+    <!-- React CSS, injected dynamically -->
+    {% if css_file %}
+        <link rel="stylesheet" href="{{ css_file }}">
     {% endif %}
-
 {% endblock %}
 
 {% block content %}
@@ -18,10 +19,10 @@
 {% endblock %}
 
 {% block extra_js %}
-    {% if react_manifest.files.main_js %}
-        <script defer="defer" src="/static/frontend/js/main.95837385.js"></script>
+    <!-- React JS, injected dynamically -->
+    {% if js_file %}
+        <script defer="defer" src="{{ js_file }}"></script>
     {% else %}
-        <script>console.error("React main.js not found in manifest!")</script>
+        <script>console.error("React main.js not found in manifest!")</script> <!-- Fallback error handling -->
     {% endif %}
-
 {% endblock %}

@@ -194,17 +194,6 @@ CORS_ALLOW_HEADERS = [
 
 SECURE_SSL_REDIRECT = False  # Disable HTTPS redirection for development
 
-# Reads React's asset-manifest.json to dynamically get the latest hashed filenames
-# Ensures Django loads the correct CSS and JS files even after new builds
-def get_manifest_file():
-    manifest_path = "/usr/share/nginx/html/static/frontend/asset-manifest.json" # ✅ Correct path in Nginx-mounted volume
-    if os.path.exists(manifest_path):
-        with open(manifest_path) as f:
-            return json.load(f)
-    return {}
-
-REACT_MANIFEST = get_manifest_file()
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
