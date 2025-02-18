@@ -15,39 +15,39 @@ spec:
         app: django-app
     spec:
       #initContainers:
-      #- name: migrate
-      #  image: tytan22/django-app:1.0.20250218
-      #  command: ["python", "/final_project/backend/manage.py", "migrate", "--noinput"]
-      #  envFrom:
-      #  - secretRef:
-      #      name: consolidated-secrets
-      #  - configMapRef:
-      #      name: consolidated-config
-      #  volumeMounts:
-      #  - name: staticfiles-storage
-      #    mountPath: /usr/share/nginx/html/django-static
+      #  - name: migrate
+      #    image: tytan22/django-app:1.0.20250218
+      #    command: ["python", "/final_project/backend/manage.py", "migrate", "--noinput"]
+      #    envFrom:
+      #      - secretRef:
+      #          name: consolidated-secrets
+      #      - configMapRef:
+      #          name: consolidated-config
+      #    volumeMounts:
+      #      - name: staticfiles-storage
+      #        mountPath: /usr/share/nginx/html/django-static
       containers:
-      - name: django-container
-        image: tytan22/django-app:1.0.20250218
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8000
-        envFrom:
-        - secretRef:
-            name: consolidated-secrets
-        - configMapRef:
-            name: consolidated-config
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "500m"
-          limits:
-            memory: "512Mi"
-            cpu: "1000m"
-        volumeMounts:
-        - name: staticfiles-storage
-          mountPath: /usr/share/nginx/html/django-static
+        - name: django-container
+          image: tytan22/django-app:1.0.20250218
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: consolidated-secrets
+            - configMapRef:
+                name: consolidated-config
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
+          volumeMounts:
+            - name: staticfiles-storage
+              mountPath: /usr/share/nginx/html/django-static
       volumes:
-      - name: staticfiles-storage
-        persistentVolumeClaim:
-          claimName: staticfiles-pvc
+        - name: staticfiles-storage
+          persistentVolumeClaim:
+            claimName: staticfiles-pvc  # PVC that holds static files

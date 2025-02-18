@@ -16,7 +16,13 @@ echo "🗑 Cleaning up PostgreSQL if it keeps failing..."
 if kubectl get pod -l app=postgres -o jsonpath='{.items[0].status.phase}' | grep -q "Failed"; then
   echo "⚠️ PostgreSQL PVC seems to be corrupted. Deleting..."
   kubectl delete pvc postgres-pvc --force --grace-period=0 || echo "❌ Failed to delete postgres PVC!"
-  sleep 35
+
+  # Wait until PVC is deleted
+  until kubectl get pvc postgres-pvc; do
+      echo "⏳ Waiting for PVC to be deleted..."
+      sleep 5
+  done
+  echo "✅ PVC deleted successfully!"
 fi
 
 echo "✅ Applying PVCs..."
