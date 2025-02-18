@@ -12,11 +12,11 @@ echo "🚀 New image tag: 1.0.$DATE"
 echo "🔄 Fetching Kubernetes secrets and config maps..."
 
 # Fetch the values from Kubernetes secrets and configs
-export REACT_APP_SUPABASE_URL=$(kubectl get secret supabase-secrets -o=jsonpath='{.data.REACT_APP_SUPABASE_URL}' | base64 --decode)
-export REACT_APP_SUPABASE_ANON_KEY=$(kubectl get secret supabase-secrets -o=jsonpath='{.data.REACT_APP_SUPABASE_ANON_KEY}' | base64 --decode)
+export REACT_APP_SUPABASE_URL=$(kubectl get secret consolidated-secrets -o=jsonpath='{.data.REACT_APP_SUPABASE_URL}' | base64 --decode)
+export REACT_APP_SUPABASE_ANON_KEY=$(kubectl get secret consolidated-secrets -o=jsonpath='{.data.REACT_APP_SUPABASE_ANON_KEY}' | base64 --decode)
 
-export REACT_APP_BACKEND_URL=$(kubectl get configmap app-config -o=jsonpath='{.data.REACT_APP_BACKEND_URL}')
-export PUBLIC_URL=$(kubectl get configmap app-config -o=jsonpath='{.data.PUBLIC_URL}')
+export REACT_APP_BACKEND_URL=$(kubectl get configmap consolidated-config -o=jsonpath='{.data.REACT_APP_BACKEND_URL}')
+export PUBLIC_URL=$(kubectl get configmap consolidated-config -o=jsonpath='{.data.PUBLIC_URL}')
 
 echo "🔄 Values fetched: Supabase URL and keys, Backend URL, Public URL."
 

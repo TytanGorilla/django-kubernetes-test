@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Navigate, Routes } from "react-router-d
 import CalendarUI from "./CalendarUI";
 import LoginPage from "./LoginPage";  // ✅ Import new login page
 import AuthButtons from "./AuthButtons";  // ✅ Import this
+import supabase from './supabase'; // Import the Supabase client
 
 const PrivateRoute = ({ element }) => {
   const token = localStorage.getItem("access_token");
@@ -9,6 +10,9 @@ const PrivateRoute = ({ element }) => {
 };
 
 const App = () => {
+  // Optional: Check if the user is authenticated when the app loads
+  const session = supabase.auth.session();
+
   return (
     <Router>
       <AuthButtons />  {/* ✅ Ensures React injects into Django navbar */}
