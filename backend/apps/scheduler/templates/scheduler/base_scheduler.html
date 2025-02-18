@@ -5,12 +5,8 @@
 {% endblock %}
 
 {% block extra_css %}
-    <!-- React CSS, dynamically injected -->
-    {% if css_file %}
-        <link rel="stylesheet" href="{{ css_file }}">
-    {% else %}
-        <link rel="stylesheet" href="/static/frontend/static/css/main.css">  <!-- Fallback -->
-    {% endif %}
+    <!-- Use dynamically injected CSS -->
+    <link rel="stylesheet" href="{{ css_file }}">
 {% endblock %}
 
 {% block content %}
@@ -19,10 +15,6 @@
 {% endblock %}
 
 {% block extra_js %}
-    <!-- React JS, dynamically injected -->
-    {% if js_file %}
-        <script defer src="{{ js_file }}"></script>
-    {% else %}
-        <script>console.error("React main.js not found in manifest!")</script> <!-- Error handling -->
-    {% endif %}
+    <!-- Use dynamically injected JS -->
+    <script defer="defer" src="{{ js_file }}"></script>
 {% endblock %}

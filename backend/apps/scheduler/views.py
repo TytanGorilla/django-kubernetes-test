@@ -17,29 +17,27 @@ import os
 from django.shortcuts import render
 
 def index(request):
-    # Load the React build asset manifest from a Django-accessible location
-    manifest_path = os.path.join('/final_project/static/manifest', 'asset-manifest.json')
+    """Load React's asset manifest to get correct static file paths dynamically."""
+    manifest_path = os.path.join('/usr/share/nginx/html/frontend-static', 'asset-manifest.json')
 
-    # Read the manifest
     try:
         with open(manifest_path, 'r') as f:
             manifest = json.load(f)
 
-        # Get the paths for main.js and main.css from the manifest
-        css_file = manifest['files'].get('main.css')
-        js_file = manifest['files'].get('main.js')
+        # Get the paths for main.css and main.js from the manifest
+        css_file = manifest["files"].get("main.css", "/static/frontend/static/css/main.css")
+        js_file = manifest["files"].get("main.js", "/static/frontend/static/js/main.js")
 
     except FileNotFoundError:
-        # Handle error if the manifest file is not found
-        css_file = js_file = None
-        print("Asset manifest not found. Ensure the React build is in place.")
+        css_file = "/static/frontend/static/css/main.css"
+        js_file = "/static/frontend/static/js/main.js"
+        print("⚠️ WARNING: asset-manifest.json not found. Using fallback paths!")
 
-    # Pass the paths to the template
-    return render(request, 'scheduler/scheduler_index.html', {
-        'css_file': css_file,
-        'js_file': js_file,
+    # Pass the context to base template
+    return render(request, 'scheduler/base_scheduler.html', {
+        "css_file": css_file,
+        "js_file": js_file,
     })
-
 
 class EventViewSet(viewsets.ModelViewSet):
     """
