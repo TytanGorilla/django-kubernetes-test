@@ -10,8 +10,6 @@ const PrivateRoute = ({ element }) => {
 };
 
 const App = () => {
-  // Optional: Check if the user is authenticated when the app loads
-  const session = supabase.auth.session();
 
   return (
     <Router>

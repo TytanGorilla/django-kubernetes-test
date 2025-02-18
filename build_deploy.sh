@@ -12,12 +12,16 @@ echo "🚀 New image tag: 1.0.$DATE"
 echo "🔄 Fetching Kubernetes secrets and config maps..."
 
 # Fetch the values from Kubernetes secrets and configs
-export REACT_APP_SUPABASE_URL=$(kubectl get secret consolidated-secrets -o=jsonpath='{.data.REACT_APP_SUPABASE_URL}' | base64 --decode)
+export REACT_APP_SUPABASE_URL=$(kubectl get configmap consolidated-config -o=jsonpath='{.data.REACT_APP_SUPABASE_URL}')
 export REACT_APP_SUPABASE_ANON_KEY=$(kubectl get secret consolidated-secrets -o=jsonpath='{.data.REACT_APP_SUPABASE_ANON_KEY}' | base64 --decode)
 
 export REACT_APP_BACKEND_URL=$(kubectl get configmap consolidated-config -o=jsonpath='{.data.REACT_APP_BACKEND_URL}')
 
 echo "🔄 Values fetched: Supabase URL and keys, Backend URL, Public URL."
+
+echo "Supabase URL: $REACT_APP_SUPABASE_URL"
+echo "Supabase Anon Key: $REACT_APP_SUPABASE_ANON_KEY"
+echo "React App Backend URL: $REACT_APP_BACKEND_URL"
 
 #######################################
 # Build and Push Docker Image (Django + Nginx Consolidated)
