@@ -30,7 +30,6 @@ docker build --no-cache \
   --build-arg REACT_APP_SUPABASE_URL=$REACT_APP_SUPABASE_URL \
   --build-arg REACT_APP_SUPABASE_ANON_KEY=$REACT_APP_SUPABASE_ANON_KEY \
   --build-arg REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL \
-  --build-arg PUBLIC_URL=$PUBLIC_URL \
   -t tytan22/django-app:1.0.$DATE .
 
 docker push tytan22/django-app:1.0.$DATE

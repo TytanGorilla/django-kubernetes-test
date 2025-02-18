@@ -21,7 +21,6 @@
     RUN REACT_APP_SUPABASE_URL=$REACT_APP_SUPABASE_URL \
         REACT_APP_SUPABASE_ANON_KEY=$REACT_APP_SUPABASE_ANON_KEY \
         REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL \
-        PUBLIC_URL=$PUBLIC_URL \
         npm run build --verbose || (echo "⚠️ React build failed!" && exit 1)
     
     # ------------------ Stage 2: Build Django Backend ------------------
