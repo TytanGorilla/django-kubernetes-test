@@ -20,6 +20,11 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 80
+        envFrom:
+        - secretRef:
+            name: consolidated-secrets  # Inject secrets
+        - configMapRef:
+            name: consolidated-config  # Inject config
         volumeMounts:
         - name: nginx-config
           mountPath: /etc/nginx/nginx.conf

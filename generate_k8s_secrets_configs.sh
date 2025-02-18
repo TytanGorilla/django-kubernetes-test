@@ -24,15 +24,6 @@ declare -A ENV_CONFIG_FILES=(
     ["frontend"]="$FRONTEND_ENV_DIR/.env.config"
 )
 
-# Generate Build Version (Timestamp-based, to ensure cache-busting)
-BUILD_VERSION=$(date +%s)
-
-# Update frontend/.env.config to replace $(date +%s) with the build version
-if [[ -f "$FRONTEND_ENV_DIR/.env.config" ]]; then
-    echo "🔄 Updating frontend/.env.config with Build Version: $BUILD_VERSION"
-    sed -i "s|\$(date +%s)|$BUILD_VERSION|g" "$FRONTEND_ENV_DIR/.env.config"
-fi
-
 # Set default values for Django (to be included in the config map)
 declare -A DEFAULTS=(
     ["DJANGO_DEBUG"]="True"
@@ -97,24 +88,12 @@ for APP in "${!ENV_CONFIG_FILES[@]}"; do
     CONFIG_PATH="${ENV_CONFIG_FILES[$APP]}"
     if [[ -f "$CONFIG_PATH" ]]; then
         echo "📝 Processing config for: $APP from $CONFIG_PATH"
-        # Track if REACT_APP_BUILD_VERSION is found for the frontend
-        BUILD_VERSION_FOUND=false
         while IFS= read -r line || [[ -n "$line" ]]; do
             [[ -z "$line" || "$line" =~ ^# ]] && continue
             key=$(echo "$line" | cut -d '=' -f1)
             value=$(echo "$line" | cut -d '=' -f2- | sed -e 's/^"//' -e 's/"$//')
-            
-            # For frontend, ensure REACT_APP_BUILD_VERSION uses the BUILD_VERSION
-            if [[ "$key" == "REACT_APP_BUILD_VERSION" && "$APP" == "frontend" ]]; then
-                value="$BUILD_VERSION"
-                BUILD_VERSION_FOUND=true
-            fi
-
             echo "  $key: \"$value\"" >> "$CONSOLIDATED_CONFIGMAP_FILE.tmp"
         done < "$CONFIG_PATH"
-        if [[ "$APP" == "frontend" && "$BUILD_VERSION_FOUND" == false ]]; then
-            echo "  REACT_APP_BUILD_VERSION: \"$BUILD_VERSION\"" >> "$CONSOLIDATED_CONFIGMAP_FILE.tmp"
-        fi
     else
         echo "⚠️ No config file found for $APP ($CONFIG_PATH). Skipping config."
     fi
