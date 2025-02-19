@@ -37,6 +37,8 @@
         curl \
         rsync \
         bash \
+        net-tools \
+        dnsutils \
         && apt-get clean
     
     # Copy requirements and install Python dependencies

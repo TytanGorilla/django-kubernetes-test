@@ -3,7 +3,8 @@ set -e  # Stop the script on errors
 
 echo "Starting Gunicorn..."
 # Start Gunicorn in the background
-gunicorn project_config.wsgi:application --bind 127.0.0.1:8000 &
+export PYTHONPATH=/final_project/backend:$PYTHONPATH
+gunicorn project_config.wsgi:application --bind 0.0.0.0:8000 &
 
 echo "Starting Nginx..."
 # Start Nginx in the foreground
