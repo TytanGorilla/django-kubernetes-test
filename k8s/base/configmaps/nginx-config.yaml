@@ -16,10 +16,9 @@ data:
       server {
           listen 80;
           
-          # Serve React Frontend from Nginx (index.html entry point)
-          location / {
+          # Serve React Frontend from Nginx (index.html entry point for React)
+          location /scheduler/ {
               root /usr/share/nginx/html/frontend-static/;  # React build output
-              index index.html;
               try_files $uri /index.html =404;  # Fallback to React's index.html for client-side routing
           }
 
@@ -47,23 +46,23 @@ data:
               autoindex on;
           }
 
-          # Serve the asset-manifest.json file for React
+          # Serve the asset-manifest.json file for React (for dynamic loading of JS/CSS)
           location /static/frontend/asset-manifest.json {
               alias /usr/share/nginx/html/frontend-static/asset-manifest.json;
           }
 
           # Forward `/scheduler/` to Django for dynamic rendering (HTML Pages)
           location /scheduler/ {
-              proxy_pass http://django-service:8000/scheduler/;
+              proxy_pass http://django-service:8000/scheduler/;  # Forward to Django for rendering HTML
               proxy_set_header Host $host;
               proxy_set_header X-Real-IP $remote_addr;
               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
               proxy_set_header X-Forwarded-Proto $scheme;
           }
 
-          # Forward `/scheduler/api/` to Django for the API
+          # Forward `/scheduler/api/` to Django for the API (REST API routes)
           location /api/ {
-              proxy_pass http://django-service:8000/api/;
+              proxy_pass http://django-service:8000/api/;  # Forward API requests to Django
               proxy_set_header Host $host;
               proxy_set_header X-Real-IP $remote_addr;
               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
