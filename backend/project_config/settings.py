@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django_extensions',  # ✅ Add this to enable `show_urls`
     'corsheaders',
     'apps.scheduler', # Updated the path to include the apps folder
+    'project_config',
     # Add your custom apps here
 ]
 
