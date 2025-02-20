@@ -37,6 +37,7 @@
         curl \
         rsync \
         bash \
+        procps \
         net-tools \
         dnsutils \
         && apt-get clean

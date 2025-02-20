@@ -1,46 +1,80 @@
 #!/bin/bash
 set -e  # Exit on error
 
-echo "🚀 Scaling down workloads..."
-kubectl scale deployment django-app --replicas=0 || echo "⚠️ django-app scale down failed"
-kubectl scale deployment nginx --replicas=0 || echo "⚠️ nginx scale down failed"
-kubectl scale deployment postgres --replicas=0 || echo "⚠️ postgres scale down failed"
+# Function to scale down deployments
+scale_down_deployment() {
+    local deployment=$1
+    echo "🚀 Scaling down $deployment..."
+    kubectl scale deployment $deployment --replicas=0 || echo "⚠️ $deployment scale down failed"
+}
 
+# Function to apply resources (PVCs, ConfigMaps, Secrets, Services, etc.)
+apply_resources() {
+    local resource_type=$1
+    local resource_dir=$2
+    echo "🔄 Applying $resource_type..."
+    kubectl apply -f $resource_dir --recursive || { echo "❌ Failed to apply $resource_type"; exit 1; }
+}
+
+# Function to wait for PVC to be deleted
+wait_for_pvc_deletion() {
+    local pvc_name=$1
+    echo "⏳ Waiting for $pvc_name to be deleted..."
+    until ! kubectl get pvc $pvc_name; do
+        sleep 5
+    done
+    echo "✅ $pvc_name deleted successfully!"
+}
+
+# Function to handle PVC cleanup and deletion
+clean_up_pvc() {
+    local pvc_name=$1
+    if kubectl get pod -l app=postgres -o jsonpath='{.items[0].status.phase}' | grep -q "Failed"; then
+        echo "⚠️ $pvc_name seems to be corrupted. Deleting..."
+        kubectl delete pvc $pvc_name --force --grace-period=0 || echo "❌ Failed to delete $pvc_name PVC!"
+        wait_for_pvc_deletion $pvc_name
+    fi
+}
+
+# Function to restart deployments
+restart_deployment() {
+    local deployment=$1
+    echo "🔄 Rolling out restart for $deployment..."
+    kubectl rollout restart deployment $deployment || echo "⚠️ Failed to restart $deployment"
+}
+
+# Scale down all deployments
+scale_down_deployment django-app
+scale_down_deployment nginx
+scale_down_deployment postgres
+
+# Delete existing deployments
 echo "🗑 Deleting deployments (preserving PVCs)..."
 kubectl delete -f k8s/base/deployments --recursive || echo "⚠️ Deployment deletion encountered issues"
 
+# Check existing PVCs
 echo "🔍 Checking existing PVCs..."
 kubectl get pvc || echo "⚠️ No PVCs found!"
 
-echo "🗑 Cleaning up PostgreSQL if it keeps failing..."
-if kubectl get pod -l app=postgres -o jsonpath='{.items[0].status.phase}' | grep -q "Failed"; then
-  echo "⚠️ PostgreSQL PVC seems to be corrupted. Deleting..."
-  kubectl delete pvc postgres-pvc --force --grace-period=0 || echo "❌ Failed to delete postgres PVC!"
+# Cleanup PostgreSQL PVC if it's in a failed state
+clean_up_pvc postgres-pvc
 
-  # Wait until PVC is deleted
-  until kubectl get pvc postgres-pvc; do
-      echo "⏳ Waiting for PVC to be deleted..."
-      sleep 5
-  done
-  echo "✅ PVC deleted successfully!"
-fi
+# Apply PVCs
+apply_resources "PVCs" "k8s/base/pvc"
 
-echo "✅ Applying PVCs..."
-kubectl apply -f k8s/base/pvc --recursive || { echo "❌ Failed to apply PVCs"; exit 1; }
+# Reapply ConfigMaps & Secrets
+apply_resources "ConfigMaps & Secrets" "k8s/base/configmaps"
+apply_resources "ConfigMaps & Secrets" "k8s/base/secrets"
 
-echo "🔄 Reapplying ConfigMaps & Secrets..."
-kubectl apply -f k8s/base/configmaps --recursive || echo "⚠️ ConfigMaps application encountered issues"
-kubectl apply -f k8s/base/secrets --recursive || echo "⚠️ Secrets application encountered issues"
+# Apply Services
+apply_resources "Services" "k8s/base/services"
 
-echo "🌐 Applying Services... (Ensuring stable networking)"
-kubectl apply -f k8s/base/services --recursive || echo "⚠️ Services application encountered issues"
+# Reapply Deployments
+apply_resources "Deployments" "k8s/base/deployments"
 
-echo "🚀 Redeploying applications..."
-kubectl apply -f k8s/base/deployments --recursive || { echo "❌ Deployment application failed"; exit 1; }
-
-echo "🔄 Rolling out restarts..."
-kubectl rollout restart deployment postgres || echo "⚠️ Failed to restart postgres"
-kubectl rollout restart deployment django-app || echo "⚠️ Failed to restart django-app"
-kubectl rollout restart deployment nginx || echo "⚠️ Failed to restart nginx"
+# Restart deployments to apply changes
+restart_deployment postgres
+restart_deployment django-app
+restart_deployment nginx
 
 echo "🎉 Application successfully reset & redeployed!"

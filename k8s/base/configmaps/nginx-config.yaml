@@ -65,7 +65,7 @@ data:
           # ✅ Allow fallback to React's index.html (handled by Django's rendering)
           location / {
               # Let Django handle the homepage
-              proxy_pass http://django-service:8000/;
+              proxy_pass http://10.1.8.114:8000/;
               proxy_set_header Host $host;
               proxy_set_header X-Real-IP $remote_addr;
               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
