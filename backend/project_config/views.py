@@ -9,7 +9,7 @@ def get_asset_paths():
     """Load React's asset manifest to get correct static file paths dynamically."""
     try:
         # URL of the asset-manifest.json served by Nginx
-        manifest_url = 'http://nginx-service-name/static/frontend/asset-manifest.json'
+        manifest_url = 'http://nginx-service/static/frontend/asset-manifest.json'
         response = requests.get(manifest_url)
         
         if response.status_code != 200:
