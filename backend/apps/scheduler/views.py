@@ -6,15 +6,9 @@ from .serializers import EventSerializer
 from .models import Event
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-
-
-import json
-from django.shortcuts import render
-import os
-
 import json
 import os
-from django.shortcuts import render
+
 
 def index(request):
     """Load React's asset manifest to get correct static file paths dynamically."""

@@ -5,8 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Core Base Template{% endblock %}</title>
+    
+    <!-- Load dynamic React CSS (first) -->
+    <link rel="stylesheet" href="{{ css_file }}">
+
+    <!-- Core Stylesheet (loaded last to allow cascading rules to be applied) -->
     <link rel="stylesheet" href="/static/core/css/styles.css">
+
+    <!-- React JavaScript (deferred to not block rendering) -->
+    <script defer="defer" src="{{ js_file }}"></script>
+
+    <!-- Favicon (separate from dynamic JS/CSS) -->
     <link rel="icon" type="image/png" sizes="180x180" href="/static/core/images/favicon.ico">  
+    
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -27,9 +38,10 @@
         <p>&copy; 2025 Base Template</p>
     </footer>
 
+    <!-- Custom JavaScript file (loaded last) -->
     <script src="/static/core/js/scripts.js"></script>
 
-    {# ✅ New block for additional JavaScript (Used by `base_scheduler.html`) #}
+    {# New block for additional JavaScript, if needed in specific templates #}
     {% block extra_js %}{% endblock %}
 </body>
 </html>
