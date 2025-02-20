@@ -6,8 +6,10 @@ from django.conf import settings
 def get_asset_paths():
     """Load React's asset manifest to get correct static file paths dynamically."""
     try:
-        # Path to the asset-manifest.json (you should adjust this path if needed)
-        manifest_path = os.path.join(settings.BASE_DIR, 'frontend/build/asset-manifest.json')
+        # Path to the asset-manifest.json in the Nginx static serving directory
+        manifest_path = '/usr/share/nginx/html/frontend-static/asset-manifest.json'
+
+        # Try opening and reading the manifest file
         with open(manifest_path, 'r') as f:
             manifest = json.load(f)
 
