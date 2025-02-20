@@ -12,9 +12,6 @@
     <!-- Core Stylesheet (loaded last to allow cascading rules to be applied) -->
     <link rel="stylesheet" href="/static/core/css/styles.css">
 
-    <!-- React JavaScript (deferred to not block rendering) -->
-    <script defer="defer" src="{{ js_file }}"></script>
-
     <!-- Favicon (separate from dynamic JS/CSS) -->
     <link rel="icon" type="image/png" sizes="180x180" href="/static/core/images/favicon.ico">  
     
@@ -37,6 +34,9 @@
     <footer>
         <p>&copy; 2025 Base Template</p>
     </footer>
+    
+    <!-- React JavaScript (deferred to not block rendering) -->
+    <script defer="defer" src="{{ js_file }}"></script>
 
     <!-- Custom JavaScript file (loaded last) -->
     <script src="/static/core/js/scripts.js"></script>

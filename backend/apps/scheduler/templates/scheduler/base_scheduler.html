@@ -4,17 +4,9 @@
     Scheduler Home
 {% endblock %}
 
-{% block extra_css %}
-    <!-- Use dynamically injected CSS -->
-    <link rel="stylesheet" href="{{ css_file }}">
-{% endblock %}
+{% block scheduler_content %}
+    <h2 id="welcome">Welcome to my CS50W Final Project!</h2>
 
-{% block content %}
-    <h1>Calendar Scheduler</h1>
-    {% block scheduler_content %}{% endblock %}
-{% endblock %}
-
-{% block extra_js %}
-    <!-- Use dynamically injected JS -->
-    <script defer="defer" src="{{ js_file }}"></script>
+    <!-- React app will be injected here -->
+    <div id="root"></div>  <!-- Make sure this exists -->
 {% endblock %}
