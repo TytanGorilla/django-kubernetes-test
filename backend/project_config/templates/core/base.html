@@ -14,8 +14,6 @@
 
     <!-- Favicon (separate from dynamic JS/CSS) -->
     <link rel="icon" type="image/png" sizes="180x180" href="/static/core/images/favicon.ico">  
-    
-    {% block extra_css %}{% endblock %}
 </head>
 <body>
     <header>
@@ -38,10 +36,6 @@
     <!-- React JavaScript (deferred to not block rendering) -->
     <script defer="defer" src="{{ js_file }}"></script>
 
-    <!-- Custom JavaScript file (loaded last) -->
-    <script src="/static/core/js/scripts.js"></script>
-
-    {# New block for additional JavaScript, if needed in specific templates #}
     {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -1,32 +1,29 @@
-import json
 import os
-from django.conf import settings
+import json
 from django.shortcuts import render
+from django.conf import settings
 
-def get_asset_paths(manifest_path):
-    """Load the asset manifest file."""
+def get_asset_paths():
+    """Load React's asset manifest to get correct static file paths dynamically."""
     try:
+        # Path to the asset-manifest.json (you should adjust this path if needed)
+        manifest_path = os.path.join(settings.BASE_DIR, 'frontend/build/asset-manifest.json')
         with open(manifest_path, 'r') as f:
             manifest = json.load(f)
 
-        # Get the paths for main.js and main.css from the manifest
-        css_file = manifest["files"].get("main.css", "/static/frontend/static/css/main.css")
-        js_file = manifest["files"].get("main.js", "/static/frontend/static/js/main.js")
+        # Get the paths for main.css and main.js from the manifest
+        css_file = manifest.get("files", {}).get("main.css", "/static/frontend/static/css/main.css")
+        js_file = manifest.get("files", {}).get("main.js", "/static/frontend/static/js/main.js")
+        return js_file, css_file
 
     except FileNotFoundError:
-        css_file = "/static/frontend/static/css/main.css"
-        js_file = "/static/frontend/static/js/main.js"
+        # Fallback paths if the manifest is not found
         print("⚠️ WARNING: asset-manifest.json not found. Using fallback paths!")
-    
-    return js_file, css_file
+        return "/static/frontend/static/js/main.js", "/static/frontend/static/css/main.css"
 
 def home(request):
-    """Get the JS and CSS file paths from the asset manifest."""
-    # Define the path to the asset-manifest.json for the core app
-    manifest_path = '/usr/share/nginx/html/frontend-static/asset-manifest.json'
-
-    # Get the JS and CSS file paths using the function
-    js_file, css_file = get_asset_paths(manifest_path)
+    # Get the JS and CSS file paths from the asset manifest
+    js_file, css_file = get_asset_paths()
 
     # Pass them as context to the home template
     return render(request, 'core/home.html', {
