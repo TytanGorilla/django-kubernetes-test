@@ -12,7 +12,7 @@ import os
 
 def index(request):
     """Render the scheduler page."""
-    return render(request, 'scheduler/base_scheduler.html')
+    return render(request, 'scheduler/scheduler_index.html')
 
 class EventViewSet(viewsets.ModelViewSet):
     """

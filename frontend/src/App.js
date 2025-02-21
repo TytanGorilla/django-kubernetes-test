@@ -10,14 +10,16 @@ const PrivateRoute = ({ element }) => {
 };
 
 const App = () => {
-
+  const location = window.location.pathname;
   return (
     <Router>
-      <AuthButtons />  {/* ✅ Ensures React injects into Django navbar */}
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />  {/* ✅ Use LoginPage instead of Login */}
-        <Route path="/scheduler" element={<PrivateRoute element={<CalendarUI />} />} />
-      </Routes>
+      <AuthButtons /> 
+      {location.startsWith("/scheduler") && (
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/scheduler" element={<PrivateRoute element={<CalendarUI />} />} />
+        </Routes>
+      )}
     </Router>
   );
 };

@@ -69,10 +69,8 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             BASE_DIR / 'project_config/templates',  # Global templates
-            BASE_DIR / "apps/scheduler/templates",  # Scheduler templates
-            BASE_DIR / "frontend/build",  # ✅ React's index.html
         ],
-        'APP_DIRS': True,
+        'APP_DIRS': True, # ✅ Automatically finds templates inside installed apps
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
