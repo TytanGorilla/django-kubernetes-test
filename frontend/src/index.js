@@ -2,13 +2,21 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import AuthButtons from "./AuthButtons";
+import { BrowserRouter as Router } from "react-router-dom";
 
-// Wait for the DOM to be ready
+// Wait for DOM to be ready
 document.addEventListener("DOMContentLoaded", function () {
-    // Only mount React if the #root div exists
+    console.log("✅ React script loaded");
+
+    // Mount the main React app (Calendar)
     const root = document.getElementById("root");
     if (root) {
-        ReactDOM.render(<App />, root);
+        ReactDOM.render(
+            <Router>
+                <App />
+            </Router>,
+            root
+        );
         console.log("✅ React mounted on #root.");
     } else {
         console.log("✅ Skipping React mount: No #root found on this page.");
@@ -18,14 +26,24 @@ document.addEventListener("DOMContentLoaded", function () {
     function mountAuthButtons() {
         const authContainer = document.getElementById("react-auth-buttons");
         if (authContainer) {
-            ReactDOM.render(<AuthButtons />, authContainer);
+            ReactDOM.render(
+                <Router>
+                    <AuthButtons />
+                </Router>,
+                authContainer
+            );
             console.log("✅ AuthButtons successfully mounted!");
         } else {
             console.log("❌ `#react-auth-buttons` span not found. Waiting for it...");
             const observer = new MutationObserver(() => {
                 const newAuthContainer = document.getElementById("react-auth-buttons");
                 if (newAuthContainer) {
-                    ReactDOM.render(<AuthButtons />, newAuthContainer);
+                    ReactDOM.render(
+                        <Router>
+                            <AuthButtons />
+                        </Router>,
+                        newAuthContainer
+                    );
                     console.log("✅ AuthButtons successfully mounted after waiting!");
                     observer.disconnect(); // Stop observing once mounted
                 }
@@ -34,5 +52,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    mountAuthButtons(); // Start the process
+    // Delay mounting by 200ms to ensure Django template loads
+    setTimeout(mountAuthButtons, 200);
 });

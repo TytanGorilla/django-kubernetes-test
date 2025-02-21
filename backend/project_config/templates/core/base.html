@@ -1,47 +1,24 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Core Base Template{% endblock %}</title>
+<header>
+    <h1>Core Django Application</h1>
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'scheduler_home' %}">Scheduler App</a>
+        <span id="react-auth-buttons"></span>  <!-- ✅ Placeholder for React buttons -->
+    </nav>
+</header>
 
-    <!-- Load dynamic React CSS -->
-    {% if css_file %}
-        <link rel="stylesheet" href="{{ css_file }}">
-    {% endif %}
+<main>
+    {% block content %}{% endblock %}
+</main>
 
-    <!-- Core Stylesheet -->
-    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+<footer>
+    <p>&copy; 2025 Base Template</p>
+</footer>
 
-    <link rel="icon" type="image/png" sizes="180x180" href="{% static 'core/images/favicon.ico' %}">
-    {% block extra_css %}{% endblock %}
-</head>
-<body>
-    <header>
-        <h1>Core Django Application</h1>
-        <nav>
-            <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'scheduler_home' %}">Scheduler App</a>
-            <span id="react-auth-buttons"></span>
-        </nav>
-    </header>
-    
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+<!-- React JavaScript (deferred) -->
+<script defer="defer" src="{{ js_file }}"></script>
 
-    <footer>
-        <p>&copy; 2025 Base Template</p>
-    </footer>
-    
-    <!-- Load React JavaScript only if `js_file` exists -->
-    {% if js_file %}
-        <script defer="defer" src="{{ js_file }}"></script>
-    {% endif %}
+<!-- Custom JavaScript file -->
+<script src="/static/core/js/scripts.js"></script>
 
-    <script src="{% static 'core/js/scripts.js' %}"></script>
-
-    {% block extra_js %}{% endblock %}
-</body>
-</html>
+{% block extra_js %}{% endblock %}

@@ -8,7 +8,7 @@ const AuthButtons = () => {
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     setToken(null);
-    navigate("/login");  // React Router will handle the navigation
+    navigate("/login");
   };
 
   useEffect(() => {
@@ -16,7 +16,7 @@ const AuthButtons = () => {
   }, [token]);
 
   return (
-    <div id="react-auth-buttons">
+    <div>
       {token ? (
         <button onClick={handleLogout}>Logout</button>
       ) : (
