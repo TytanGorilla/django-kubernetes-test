@@ -8,6 +8,16 @@ import { BrowserRouter as Router } from "react-router-dom";
 document.addEventListener("DOMContentLoaded", function () {
     console.log("✅ React script loaded");
 
+    const loginContainer = document.getElementById('login-container');
+    if (loginContainer) {
+        ReactDOM.render(
+            <Router>
+                <LoginPage />
+            </Router>,
+            loginContainer
+        );
+    }
+
     // Mount the main React app (Calendar)
     const root = document.getElementById("root");
     if (root) {

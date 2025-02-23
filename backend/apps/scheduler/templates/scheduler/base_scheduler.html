@@ -1,5 +1,6 @@
 {% extends "core/base.html" %}
 {% load static %}
+
 {% block title %}
     Scheduler Home
 {% endblock %}
@@ -9,4 +10,8 @@
 
     <!-- React app will be injected here -->
     <div id="root"></div>  <!-- Make sure this exists -->
+
+    {% block scheduler_content %}  <!-- ✅ Allow `scheduler_index.html` to add content -->
+    {% endblock %}
+
 {% endblock %}

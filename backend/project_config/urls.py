@@ -26,12 +26,5 @@ urlpatterns = [
     path('', views.home, name='home'),  # ✅ Homepage at http://localhost:32212/
     
     # ✅ Routes requests starting with /scheduler/ to the scheduler app
-    path('scheduler/', include('apps.scheduler.urls')),  
-    
-    # ✅ Make API available directly under `/api/` instead of `/scheduler/api/`
-    path('api/', include('apps.scheduler.api_urls')),  
-
-    # ✅ JWT Authentication Endpoints
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('scheduler/', include('apps.scheduler.urls')), 
 ]

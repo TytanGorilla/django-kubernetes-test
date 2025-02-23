@@ -16,7 +16,7 @@ spec:
     spec:
       #initContainers:
       #  - name: migrate
-      #    image: tytan22/django-app:1.0.20250221
+      #    image: tytan22/django-app:1.0.20250222
       #    command: ["python", "/final_project/backend/manage.py", "migrate", "--noinput"]
       #    envFrom:
       #      - secretRef:
@@ -28,7 +28,7 @@ spec:
       #        mountPath: /usr/share/nginx/html/django-static
       containers:
         - name: django-container
-          image: tytan22/django-app:1.0.20250221
+          image: tytan22/django-app:1.0.20250222
           imagePullPolicy: Always
           ports:
             - containerPort: 8000

@@ -2,7 +2,6 @@ import os
 import json
 from django.shortcuts import render
 from django.conf import settings
-
 import requests
 
 def get_asset_paths():
