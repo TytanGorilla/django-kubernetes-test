@@ -14,6 +14,7 @@ import os
 import json # Added for JSON parsing of React's asset-manifest.json
 from pathlib import Path
 from datetime import timedelta
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,6 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'project_config.context_processors.asset_paths',  # ✅ Custom context processor for getting asset paths from asset-manifest
             ],
         },
     },
@@ -170,9 +172,14 @@ CORS_ALLOWED_ORIGINS = [
 
 # ✅ Allow dynamic frontend origin from environment variable
 if "CODESPACE_NAME" in os.environ:
-    CORS_ALLOWED_ORIGINS.append(f"https://{os.environ['CODESPACE_NAME']}-3000.app.github.dev")
+    codespace = f"https://{os.environ['CODESPACE_NAME']}-3000.app.github.dev"
+    CORS_ALLOWED_ORIGINS.append(codespace)
+else:
+    # Add local development server to the list of trusted origins during local development.
+    codespace = 'http://localhost:32212'
 
-CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS  # ✅ Trust same origins for CSRF
+CORS_ALLOWED_ORIGINS.append(codespace)
+CSRF_TRUSTED_ORIGINS = [codespace]  # Trust same origin for CSRF
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -202,4 +209,6 @@ REST_FRAMEWORK = {
     ),
 }
 
-LOGOUT_REDIRECT_URL = 'home'  # Use the name of your homepage URL pattern
+LOGIN_REDIRECT_URL = reverse_lazy('scheduler_home') # With the use of reverse_lazy we can use named URLs
+LOGIN_URL = reverse_lazy('scheduler_login')
+LOGOUT_REDIRECT_URL = reverse_lazy('home')

@@ -316,3 +316,13 @@ cd to frontend
 export REACT_APP_BUILD_VERSION=$(date +%s)
 npm run build
 ```
+Connecting Interpod communication
+Find a pods endpoint
+```bash
+kubectl get endpoints django-service
+```
+
+Installing curl on the fly inside a pod
+```bash
+apt-get update && apt-get install -y curl
+```

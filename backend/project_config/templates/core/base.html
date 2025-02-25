@@ -21,8 +21,17 @@
         <h1>Core Django Application</h1>
         <nav>
             <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'scheduler_home' %}">Scheduler App</a>
-            <a href="{% url 'scheduler_login' %}">Scheduler Login</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'scheduler_home' %}">Scheduler App</a>
+
+                <form action="{% url 'scheduler_logout' %}" method="post" style="display: inline-block;">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('Are you sure you want to log out?')" class="nav-btn">Logout</button>
+                </form>
+                
+            {% else %} 
+                <a href="{% url 'scheduler_login' %}">Login</a>
+            {% endif %}
         </nav>
     </header>
     
@@ -35,7 +44,7 @@
     </footer>
 
     <script src="{% static 'core/js/scripts.js' %}"></script>
-
+    
     <!-- Load React JavaScript only if `js_file` exists -->
     {% if js_file %}
         <script defer="defer" src="{{ js_file }}"></script>

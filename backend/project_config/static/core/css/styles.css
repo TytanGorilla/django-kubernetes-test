@@ -32,6 +32,22 @@ nav a:hover {
     border-radius: 5px;
 }
 
+.nav-btn {
+  text-decoration: none;
+  color: white;
+  padding: 10px 20px;
+  display: inline-block;
+  background-color: #007BFF; 
+  border: none;
+  cursor: pointer;
+  font-size: 24px; /*So the text of the Logout button's text is the same as the other anchor tags*/
+}
+
+.nav-btn:hover {
+  background-color: #ef09f7;
+  border-radius: 5px;
+}
+
 main {
     margin: 20px auto;
     width: 80%;

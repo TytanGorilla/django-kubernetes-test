@@ -3,29 +3,12 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .serializers import EventSerializer
 from .models import Event
-from rest_framework.response import Response
-import json
-import os
-import requests
+from django.contrib.auth.views import LogoutView
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm, LogoutView
 
-
-
-@login_required 
+@login_required
 def index(request):
     return render(request, 'scheduler/scheduler_index.html')
-
-def login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('scheduler_index')
-    else:
-        form = AuthenticationForm()
-    return render(request, 'scheduler_login.html', {'form': form})
 
 class CustomLogoutView(LogoutView):
     def dispatch(self, request, *args, **kwargs):

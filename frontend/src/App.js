@@ -10,7 +10,7 @@ const PrivateRoute = ({ element }) => {
 const App = () => {
   return (
     <Routes>
-      <Route path="/scheduler/*" element={<PrivateRoute element={<CalendarUI />} />} />
+      <Route path="/scheduler/" element={<PrivateRoute element={<CalendarUI />} />} />
     </Routes>
   );
 };
