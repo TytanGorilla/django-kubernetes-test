@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def index(request):
-    return render(request, 'scheduler/scheduler_index.html')
+    return render(request, 'scheduler/base_scheduler.html')
 
 class CustomLogoutView(LogoutView):
     def dispatch(self, request, *args, **kwargs):

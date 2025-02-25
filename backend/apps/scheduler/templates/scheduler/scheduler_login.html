@@ -9,7 +9,9 @@
     <h1>Login to Scheduler</h1>
     <form method="post">
         {% csrf_token %}
+        <input type="hidden" name="next" value="{% url 'scheduler_home' %}">
         {{ form.as_p }}
         <input type="submit" value="Login" />
+        
     </form>
 {% endblock %}

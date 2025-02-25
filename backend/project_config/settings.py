@@ -209,6 +209,5 @@ REST_FRAMEWORK = {
     ),
 }
 
-LOGIN_REDIRECT_URL = reverse_lazy('scheduler_home') # With the use of reverse_lazy we can use named URLs
 LOGIN_URL = reverse_lazy('scheduler_login')
 LOGOUT_REDIRECT_URL = reverse_lazy('home')

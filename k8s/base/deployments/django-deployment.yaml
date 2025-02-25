@@ -14,21 +14,21 @@ spec:
       labels:
         app: django-app
     spec:
-      #initContainers:
-      #  - name: migrate
-      #    image: tytan22/django-app:1.0.20250224
-      #    command: ["python", "/final_project/backend/manage.py", "migrate", "--noinput"]
-      #    envFrom:
-      #      - secretRef:
-      #          name: consolidated-secrets
-      #      - configMapRef:
-      #          name: consolidated-config
-      #    volumeMounts:
-      #      - name: staticfiles-storage
-      #        mountPath: /usr/share/nginx/html/django-static
+      initContainers:
+        - name: migrate
+          image: tytan22/django-app:1.0.20250225
+          command: ["python", "/final_project/backend/manage.py", "migrate", "--noinput"]
+          envFrom:
+            - secretRef:
+                name: consolidated-secrets
+            - configMapRef:
+                name: consolidated-config
+          volumeMounts:
+            - name: staticfiles-storage
+              mountPath: /usr/share/nginx/html/django-static
       containers:
         - name: django-container
-          image: tytan22/django-app:1.0.20250224
+          image: tytan22/django-app:1.0.20250225
           imagePullPolicy: Always
           ports:
             - containerPort: 8000

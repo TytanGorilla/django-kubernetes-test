@@ -12,23 +12,37 @@ const CalendarUI = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [formData, setFormData] = useState({ id: null, title: "", description: "", start: "", end: "" });
+  const [formData, setFormData] = useState({
+    id: null,
+    title: "",
+    description: "",
+    start: "",
+    end: "",
+  });
 
-  // ✅ Fetch events from Supabase on page load
+  // ✅ Fetch events from Supabase when the component mounts
   useEffect(() => {
-    const fetchEvents = async () => {
-      const { data, error } = await supabase.from("events").select("*");
+    fetchEvents();
+    window.debugEvents = events; // ✅ Expose to console
+  }, []);
 
+  // ✅ Fetch events from Supabase
+  const fetchEvents = async () => {
+    try {
+      const { data, error } = await supabase.from("scheduler_event").select("*");
+  
       if (error) {
         console.error("❌ Error fetching events:", error.message);
       } else {
         console.log("✅ Supabase events response:", data);
         setEvents(data);
+        window.debugEvents = data; // ✅ Now accessible in console
       }
-    };
-
-    fetchEvents();
-  }, []);
+    } catch (err) {
+      console.error("❌ Unexpected error fetching events:", err);
+    }
+  };
+  
 
   // ✅ Handle selecting a time slot to create a new event
   const handleSelectSlot = ({ start }) => {
@@ -72,24 +86,22 @@ const CalendarUI = () => {
     };
 
     try {
+      let response;
       if (formData.id) {
         // ✅ Update existing event in Supabase
-        const { data, error } = await supabase
-          .from("events")
+        response = await supabase
+          .from("scheduler_event")
           .update(eventData)
           .match({ id: formData.id });
-
-        if (error) throw error;
-        setEvents(events.map((event) => (event.id === formData.id ? data[0] : event)));
       } else {
         // ✅ Insert new event in Supabase
-        const { data, error } = await supabase.from("events").insert([eventData]);
-
-        if (error) throw error;
-        setEvents([...events, data[0]]);
+        response = await supabase.from("scheduler_event").insert([eventData]);
       }
 
+      if (response.error) throw response.error;
+
       setIsDialogOpen(false);
+      fetchEvents(); // 🔄 ✅ Fetch latest events after saving
     } catch (error) {
       console.error("❌ Error saving event:", error.message);
     }
@@ -100,11 +112,12 @@ const CalendarUI = () => {
     if (!selectedEvent) return;
 
     try {
-      const { error } = await supabase.from("events").delete().match({ id: selectedEvent.id });
+      const { error } = await supabase.from("scheduler_event").delete().match({ id: selectedEvent.id });
 
       if (error) throw error;
-      setEvents(events.filter((event) => event.id !== selectedEvent.id));
+
       setIsDialogOpen(false);
+      fetchEvents(); // 🔄 ✅ Fetch latest events after deleting
     } catch (error) {
       console.error("❌ Error deleting event:", error.message);
     }
