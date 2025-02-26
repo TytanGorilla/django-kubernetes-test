@@ -6,20 +6,28 @@
   "features": {
     "node": "20",
     "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
-    "ghcr.io/devcontainers/features/docker-in-docker:2.12.0": {}  // ✅ Ensures Docker is inside the container
+    "ghcr.io/devcontainers/features/docker-in-docker:2.12.0": {}
   },
   "mounts": [
     "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
   ],
-  "postCreateCommand": "
-    echo '📌 Checking Docker availability...';
-    if ! command -v docker &> /dev/null; then
-      echo '❌ Docker is not installed inside this container!';
-      exit 1;
-    fi;
-    docker info;
-    echo '✅ Docker is running inside the dev container!';
+  "postCreateCommand": "echo '✅ Dev container created. Waiting for Docker...'",
 
+  "postStartCommand": "
+    echo '📌 Checking Docker availability...';
+    TIMEOUT=60;
+    while ! docker info &> /dev/null; do
+      if [ $TIMEOUT -le 0 ]; then
+        echo '❌ Docker is not available after waiting. Exiting...';
+        exit 1;
+      fi;
+      echo '⏳ Waiting for Docker ($TIMEOUT seconds remaining)...';
+      sleep 5;
+      TIMEOUT=$((TIMEOUT-5));
+    done;
+
+    echo '✅ Docker is running inside the dev container!';
+    
     echo '📌 Installing Kind...';
     curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64 &&
     chmod +x ./kind &&
