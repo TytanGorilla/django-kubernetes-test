@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: tytan22/django-app:1.0.20250225
+        image: tytan22/django-app:1.0.20250226
         imagePullPolicy: Always
         ports:
         - containerPort: 80

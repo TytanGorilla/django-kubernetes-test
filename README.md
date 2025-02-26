@@ -13,10 +13,15 @@ While inspecting the repository, click the green code button and select "Open wi
 Make relevant scripts executable:
 ```bash
 chmod +x generate_k8s_secrets_configs.sh
-chmod +x sync_migrations.sh
-chmod +x deploy.sh
-chmod +x reset_and_redeploy.sh
+chmod +x make_migrations_local.sh
+chmod +x build_deploy.sh
+chmod +x reset_redeploy.sh
 chmod +x install_kind.sh
+```
+
+### Create A Kubernetes Cluster
+```bash
+./install_kind.sh
 ```
 
 Expected Output:
@@ -73,8 +78,9 @@ POSTGRES_PORT=5432
 ```
 
 ### Generate a Django Secret Key
-To generate a secure secret key, run the following command in the backend directory:
+To generate a secure secret key, run the following command IN the backend directory:
 ```bash
+cd backend
 python generate_django_secret_key.py
 ```
 Copy the key generated password in your CLI.
@@ -112,45 +118,39 @@ This is your own frontend secrets environment file.
 Populate its contents with your sensitive information.
 
 Obtain your Supabase Anonymous key:
-1) Click Home on your dashboard
-2) Scroll down till you see Project API, within is your Project URL, and below it your public anonymous API key
+1) Click the Gear cog "Project Settings"
+2) Under CONFIGURATION, "Data API"
+3) Copy your anonymous public key and paste it in your frontend/.env.secrets
 ```
 REACT_APP_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANONYMOUS_KEY
 ```
 
-Then update your backend .env.config with your own Supabase parameters
+Then update your frontend .env.config with your own Supabase parameters
 ```
 REACT_APP_BACKEND_URL=http://localhost:32212
-PUBLIC_URL=/static/frontend
-REACT_APP_BUILD_VERSION=$(date +%s)
-REACT_APP_SUPABASE_URL=YOUR_SUPABASE_PROJECT_URL
+REACT_APP_SUPABASE_URL=https://jxpsamnvzjziemtpziig.supabase.co
 ```
-📌 What this does:
-PUBLIC_URL → Makes React look for JS files in Nginx (/static/frontend/)
-REACT_APP_BACKEND_URL → Ensures React API calls hit Django (http://localhost:32212).
-REACT_APP_BUILD_VERSION -> Make React look for latest version of React for cache busting.
 
 ### Generate Your Kubernetes Manifests `django-secrets.yaml, frontend-secrets.yaml` & `django-config.yaml, frontend-config.yaml`
 ENSURE YOU HAVE SAVED YOUR CHANGES TO ALL THE .env.secrets & .env.configs IN BOTH the frontend & backend folders.
 
-Run the script to create a new `secrets & configs` file:
+Run the script to create a new `secrets & configs` file FROM THE ROOT folder:
 ```bash
 ./generate_k8s_secrets_configs.sh
 ```
-This reads the `.env` files, within the backend & frontend folders, Base64-encodes variables, and produces a Kubernetes manifests in the k8s/base/secrets & k8s/base/configmaps directory.
+This reads the `.env` files (.env.config & .env.secrets), within both the backend & frontend folders, Base64-encodes variables, and produces a Kubernetes manifests -> k8s/base/secrets/consolidated-secrets.yaml & k8s/base/configmaps/consolidated-config.yaml.
 
-### Apply Manifests to Kubernetes
-Apply the secrets and other manifests:
+### Deploy
+Apply secrets, manifests & restarts deployments:
 ```bash
-kubectl apply -f k8s/ --recursive
+.reset_redeploy.sh
 ```
-This deploys the application to Kubernetes.
 
-### Verify Deployment
-After 30 seconds, check that the pods are running:
+### Verify pods
 ```bash
 kubectl get pods
 ```
+
 Expected Output:
 ```bash
 NAME                          READY   STATUS    RESTARTS      AGE
@@ -171,10 +171,6 @@ kubernetes       ClusterIP   10.96.0.1       <none>        443/TCP          5m48
 nginx-service    NodePort    10.96.245.237   <none>        80:32212/TCP     100s
 ```
 
-### Delete & Reapply manifest and restart the application
-```bash
-./reset_and_redeploy.sh
-```
 
 ### Test the database
 #### Local Development
@@ -269,6 +265,8 @@ http://localhost:32212/
 ## TESTING
 If you have reached this stage in the README, you have successfully deployed the application to Kubernetes! Congratulations! Now you can proceed to testing / grading the application.
 
+***********************************************************************************************
+
 ### Debugging
 Check logs if the application does not behave as expected:
 ```bash
@@ -279,10 +277,9 @@ Describe the pod for detailed diagnostics:
 kubectl describe pod -l app=django-app
 ```
 
-### Applying migrations manually by running the following script: UNSURE
-
+### Making migrations locally for version control
 ```bash
-./sync_migrations.sh
+./make_migrations_local.sh
 ```
 
 ### Creating Migrations Locally only after models changes UNSURE
@@ -299,18 +296,6 @@ DATABASE_URL="postgresql://postgres.jxpsamnvzjziemtpziig:Uyr04Wp9IoDd^h3@aws-0-e
 kubectl exec -it $(kubectl get pod -l app=django-app -o jsonpath="{.items[0].metadata.name}") -- bash
 ```
 
-Rebuild Frontend & Deploy
-1️⃣ Build the frontend locally:
-cd to frontend
-```bash
-npm run build
-```
-2 Build the frontend for production & to bust cache from stale files:
-cd to frontend
-```bash
-export REACT_APP_BUILD_VERSION=$(date +%s)
-npm run build
-```
 Connecting Interpod communication
 Find a pods endpoint
 ```bash
