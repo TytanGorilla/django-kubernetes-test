@@ -1,14 +1,26 @@
 {
-  "name": "My Codespace App",
+  "name": "My DjangoCodespace App",
   "build": {
     "dockerfile": "../Dockerfile"
   },
   "features": {
     "node": "20",
-    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {}
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:1": {}
   },
   "mounts": [
     "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
   ],
-  "postCreateCommand": "curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64 && chmod +x ./kind && mv ./kind /usr/local/bin/kind"
+  "postCreateCommand": "
+    echo '📌 Installing Kind...'; 
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64 && 
+    chmod +x ./kind && 
+    mv ./kind /usr/local/bin/kind && 
+    echo '✅ Kind installation complete!'; 
+    echo '🔄 Verifying Docker...'; 
+    docker info && 
+    echo '✅ Docker is running!'; 
+    echo '🔄 Verifying Kind...'; 
+    kind version
+  "
 }
