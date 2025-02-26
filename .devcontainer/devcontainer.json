@@ -10,31 +10,5 @@
   },
   "mounts": [
     "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-  ],
-  "postCreateCommand": "echo '✅ Dev container created. Waiting for Docker...'",
-
-  "postStartCommand": "
-    echo '📌 Checking Docker availability...';
-    TIMEOUT=60;
-    while ! docker info &> /dev/null; do
-      if [ $TIMEOUT -le 0 ]; then
-        echo '❌ Docker is not available after waiting. Exiting...';
-        exit 1;
-      fi;
-      echo '⏳ Waiting for Docker ($TIMEOUT seconds remaining)...';
-      sleep 5;
-      TIMEOUT=$((TIMEOUT-5));
-    done;
-
-    echo '✅ Docker is running inside the dev container!';
-    
-    echo '📌 Installing Kind...';
-    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64 &&
-    chmod +x ./kind &&
-    mv ./kind /usr/local/bin/kind;
-    
-    echo '✅ Kind installation complete!';
-    echo '🔄 Verifying Kind installation...';
-    kind version;
-  "
+  ]
 }

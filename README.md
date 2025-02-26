@@ -9,15 +9,16 @@ git clone https://github.com/TytanGorilla/django-kubernetes-test.git
 ## ONLINE DEVELOPMENT (GITHUB CODESPACES) - RECOMMENDED
 While inspecting the repository, click the green code button and select "Open with Codespaces."
 
-#### Check kind's versioN
+#### Make scripts executable
+Make relevant scripts executable:
 ```bash
-kind version
+chmod +x generate_k8s_secrets_configs.sh
+chmod +x sync_migrations.sh
+chmod +x deploy.sh
+chmod +x reset_and_redeploy.sh
+chmod +x install_kind.sh
 ```
 
-### Create a Kubernetes Cluster
-```bash
-kind create cluster --name my-cluster
-```
 Expected Output:
 ```bash
 Creating cluster "my-cluster" ...
@@ -131,13 +132,7 @@ REACT_APP_BUILD_VERSION -> Make React look for latest version of React for cache
 
 ### Generate Your Kubernetes Manifests `django-secrets.yaml, frontend-secrets.yaml` & `django-config.yaml, frontend-config.yaml`
 ENSURE YOU HAVE SAVED YOUR CHANGES TO ALL THE .env.secrets & .env.configs IN BOTH the frontend & backend folders.
-Make relevant scripts executable:
-```bash
-chmod +x generate_k8s_secrets_configs.sh
-chmod +x sync_migrations.sh
-chmod +x deploy.sh
-chmod +x reset_and_redeploy.sh
-```
+
 Run the script to create a new `secrets & configs` file:
 ```bash
 ./generate_k8s_secrets_configs.sh
