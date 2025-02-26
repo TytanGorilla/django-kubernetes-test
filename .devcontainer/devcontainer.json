@@ -1,5 +1,5 @@
 {
-  "name": "My DjangoCodespace App",
+  "name": "My Codespace App",
   "build": {
     "dockerfile": "../Dockerfile"
   },
@@ -12,15 +12,24 @@
     "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
   ],
   "postCreateCommand": "
-    echo '📌 Installing Kind...'; 
-    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64 && 
-    chmod +x ./kind && 
-    mv ./kind /usr/local/bin/kind && 
-    echo '✅ Kind installation complete!'; 
-    echo '🔄 Verifying Docker...'; 
-    docker info && 
-    echo '✅ Docker is running!'; 
-    echo '🔄 Verifying Kind...'; 
-    kind version
+    echo '📌 Verifying Docker...';
+    if ! command -v docker &> /dev/null; then
+      echo '❌ Docker is not installed! Exiting...';
+      exit 1;
+    fi;
+    docker info;
+    echo '✅ Docker is installed and running!';
+
+    echo '📌 Installing Kind...';
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64 &&
+    chmod +x ./kind &&
+    mv ./kind /usr/local/bin/kind;
+
+    echo '✅ Kind installation complete!';
+    echo '🔄 Verifying Kind...';
+    kind version;
+    
+    echo '🚀 Creating Kubernetes Cluster...';
+    kind create cluster || echo '❌ Failed to create Kind cluster.';
   "
 }
