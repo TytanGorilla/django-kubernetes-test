@@ -19,5 +19,14 @@
     fi;
     docker info;
     echo '✅ Docker is running inside the dev container!';
+
+    echo '📌 Installing Kind...';
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64 &&
+    chmod +x ./kind &&
+    mv ./kind /usr/local/bin/kind;
+    
+    echo '✅ Kind installation complete!';
+    echo '🔄 Verifying Kind installation...';
+    kind version;
   "
 }
