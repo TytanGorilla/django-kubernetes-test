@@ -18,6 +18,9 @@ Plan : Free - $0/month
 Click "Create organization"
 Proceed filling out only where necessary, and keep the pre selected defaults.
 
+Create a project, and store that database password, this will fill the POSTGRES_PASSWORD.
+***AVOID creating a password that contains special characters, URL parse those differently!***
+
 #### Make scripts executable
 Make relevant scripts executable:
 ```bash
@@ -101,22 +104,9 @@ python generate_django_secret_key.py
 Copy the key generated password in your CLI.
 The save it in your `.env.secrets` file as the value of `DJANGO_SECRET_KEY`.
 
-## Supabase parameters -> .env.secret Values 
-```
-host:aws-0-eu-central-1.pooler.supabase.com -> POSTGRES_HOST
+The values of DJANGO_SECRET_KEY, POSTGRES_PASSWORD & DATABASE_URL, should be in quotations to prevent odd characters influencing the necessary database connection.
 
-port:5432 -> POSTGRES_PORT
-
-database:postgres -> POSTGRES_DB
-
-user:postgres.jxpsamnvzjziemtpziig -> POSTGRES_USER
-
-password: NOT SHOWN HERE, but is the password you set for your Supabase account. This password fills the POSTGRES_PASSWORD value in the frontend/.env.secrets file.
-
-```
-  - The values of DJANGO_SECRET_KEY, POSTGRES_PASSWORD & DATABASE_URL, should be in quotations to prevent odd characters influencing the necessary database connection.
-
-Then populate the DATABASE_URL with the relevant values referencing variables listed in the frontend's .env.config & .env.secrets.
+Then populate the DATABASE_URL with the copied URL from the top of the "View Parameters". Then complete that URL, by adding your actual Supabase password.
 
 Example 1: 
 ```
@@ -135,15 +125,44 @@ Populate its contents with your sensitive information.
 
 Obtain your Supabase Anonymous key:
 1) Click the Gear cog "Project Settings"
-2) Under CONFIGURATION, "Data API"
+2) Under CONFIGURATION, "Data API" -> API Settings
 3) Copy your anonymous public key and paste it in your frontend/.env.secrets
 ```
 REACT_APP_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANONYMOUS_KEY
 ```
 
-Then update your frontend .env.config with YOUR OWN Supabase parameters
+Then update your frontend .env.config with YOUR OWN PROJECT's Supabase URL.
+The REACT_APP_SUPABASE_URL is your Supabase project URL, which is also found under the same place "Data API" -> API Settings
+
+The REACT_APP_BACKEND_URL in Codespace should be:
+```bash
+REACT_APP_BACKEND_URL=https://32212-your-codespace-id.githubpreview.dev
+```
+
+To complete this for your own unique codespace instance, look at your CLI:
+```bash
+root@codespaces-22fdef:/workspaces/django-kubernetes-test#
+```
+
+Form the complete BACKEND_URL, should look like this:
+```bash
+REACT_APP_BACKEND_URL=https://32212-22fdef.githubpreview.dev
+```
+
+The REACT_APP_BACKEND_URL in Local Development should be:
+```bash
+REACT_APP_BACKEND_URL=http://localhost:32212
+```
+
+### Example of frontend .env.config LOCALLY
 ```
 REACT_APP_BACKEND_URL=http://localhost:32212
+REACT_APP_SUPABASE_URL=https://jxpsamnvzjziemtpziig.supabase.co
+```
+
+### Example of frontend .env.config in CODESPACE
+```
+REACT_APP_BACKEND_URL=https://32212-22fdef.githubpreview.dev
 REACT_APP_SUPABASE_URL=https://jxpsamnvzjziemtpziig.supabase.co
 ```
 
@@ -216,7 +235,7 @@ apt install -y postgresql-client
 psql --version
 ```
 
-Copy your own database connection string from your .env file.
+Copy your own database connection string from your backend/.env.secrets file.
 ```bash
 psql postgresql://USERNAME:PASSWORD@HOST:PORT/DATABASE
 
