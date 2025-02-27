@@ -322,3 +322,12 @@ Installing curl on the fly inside a pod
 ```bash
 apt-get update && apt-get install -y curl
 ```
+
+### Deleting hanging PVC
+```bash
+kubectl delete pvc <pvc-name> --force --grace-period=0
+```
+If it still hangs, you might need to remove the finalizers manually. You can do that by patching the PVC:
+```bash
+kubectl patch pvc <pvc-name> -p '{"metadata":{"finalizers":null}}'
+```
