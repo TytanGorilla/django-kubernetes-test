@@ -76,25 +76,6 @@ Rename .env.secrets_example_backend -> .env.secrets
 This is your own backend secrets environment file.
 Populate its contents with your sensitive information, and soon to be generated DJANGO_SECRET_KEY
 
-Run the following command from the backend directory.
-```bash
-generate_django_secret_key.py
-```
-
-```
-DATABASE_URL="postgresql://[POSTGRES_USER]:[POSTGRES_PASSWORD]@[POSTGRES_HOST]:[POSTGRES_PORT]/[POSTGRES_DB]"
-POSTGRES_PASSWORD="YOUR_SUPABASE_PASSWORD"
-DJANGO_SECRET_KEY="GENERATED_SECRET_KEY"
-```
-
-Then update your backend .env.config with YOUR OWN Supabase parameters
-```
-POSTGRES_DB=postgres
-POSTGRES_USER=postgres.jxpsamnvzjziemtpziig
-POSTGRES_HOST=aws-0-eu-central-1.pooler.supabase.com
-POSTGRES_PORT=5432
-```
-
 ### Generate a Django Secret Key
 To generate a secure secret key, run the following command IN the backend directory:
 ```bash
@@ -116,6 +97,20 @@ DATABASE_URL="postgresql://POSTGRES_USER:YOUR_SUPABASE_PASSWORD@POSTGRES_HOST:PO
 Example 2:
 ```
 DATABASE_URL="postgresql://postgres.jxpsamnvzjziemtpziig:YOUR_SUPABASE_PASSWORD@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
+```
+
+```
+DATABASE_URL="postgresql://[POSTGRES_USER]:[POSTGRES_PASSWORD]@[POSTGRES_HOST]:[POSTGRES_PORT]/[POSTGRES_DB]"
+POSTGRES_PASSWORD="YOUR_SUPABASE_PASSWORD"
+DJANGO_SECRET_KEY="GENERATED_SECRET_KEY"
+```
+
+Then update your backend .env.config with YOUR OWN Supabase parameters
+```
+POSTGRES_DB=postgres
+POSTGRES_USER=postgres.jxpsamnvzjziemtpziig
+POSTGRES_HOST=aws-0-eu-central-1.pooler.supabase.com
+POSTGRES_PORT=5432
 ```
 
 ## Update frontend .env variable files (.env.config & .env.secrets_example_frontend)
@@ -240,7 +235,7 @@ Copy your own database connection string from your backend/.env.secrets file.
 psql postgresql://USERNAME:PASSWORD@HOST:PORT/DATABASE
 
 Example:
-postgresql://postgres.jxpsamnvzjziemtpziig:[YOUR-PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
+psql postgresql://postgres.jxpsamnvzjziemtpziig:[YOUR-PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
 ```
 
 #### Expected Output
@@ -274,11 +269,12 @@ SELECT 'Connection successful!' AS message;
 ### Port Forwarding to Access the App From a Codespace
 To access your app without Minikube tunnels or LoadBalancers, use `kubectl port-forward`:
 ```bash
-kubectl port-forward service/django-service 8000:8000
+kubectl port-forward service/nginx-service 32212:80
 ```
+This command forwards traffic from your local port 32212 to port 80 on the nginx-service. Then, when you visit http://localhost:32212 (or use your Codespace’s forwarded URL), you'll hit the nginx service as expected.
 
 ### Accessing the application
-This maps the a private URL found within the codespace's "PORTS" tab, to the local port 8000.
+This maps the a private URL found within the codespace's "PORTS" tab, to the local port 8000, whilst exposing the 
 
 Under the forwarded address is the URL for your application.
 ```

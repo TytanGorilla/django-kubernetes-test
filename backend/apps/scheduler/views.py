@@ -5,6 +5,9 @@ from .serializers import EventSerializer
 from .models import Event
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 
 @login_required
 def index(request):
@@ -29,3 +32,7 @@ class EventViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)  # Save event to use
 
+class RegisterView(CreateView):
+    form_class = UserCreationForm
+    template_name = 'scheduler/register.html'
+    success_url = reverse_lazy('scheduler_login')
