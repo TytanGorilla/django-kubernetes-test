@@ -9,6 +9,15 @@ git clone https://github.com/TytanGorilla/django-kubernetes-test.git
 ## ONLINE DEVELOPMENT (GITHUB CODESPACES) - RECOMMENDED
 While inspecting the repository, click the green code button and select "Open with Codespaces."
 
+## Other requirements
+This application relies on an external cloud managed database Supabase https://supabase.com/dashboard/sign-up
+Create a free easy to use account there https://supabase.com/dashboard/new?plan=free
+Provide an organization name
+Type of organization is personal
+Plan : Free - $0/month
+Click "Create organization"
+Proceed filling out only where necessary, and keep the pre selected defaults.
+
 #### Make scripts executable
 Make relevant scripts executable:
 ```bash
@@ -62,14 +71,20 @@ pool_mode: session
 ## Update backend .env variable files (.env.config & .env.secrets_example_backend)
 Rename .env.secrets_example_backend -> .env.secrets
 This is your own backend secrets environment file.
-Populate its contents with your sensitive information.
+Populate its contents with your sensitive information, and soon to be generated DJANGO_SECRET_KEY
+
+Run the following command from the backend directory.
+```bash
+generate_django_secret_key.py
+```
+
 ```
 DATABASE_URL="postgresql://[POSTGRES_USER]:[POSTGRES_PASSWORD]@[POSTGRES_HOST]:[POSTGRES_PORT]/[POSTGRES_DB]"
 POSTGRES_PASSWORD="YOUR_SUPABASE_PASSWORD"
-DJANGO_SECRET_KEY="GENERATED_SECRET_KEY_FROM_RUNNING_generate_django_secret_key.py"
+DJANGO_SECRET_KEY="GENERATED_SECRET_KEY"
 ```
 
-Then update your backend .env.config with your own Supabase parameters
+Then update your backend .env.config with YOUR OWN Supabase parameters
 ```
 POSTGRES_DB=postgres
 POSTGRES_USER=postgres.jxpsamnvzjziemtpziig
@@ -86,7 +101,7 @@ python generate_django_secret_key.py
 Copy the key generated password in your CLI.
 The save it in your `.env.secrets` file as the value of `DJANGO_SECRET_KEY`.
 
-## Supabase parameters -> .env.config Values 
+## Supabase parameters -> .env.secret Values 
 ```
 host:aws-0-eu-central-1.pooler.supabase.com -> POSTGRES_HOST
 
@@ -96,11 +111,12 @@ database:postgres -> POSTGRES_DB
 
 user:postgres.jxpsamnvzjziemtpziig -> POSTGRES_USER
 
-password: NOT SHOWN HERE, but is the password you set for your Supabase account. This password fills the POSTGRES_PASSWORD value in the .env file.
+password: NOT SHOWN HERE, but is the password you set for your Supabase account. This password fills the POSTGRES_PASSWORD value in the frontend/.env.secrets file.
 
 ```
   - The values of DJANGO_SECRET_KEY, POSTGRES_PASSWORD & DATABASE_URL, should be in quotations to prevent odd characters influencing the necessary database connection.
-Then populate the DATABASE_URL with the relevant values referencing variables listed in the backend's .env.config & .env.secrets.
+
+Then populate the DATABASE_URL with the relevant values referencing variables listed in the frontend's .env.config & .env.secrets.
 
 Example 1: 
 ```
@@ -125,7 +141,7 @@ Obtain your Supabase Anonymous key:
 REACT_APP_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANONYMOUS_KEY
 ```
 
-Then update your frontend .env.config with your own Supabase parameters
+Then update your frontend .env.config with YOUR OWN Supabase parameters
 ```
 REACT_APP_BACKEND_URL=http://localhost:32212
 REACT_APP_SUPABASE_URL=https://jxpsamnvzjziemtpziig.supabase.co
@@ -143,7 +159,7 @@ This reads the `.env` files (.env.config & .env.secrets), within both the backen
 ### Deploy
 Apply secrets, manifests & restarts deployments:
 ```bash
-.reset_redeploy.sh
+./reset_redeploy.sh
 ```
 
 ### Verify pods

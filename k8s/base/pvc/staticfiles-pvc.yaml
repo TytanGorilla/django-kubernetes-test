@@ -3,8 +3,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: staticfiles-pvc
 spec:
+  storageClassName: standard
   accessModes:
-    - ReadWriteMany  # ✅ Multiple pods can read/write
+    - ReadWriteMany  # Ensure your environment supports RWX with local-path (usually best for single-node setups)
   resources:
     requests:
       storage: 1Gi
