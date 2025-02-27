@@ -6,11 +6,15 @@
 {% endblock %}
 
 {% block content %}
-<h2>Register</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Register</button>
-</form>
-<p>Already have an account? <a href="{% url 'scheduler_login' %}">Login here</a>.</p>
+<div class="registration-container">
+    <h2>Register</h2>
+    <form method="post" class="registration-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register</button>
+    </form>
+    <p class="registration-link">
+        Already have an account? <a href="{% url 'scheduler_login' %}">Login here</a>.
+    </p>
+</div>
 {% endblock %}

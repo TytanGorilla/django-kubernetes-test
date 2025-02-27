@@ -3,9 +3,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: staticfiles-pvc
 spec:
-  storageClassName: standard # Use "hostpath" for local storage & "standard" for codespaces
+  storageClassName: hostpath # Use "hostpath" for local storage & "standard" for codespaces
   accessModes:
-    - ReadWriteOnce  # Ensure your environment supports RWX with local-path (usually best for single-node setups)
+    - ReadWriteMany  # Ensure your environment supports RWX (ReadWriteMany) with local-path (usually best for single-node setups) RWO (ReadWriteOnce) with hostpath
   resources:
     requests:
       storage: 1Gi

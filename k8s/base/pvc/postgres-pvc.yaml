@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: postgres-pvc
 spec:
-  storageClassName: standard # Use "hostpath" for local storage & "standard" for codespaces
+  storageClassName: hostpath # Use "hostpath" for local storage & "standard" for codespaces
   accessModes:
     - ReadWriteOnce  # ✅ Ensures only one pod can use it at a time
   resources:
