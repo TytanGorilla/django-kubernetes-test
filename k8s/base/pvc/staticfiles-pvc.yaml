@@ -5,7 +5,7 @@ metadata:
 spec:
   storageClassName: hostpath # Use "hostpath" for local storage & "standard" for codespaces
   accessModes:
-    - ReadWriteMany  # Ensure your environment supports RWX (ReadWriteMany) with local-path (usually best for single-node setups) RWO (ReadWriteOnce) with hostpath
+    - ReadWriteMany  # Ensure your environment supports RWX (ReadWriteMany) with local-path ("hostpath"), RWO (ReadWriteOnce) with "standard" for Codespaces
   resources:
     requests:
       storage: 1Gi

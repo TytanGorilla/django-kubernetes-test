@@ -25,8 +25,6 @@ Create a project, and store that database password, this will fill the POSTGRES_
 Make relevant scripts executable:
 ```bash
 chmod +x generate_k8s_secrets_configs.sh
-chmod +x make_migrations_local.sh
-chmod +x build_deploy.sh
 chmod +x reset_redeploy.sh
 chmod +x install_kind.sh
 ```
@@ -53,12 +51,13 @@ kubectl cluster-info --context kind-my-cluster
 ## Setup Simple Cloud Managed Database with Supabase
 Visit [Supabase](https://supabase.com)
   - Setup a free account by signing in with your GitHub account.
-  - Navigate to the database tab on the left of the initial screen.
   - At the top of the screen click the button "Connect".
   - A popup will appear titled "Connect to your project".
   - Select the tab "Connection String".
   - Type of "URI" should be selected, and Source should be "Primary Database".
-  - Under "Session Pooler", under the connection string, click "View parameters".
+  - Under "Session Pooler", is your database URL & Parameters.
+  - Click > "View parameters"
+
 ```
 host:aws-0-eu-central-1.pooler.supabase.com
 
@@ -87,31 +86,34 @@ The save it in your `.env.secrets` file as the value of `DJANGO_SECRET_KEY`.
 
 The values of DJANGO_SECRET_KEY, POSTGRES_PASSWORD & DATABASE_URL, should be in quotations to prevent odd characters influencing the necessary database connection.
 
-Then populate the DATABASE_URL with the copied URL from the top of the "View Parameters". Then complete that URL, by adding your actual Supabase password.
+Then populate the DATABASE_URL with the copied URL from the top of the "View Parameters". Then complete that URL, by adding your recently created Supabase project password. This is DIFFERENT from the password used to log into your Supabase account.
 
 Example 1: 
 ```
-DATABASE_URL="postgresql://POSTGRES_USER:YOUR_SUPABASE_PASSWORD@POSTGRES_HOST:POSTGRES_PORT/POSTGRES_DB"
+DATABASE_URL="postgresql://[POSTGRES_USER]:[POSTGRES_PASSWORD]@[POSTGRES_HOST]:[POSTGRES_PORT]/[POSTGRES_DB]"
 ```
 
 Example 2:
+Remove "[]" when completing this URL
 ```
-DATABASE_URL="postgresql://postgres.jxpsamnvzjziemtpziig:YOUR_SUPABASE_PASSWORD@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
+DATABASE_URL="postgresql://postgres.vdapyfjuljtcxtzhhbvx:[YOUR-PASSWORD]@aws-0-us-west-1.pooler.supabase.com:5432/postgres"
 ```
 
 ```
-DATABASE_URL="postgresql://[POSTGRES_USER]:[POSTGRES_PASSWORD]@[POSTGRES_HOST]:[POSTGRES_PORT]/[POSTGRES_DB]"
+DATABASE_URL="postgresql://postgres.vdapyfjuljtcxtzhhbvx:[YOUR-PASSWORD]@aws-0-us-west-1.pooler.supabase.com:5432/postgres"
 POSTGRES_PASSWORD="YOUR_SUPABASE_PASSWORD"
 DJANGO_SECRET_KEY="GENERATED_SECRET_KEY"
 ```
+Save the backend/.env.secrets file!
 
 Then update your backend .env.config with YOUR OWN Supabase parameters
 ```
 POSTGRES_DB=postgres
-POSTGRES_USER=postgres.jxpsamnvzjziemtpziig
-POSTGRES_HOST=aws-0-eu-central-1.pooler.supabase.com
+POSTGRES_USER=postgres.jxpsamnvzjziemtpziig  # CHANGE THIS LINE
+POSTGRES_HOST=aws-0-eu-central-1.pooler.supabase.com # CHANGE THIS LINE
 POSTGRES_PORT=5432
 ```
+Save the backend/.env.config file!
 
 ## Update frontend .env variable files (.env.config & .env.secrets_example_frontend)
 Rename .env.secrets_example_frontend -> .env.secrets
@@ -119,15 +121,18 @@ This is your own frontend secrets environment file.
 Populate its contents with your sensitive information.
 
 Obtain your Supabase Anonymous key:
-1) Click the Gear cog "Project Settings"
-2) Under CONFIGURATION, "Data API" -> API Settings
+1) Click the Gear cog "Project Settings" on the left pop up menu.
+2) Under CONFIGURATION, Click "Data API" on the left persistent menu.
+3) Under API Settings, Under Project API Keys, "anon public"
 3) Copy your anonymous public key and paste it in your frontend/.env.secrets
 ```
 REACT_APP_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANONYMOUS_KEY
 ```
+Save the frontend/.env.secrets file!
 
 Then update your frontend .env.config with YOUR OWN PROJECT's Supabase URL.
-The REACT_APP_SUPABASE_URL is your Supabase project URL, which is also found under the same place "Data API" -> API Settings
+
+The REACT_APP_SUPABASE_URL is your Supabase project URL, which is also found under the same place "Data API" -> API Settings -> Project URL, copy & paste this value.
 
 The REACT_APP_BACKEND_URL in Codespace should be:
 ```bash
@@ -139,7 +144,7 @@ To complete this for your own unique codespace instance, look at your CLI:
 root@codespaces-22fdef:/workspaces/django-kubernetes-test#
 ```
 
-Form the complete BACKEND_URL, should look like this:
+Complete the BACKEND_URL, should look something like this:
 ```bash
 REACT_APP_BACKEND_URL=https://32212-22fdef.githubpreview.dev
 ```
@@ -160,15 +165,28 @@ REACT_APP_SUPABASE_URL=https://jxpsamnvzjziemtpziig.supabase.co
 REACT_APP_BACKEND_URL=https://32212-22fdef.githubpreview.dev
 REACT_APP_SUPABASE_URL=https://jxpsamnvzjziemtpziig.supabase.co
 ```
+Save the frontend/.env.config file!
 
-### Generate Your Kubernetes Manifests `django-secrets.yaml, frontend-secrets.yaml` & `django-config.yaml, frontend-config.yaml`
+### Generate Your Kubernetes Manifests 
 ENSURE YOU HAVE SAVED YOUR CHANGES TO ALL THE .env.secrets & .env.configs IN BOTH the frontend & backend folders.
 
-Run the script to create a new `secrets & configs` file FROM THE ROOT folder:
+Run the following script FROM THE ROOT folder to create a new `secrets & configs`:
 ```bash
 ./generate_k8s_secrets_configs.sh
 ```
 This reads the `.env` files (.env.config & .env.secrets), within both the backend & frontend folders, Base64-encodes variables, and produces a Kubernetes manifests -> k8s/base/secrets/consolidated-secrets.yaml & k8s/base/configmaps/consolidated-config.yaml.
+
+### Set up PVC
+This following script "toggles" certain variables within the staticfiles-pvc.yaml & postgres-pvc.yaml to correctly mount PVC according to the environment in which this software is being set up in.
+
+Run the following if you are local:
+```bash
+python toggle_pvc.py local
+```
+OR Run the following if you in a codespace:
+```bash
+python toggle_pvc.py codespaces
+```
 
 ### Deploy
 Apply secrets, manifests & restarts deployments:
@@ -231,9 +249,8 @@ psql --version
 ```
 
 Copy your own database connection string from your backend/.env.secrets file.
+Preappend "psql" to your CLI bash, paste your DATABASE_URL
 ```bash
-psql postgresql://USERNAME:PASSWORD@HOST:PORT/DATABASE
-
 Example:
 psql postgresql://postgres.jxpsamnvzjziemtpziig:[YOUR-PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
 ```
@@ -265,36 +282,46 @@ SELECT 'Connection successful!' AS message;
 ```sql
 \dt
 ```
+### Expected Output
+```bash
+                   List of relations
+ Schema |            Name            | Type  |  Owner
+--------+----------------------------+-------+----------
+ public | auth_group                 | table | postgres
+ public | auth_group_permissions     | table | postgres
+ public | auth_permission            | table | postgres
+ public | auth_user                  | table | postgres
+ public | auth_user_groups           | table | postgres
+ public | auth_user_user_permissions | table | postgres
+ public | django_admin_log           | table | postgres
+ public | django_content_type        | table | postgres
+ public | django_migrations          | table | postgres
+ public | django_session             | table | postgres
+ public | scheduler_event            | table | postgres
+(11 rows)
+```
 
 ### Port Forwarding to Access the App From a Codespace
 To access your app without Minikube tunnels or LoadBalancers, use `kubectl port-forward`:
 ```bash
 kubectl port-forward service/nginx-service 32212:80
 ```
-This command forwards traffic from your local port 32212 to port 80 on the nginx-service. Then, when you visit http://localhost:32212 (or use your Codespace’s forwarded URL), you'll hit the nginx service as expected.
+This command forwards traffic from your local port 32212 to port 80 on the nginx-service. 
+Then, when you visit http://localhost:32212 (or use your Codespace’s forwarded URL), you'll hit the nginx service as expected.
 
 ### Accessing the application
-This maps the a private URL found within the codespace's "PORTS" tab, to the local port 8000, whilst exposing the 
+Under the forwarded address tab is the URL for your application.
 
-Under the forwarded address is the URL for your application.
-```
-Example of port forwarding from a codespace
-https://cautious-journey-wxvjr657pvq2g55q-8000.app.github.dev/
+Example of forwarded port from a codespace
+https://cautious-journey-wxvjr657pvq2g55q-8000.app.github.dev/ *** REPLACE
 
-Ensure that you append /scheduler/ to the end of the URL, becoming:
-https://cautious-journey-wxvjr657pvq2g55q-8000.app.github.dev/scheduler/
-```
-Equivalent to:
-```example of port forwarding from a local host
-http://localhost:8000/
-```
 
 ### Accessing the App locally using Docker Desktop with a Kubernetes Cluster
 To access the application locally, use the URL
 http://localhost:32212/
 
 ## TESTING
-If you have reached this stage in the README, you have successfully deployed the application to Kubernetes! Congratulations! Now you can proceed to testing / grading the application.
+If you have reached this stage in the README, you have successfully deployed the application to Kubernetes! Congratulations! Now you can proceed to browser testing / grading the application.
 
 ***********************************************************************************************
 
@@ -313,20 +340,6 @@ kubectl describe pod -l app=django-app
 ./make_migrations_local.sh
 ```
 
-### Creating Migrations Locally only after models changes UNSURE
-```bash
-DATABASE_URL="postgresql://postgres.jxpsamnvzjziemtpziig:Uyr04Wp9IoDd^h3@aws-0-eu-central-1.pooler.supabase.com:5432/postgres" python manage.py makemigrations scheduler
-
-# To force creation use --empty
-DATABASE_URL="postgresql://postgres.jxpsamnvzjziemtpziig:Uyr04Wp9IoDd^h3@aws-0-eu-central-1.pooler.supabase.com:5432/postgres" python manage.py makemigrations scheduler --empty
-```
-
-
-### Bashing into the active django-app pod
-```bash
-kubectl exec -it $(kubectl get pod -l app=django-app -o jsonpath="{.items[0].metadata.name}") -- bash
-```
-
 Connecting Interpod communication
 Find a pods endpoint
 ```bash
@@ -339,10 +352,7 @@ apt-get update && apt-get install -y curl
 ```
 
 ### Deleting hanging PVC
+Running the following script aids in clearing leftover finalizers that could prevent applying the new PVC.
 ```bash
-kubectl delete pvc <pvc-name> --force --grace-period=0
-```
-If it still hangs, you might need to remove the finalizers manually. You can do that by patching the PVC:
-```bash
-kubectl patch pvc <pvc-name> -p '{"metadata":{"finalizers":null}}'
+./reset_redeploy.sh
 ```

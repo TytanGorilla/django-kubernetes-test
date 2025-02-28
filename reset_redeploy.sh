@@ -5,7 +5,7 @@ set -e  # Exit on error
 scale_down_deployment() {
     local deployment=$1
     echo "🚀 Scaling down $deployment..."
-    kubectl scale deployment $deployment --replicas=0 || echo "⚠️ $deployment scale down failed"
+    kubectl scale deployment "$deployment" --replicas=0 || echo "⚠️ $deployment scale down failed"
 }
 
 # Function to apply resources (PVCs, ConfigMaps, Secrets, Services, etc.)
@@ -13,34 +13,34 @@ apply_resources() {
     local resource_type=$1
     local resource_dir=$2
     echo "🔄 Applying $resource_type..."
-    kubectl apply -f $resource_dir --recursive || { echo "❌ Failed to apply $resource_type"; exit 1; }
+    kubectl apply -f "$resource_dir" --recursive || { echo "❌ Failed to apply $resource_type"; exit 1; }
 }
 
-# Function to wait for PVC to be deleted
+# Function to wait for a PVC to be deleted
 wait_for_pvc_deletion() {
     local pvc_name=$1
     echo "⏳ Waiting for $pvc_name to be deleted..."
-    until ! kubectl get pvc $pvc_name; do
+    until ! kubectl get pvc "$pvc_name" &>/dev/null; do
         sleep 5
     done
     echo "✅ $pvc_name deleted successfully!"
 }
 
-# Function to handle PVC cleanup and deletion
-clean_up_pvc() {
+# Function to forcefully delete a PVC (removing finalizers first)
+force_delete_pvc() {
     local pvc_name=$1
-    if kubectl get pod -l app=postgres -o jsonpath='{.items[0].status.phase}' | grep -q "Failed"; then
-        echo "⚠️ $pvc_name seems to be corrupted. Deleting..."
-        kubectl delete pvc $pvc_name --force --grace-period=0 || echo "❌ Failed to delete $pvc_name PVC!"
-        wait_for_pvc_deletion $pvc_name
-    fi
+    echo "🗑 Patching PVC $pvc_name to remove finalizers..."
+    kubectl patch pvc "$pvc_name" -p '{"metadata":{"finalizers":null}}' || echo "⚠️ Failed to patch finalizers on $pvc_name"
+    echo "🗑 Force deleting PVC: $pvc_name..."
+    kubectl delete pvc "$pvc_name" --ignore-not-found --force --grace-period=0
+    wait_for_pvc_deletion "$pvc_name"
 }
 
 # Function to restart deployments
 restart_deployment() {
     local deployment=$1
     echo "🔄 Rolling out restart for $deployment..."
-    kubectl rollout restart deployment $deployment || echo "⚠️ Failed to restart $deployment"
+    kubectl rollout restart deployment "$deployment" || echo "⚠️ Failed to restart $deployment"
 }
 
 # Scale down all deployments
@@ -48,7 +48,7 @@ scale_down_deployment django-app
 scale_down_deployment nginx
 scale_down_deployment postgres
 
-# Delete existing deployments
+# Delete existing deployments (preserving PVCs for now)
 echo "🗑 Deleting deployments (preserving PVCs)..."
 kubectl delete -f k8s/base/deployments --recursive || echo "⚠️ Deployment deletion encountered issues"
 
@@ -56,10 +56,11 @@ kubectl delete -f k8s/base/deployments --recursive || echo "⚠️ Deployment de
 echo "🔍 Checking existing PVCs..."
 kubectl get pvc || echo "⚠️ No PVCs found!"
 
-# Cleanup PostgreSQL PVC if it's in a failed state
-clean_up_pvc postgres-pvc
+# Force delete both PVCs to allow manifest changes (with finalizer patch)
+force_delete_pvc postgres-pvc
+force_delete_pvc staticfiles-pvc
 
-# Apply PVCs
+# Reapply PVC manifests
 apply_resources "PVCs" "k8s/base/pvc"
 
 # Reapply ConfigMaps & Secrets
