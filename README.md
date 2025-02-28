@@ -328,11 +328,11 @@ If you have reached this stage in the README, you have successfully deployed the
 ### Debugging
 Check logs if the application does not behave as expected:
 ```bash
-kubectl logs -f -l app=django-app
+kubectl logs <pod-name>
 ```
 Describe the pod for detailed diagnostics:
 ```bash
-kubectl describe pod -l app=django-app
+kubectl describe pod <pod-name>
 ```
 
 ### Making migrations locally for version control
@@ -346,7 +346,7 @@ Find a pods endpoint
 kubectl get endpoints django-service
 ```
 
-Installing curl on the fly inside a pod
+Installing curl on the fly inside a pod if needed
 ```bash
 apt-get update && apt-get install -y curl
 ```
