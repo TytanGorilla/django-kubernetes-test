@@ -1,35 +1,34 @@
 /* === GLOBAL STYLES (Applies to All Pages) === */
-
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;  /* Light gray background */
-    color: #333;  /* Dark gray text */
-    margin: 0;
-    padding: 0;
-    text-align: center;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4; /* Light gray background */
+  color: #333; /* Dark gray text */
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
 header {
-    background-color: #007BFF;  /* Bright blue */
-    color: white;
-    padding: 20px 0;
-    font-size: 1.5em;
+  background-color: #007BFF; /* Bright blue */
+  color: white;
+  padding: 20px 0;
+  font-size: 1.5em;
 }
 
 nav {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 nav a {
-    text-decoration: none;
-    color: white;
-    padding: 10px 20px;
-    display: inline-block;
+  text-decoration: none;
+  color: white;
+  padding: 10px 20px;
+  display: inline-block;
 }
 
 nav a:hover {
-    background-color: #0056b3; /* Darker blue */
-    border-radius: 5px;
+  background-color: #0056b3; /* Darker blue */
+  border-radius: 5px;
 }
 
 .nav-btn {
@@ -37,10 +36,10 @@ nav a:hover {
   color: white;
   padding: 10px 20px;
   display: inline-block;
-  background-color: #007BFF; 
+  background-color: #007BFF;
   border: none;
   cursor: pointer;
-  font-size: 24px; /*So the text of the Logout button's text is the same as the other anchor tags*/
+  font-size: 24px;
 }
 
 .nav-btn:hover {
@@ -49,68 +48,144 @@ nav a:hover {
 }
 
 main {
-    margin: 20px auto;
-    width: 80%;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  width: 80%;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 footer {
-    margin-top: 20px;
-    background: #333;
-    color: white;
-    padding: 10px;
+  margin-top: 20px;
+  background: #333;
+  color: white;
+  padding: 10px;
 }
 
-/* 🔥 Features Section */
+/* === FEATURES SECTION === */
 .features-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.feature-item {
+  flex: 1;
+  min-width: 250px;
+  max-width: 350px;
+  text-align: center;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+}
+
+.feature-item h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.feature-item p {
+  color: #666;
+  font-size: 14px;
+}
+
+.feature-item img {
+  width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+  margin-top: 10px;
+  border-radius: 4px;
+}
+
+/* Responsive layout for features */
+@media (max-width: 768px) {
+  .features-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* === UTILITY CLASSES === */
+
+/* Responsive Container */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Navigation Enhancements */
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.nav-item {
+  margin: 5px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: white;
+  padding: 10px 20px;
+  display: inline-block;
+}
+
+.nav-link:hover {
+  background-color: #0056b3;
+  border-radius: 5px;
+}
+
+.nav-form {
+  display: inline-block;
+}
+
+/* Responsive Images */
+.responsive-img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* General Button */
+.btn {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  display: inline-block;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+/* Mobile Adjustments for Global Layout */
+@media (max-width: 768px) {
+  .nav-list {
+    flex-direction: column;
+    align-items: center;
   }
   
-  .feature-item {
-    flex: 1;
-    min-width: 250px;
-    max-width: 350px;
-    text-align: center;
-    padding: 15px;
-    background: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease-in-out;
+  .container {
+    padding: 0 10px;
   }
-  
-  .feature-item:hover {
-    transform: translateY(-5px);
-  }
-  
-  .feature-item h3 {
-    margin-bottom: 10px;
-    color: #333;
-  }
-  
-  .feature-item p {
-    color: #666;
-    font-size: 14px;
-  }
-  
-  .feature-item img {
-    width: 100%;
-    max-height: 180px;
-    object-fit: contain;
-    margin-top: 10px;
-    border-radius: 4px;
-  }
-  
-  /* ✅ Responsive layout */
-  @media (max-width: 768px) {
-    .features-container {
-      flex-direction: column;
-      align-items: center;
-    }
-  }
+}

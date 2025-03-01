@@ -4,27 +4,29 @@
 {% block title %}Welcome{% endblock %}
 
 {% block content %}
-    <h1>Welcome to the Core Django Application Landing Page</h1>
-    <p>This Django Application could potentially house multiple application services.</p>
-    <p>However there is only one service in this project, click the "Scheduler App" button to view it.</p>
-    <p>For this CS50W Final Project, the app is a calendar scheduler app built with Django, React and leverages the features below.</p>
+<div class="home-content">
+  <h1>Welcome to the Core Django Application Landing Page</h1>
+  <p>This Django Application could potentially house multiple application services.</p>
+  <p>However, there is only one service in this project; click the "Scheduler App" button to view it.</p>
+  <p>For this CS50W Final Project, the app is a calendar scheduler app built with Django, React and leverages the features below.</p>
 
-    <!-- ✅ Features Section with Images -->
-    <section class="features-container">
-        <div class="feature-item">
-            <h3>Data Capture & Persistence</h3>
-            <p>Powered by Django REST API</p>
-            <img src="/static/core/images/django-rest.png" alt="Django REST API" />
-        </div>
-        <div class="feature-item">
-            <h3>Cloud-Based Deployment</h3>
-            <p>Scalable & managed with Kubernetes</p>
-            <img src="static/core/images/kubernetes.png" alt="Kubernetes Deployment" />
-        </div>
-        <div class="feature-item">
-            <h3>Cloud-Managed Storage</h3>
-            <p>Integrated seamlessly with Supabase</p>
-            <img src="static/core/images/supabase.png" alt="Supabase Storage" />
-        </div>
-    </section>
+  <!-- Features Section -->
+  <section class="features-container">
+    <div class="feature-item">
+      <h3>Data Capture & Persistence</h3>
+      <p>Powered by Django REST API</p>
+      <img src="{% static 'core/images/django-rest.png' %}" alt="Django REST API" class="responsive-img">
+    </div>
+    <div class="feature-item">
+      <h3>Cloud-Based Deployment</h3>
+      <p>Scalable & managed with Kubernetes</p>
+      <img src="{% static 'core/images/kubernetes.png' %}" alt="Kubernetes Deployment" class="responsive-img">
+    </div>
+    <div class="feature-item">
+      <h3>Cloud-Managed Storage</h3>
+      <p>Integrated seamlessly with Supabase</p>
+      <img src="{% static 'core/images/supabase.png' %}" alt="Supabase Storage" class="responsive-img">
+    </div>
+  </section>
+</div>
 {% endblock %}

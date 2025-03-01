@@ -1,17 +1,13 @@
 {% extends "core/base.html" %}
 {% load static %}
 
-{% block title %}
-    Scheduler Home
-{% endblock %}
+{% block title %}Scheduler Home{% endblock %}
 
 {% block content %}
-    <h2 id="welcome">Welcome to my CS50W Final Project!</h2>
-
-    <!-- React app will be injected here -->
-    <div id="root"></div>  <!-- Make sure this exists -->
-
-    {% block scheduler_content %}  <!-- ✅ Allow `scheduler_index.html` to add content -->
-    {% endblock %}
-
+<div class="scheduler-home">
+  <h2 id="welcome">Welcome to my CS50W Final Project!</h2>
+  <!-- React app will be injected here -->
+  <div id="root"></div>
+  {% block scheduler_content %}{% endblock %}
+</div>
 {% endblock %}

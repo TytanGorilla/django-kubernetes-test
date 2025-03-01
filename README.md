@@ -1,5 +1,35 @@
 # Setting Up Your Environment (for Graders or New Users)
 
+## Distinctiveness and Complexity
+
+**This Django application boasts a calendar service that persists data entry & manipulation through Supabase, a cloud managed Postgres database.**
+
+This project leverages and blends a number of distinct technologies into a containerized portable image.
+The aim with this project was to not only to satisfy the base requirements of using a Django backend + Javascript frontend.
+It was also intended to be a valuable learning experience by incorporating additional technologies into the stack frequented by production setups who usually operate on cloud infrastructure.
+
+#### Technologies used + reason:
+- Docker - The core piece to contained software, essentially baking in all requirements + dependencies, ensuring consistency.
+- Docker Hub - Pushed images are available anywhere, ensuring portability.
+- Github - Version controlled from the get go, practicing real world workflows.
+- Kubernetes - The internets favored container orchestration technology for multi-containerized service setups.
+- Nginx - Excels at serving static assets (better than Django), and as a proxy server for Django.
+- Django's Rest Framework - Django's (DRF) excels at navigation & serving templates.
+- Supabase - Free, user friendly cloud managed database provider.
+- Postgres - Very powerful feature rich database prominently used online.
+- React - JS based, and has prebuilt high utility components ("react-big-calendar).
+
+#### Adhering to many best practices across the board, considerations like:
+1) Clean & clear folder/file structure, separating concerns.
+2) Use of environmental variables, their secure handling & version controlled friendly with gitignore.
+3) Authentication handled by Django, and CSRF tokens for any POST requests.
+4) Use of template inheritance to respect DRY principles, and to more easily inject styling and scripts where needed.
+5) Laborious tasks automated by scripts.
+6) Commented code for better readability/comprehension.
+7) Built with the intent of being easily maintained, and structured for easy rolling updates thanks to Kubernetes.
+8) Concise instructions well documented & pre-tested.
+
+
 ## LOCAL DEVELOPMENT
 Create a new folder on your machine and clone the repository into it.
 ```bash
@@ -50,7 +80,7 @@ kubectl cluster-info --context kind-my-cluster
 ```
 ## Setup Simple Cloud Managed Database with Supabase
 Visit [Supabase](https://supabase.com)
-  - Setup a free account by signing in with your GitHub account.
+  - Login into your newly created account.
   - At the top of the screen click the button "Connect".
   - A popup will appear titled "Connect to your project".
   - Select the tab "Connection String".

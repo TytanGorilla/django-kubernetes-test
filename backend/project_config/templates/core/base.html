@@ -2,52 +2,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Core Base Template{% endblock %}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Core Base Template{% endblock %}</title>
 
-    <!-- Core Stylesheet -->
-    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
 
-    <link rel="icon" type="image/png" sizes="180x180" href="{% static 'core/images/favicon.ico' %}">
+  <link rel="icon" type="image/png" sizes="180x180" href="{% static 'core/images/favicon.ico' %}">
 
-    <!-- Load dynamic React CSS -->
-    {% if css_file %}
-        <link rel="stylesheet" href="{{ css_file }}">
-    {% endif %}
+  <!-- Load dynamic React CSS -->
+  {% if css_file %}
+    <link rel="stylesheet" href="{{ css_file }}">
+  {% endif %}
 </head>
 <body>
-    <header>
-        <h1>Core Django Application</h1>
-        <nav>
-            <a href="{% url 'home' %}">Home</a>
-            {% if user.is_authenticated %}
-                <a href="{% url 'scheduler_home' %}">Scheduler App</a>
+  <header class="header">
+    <div class="container">
+      <h1 class="site-title">Core Django Application</h1>
+      <nav class="nav">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="{% url 'home' %}" class="nav-link">Home</a></li>
+          {% if user.is_authenticated %}
+            <li class="nav-item"><a href="{% url 'scheduler_home' %}" class="nav-link">Scheduler App</a></li>
+            <li class="nav-item">
+              <form action="{% url 'scheduler_logout' %}" method="post" class="nav-form">
+                {% csrf_token %}
+                <button type="submit" onclick="return confirm('Are you sure you want to log out?')" class="nav-btn">Logout</button>
+              </form>
+            </li>
+          {% else %}
+            <li class="nav-item"><a href="{% url 'scheduler_login' %}" class="nav-link">Login</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+  
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
 
-                <form action="{% url 'scheduler_logout' %}" method="post" style="display: inline-block;">
-                    {% csrf_token %}
-                    <button type="submit" onclick="return confirm('Are you sure you want to log out?')" class="nav-btn">Logout</button>
-                </form>
-                
-            {% else %} 
-                <a href="{% url 'scheduler_login' %}">Login</a>
-            {% endif %}
-        </nav>
-    </header>
-    
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 Base Template</p>
+    </div>
+  </footer>
 
-    <footer>
-        <p>&copy; 2025 Base Template</p>
-    </footer>
-
-    <script src="{% static 'core/js/scripts.js' %}"></script>
-    
-    <!-- Load React JavaScript only if `js_file` exists -->
-    {% if js_file %}
-        <script defer="defer" src="{{ js_file }}"></script>
-    {% endif %}
+  <script src="{% static 'core/js/scripts.js' %}"></script>
+  
+  <!-- Load React JavaScript only if `js_file` exists -->
+  {% if js_file %}
+    <script defer src="{{ js_file }}"></script>
+  {% endif %}
 </body>
 </html>

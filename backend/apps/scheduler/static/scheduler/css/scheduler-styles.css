@@ -1,114 +1,166 @@
 /* === SCHEDULER APP STYLES === */
 
-/* Override global styles */
+/* Scheduler-specific overrides for body and header */
 body {
-    background-color: #ffffff;  /* Set a pure white background */
-    color: #222;  /* Slightly darker text */
-}
-
-/* Make the header unique */
-header {
-    background-color: #179988;  /* Green header (instead of blue) */
+    background-color: #ffffff;
+    color: #222;
+  }
+  
+  header {
+    background-color: #179988; /* Green header */
     font-size: 1.5em;
-}
-
-/* Change the navbar */
-nav {
+  }
+  
+  /* Navbar override for scheduler */
+  nav {
     background: none;
-}
-
-nav a {
+  }
+  
+  nav a {
     color: white;
     border-bottom: 2px solid transparent;
-}
-
-nav a:hover {
+  }
+  
+  nav a:hover {
     border-bottom: 2px solid white;
-}
-
-/* Modify main container */
-main {
+  }
+  
+  /* Scheduler Main Container Override */
+  main {
     width: 90%;
     padding: 30px;
-    background: #f8f9fa;  /* Soft gray background */
-    box-shadow: none;  /* Remove the global box-shadow */
+    background: #f8f9fa;
+    box-shadow: none;
     border: 1px solid #ccc;
-}
-
-/* Task and Event Listings */
-.task-list, .event-list {
+  }
+  
+  /* Task and Event Listings */
+  .task-list, .event-list {
     background: white;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Buttons */
-button {
-    background-color: #007BFF; /* Reusing blue from global */
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-/* === Registration Page Styles === */
-.registration-container {
+  }
+  
+  /* Scheduler Home Specific */
+  .scheduler-home {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .event-list, .task-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+  }
+  
+  .event-list > div, .task-list > div {
+    flex: 1 1 250px;
+    margin: 10px;
+  }
+  
+  /* === Registration & Login Forms (Scheduler) === */
+  
+  /* Base styles for registration and login containers */
+  .registration-container, .login-container {
     max-width: 500px;
-    margin: 50px auto;
+    margin: 40px auto;
     padding: 30px;
-    background: #f8f9fa;  /* Soft gray background */
+    background: #f8f9fa;
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.registration-container h2 {
+  }
+  
+  /* Enhanced Registration Form Styles */
+  .registration-container {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .registration-container h2 {
     text-align: center;
+    color: #179988;
     margin-bottom: 20px;
-    color: #179988;  /* Use your header color for consistency */
-}
-
-.registration-form {
+  }
+  
+  .registration-form {
     display: flex;
     flex-direction: column;
-}
-
-.registration-form input,
-.registration-form button {
+  }
+  
+  .registration-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .registration-form input[type="text"],
+  .registration-form input[type="email"],
+  .registration-form input[type="password"],
+  .registration-form input[type="number"],
+  .registration-form input[type="url"],
+  .registration-form textarea,
+  .registration-form select {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     font-size: 1em;
-}
-
-.registration-form button {
-    background-color: #007BFF;
+  }
+  
+  .registration-form input:focus,
+  .registration-form textarea:focus,
+  .registration-form select:focus {
+    outline: none;
+    border-color: #179988;
+    box-shadow: 0 0 5px rgba(23, 153, 136, 0.3);
+  }
+  
+  .registration-form button.btn {
+    background-color: #179988;
+    color: #fff;
+    padding: 10px;
     border: none;
-    border-radius: 5px;
-    color: white;
+    border-radius: 4px;
+    font-size: 1.1em;
     cursor: pointer;
-}
-
-.registration-form button:hover {
-    background-color: #0056b3;
-}
-
-.registration-link {
+    transition: background-color 0.3s ease;
+  }
+  
+  .registration-form button.btn:hover {
+    background-color: #147d74;
+  }
+  
+  .registration-link {
     text-align: center;
     font-size: 0.9em;
-}
-
-.registration-link a {
-    color: #007BFF;
+    margin-top: 10px;
+  }
+  
+  .registration-link a {
+    color: #179988;
     text-decoration: none;
-}
-
-.registration-link a:hover {
+  }
+  
+  .registration-link a:hover {
     text-decoration: underline;
-}
+  }
+  
+  /* Scheduler-specific Mobile Tweaks */
+  @media (max-width: 768px) {
+    .registration-container, .login-container {
+      width: 100%;
+      padding: 20px;
+      margin: 20px auto;
+    }
+    
+    .event-list, .task-list {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+  

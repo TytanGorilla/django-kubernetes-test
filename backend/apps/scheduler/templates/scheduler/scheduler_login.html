@@ -1,17 +1,17 @@
 {% extends "core/base.html" %}
 {% load static %}
 
-{% block title %}
-    Scheduler Login
-{% endblock %}
+{% block title %}Scheduler Login{% endblock %}
 
 {% block content %}
-    <h1>Login to Scheduler</h1>
-    <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="next" value="{% url 'scheduler_home' %}">
-        {{ form.as_p }}
-        <input type="submit" value="Login" />
-    </form>
-    <p>Not registered? <a href="{% url 'scheduler_register' %}">Register here</a>.</p>
+<div class="login-container">
+  <h1>Login to Scheduler</h1>
+  <form method="post" class="login-form">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{% url 'scheduler_home' %}">
+    {{ form.as_p }}
+    <input type="submit" value="Login" class="btn">
+  </form>
+  <p class="login-link">Not registered? <a href="{% url 'scheduler_register' %}">Register here</a>.</p>
+</div>
 {% endblock %}
